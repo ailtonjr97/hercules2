@@ -254,9 +254,14 @@ import FormFloating from '../ui/FormFloating.vue';
 import Modal from '../ui/Modal.vue';
 import Loading from '../ui/Loading.vue';
 
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
 const config = {
     headers: {
-    'Authorization': document.cookie,
+    'Authorization': getCookie('jwt'),
     }
 }
 
@@ -460,7 +465,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -494,7 +499,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -528,7 +533,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -561,7 +566,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
