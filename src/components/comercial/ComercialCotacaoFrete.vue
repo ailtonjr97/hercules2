@@ -78,8 +78,11 @@
             </td>
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
-                    <div class="col-md-4"><button title="Editar" class="button-8" v-if="!resposta.cotador_id_2" @click="openEditarModal(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
-                    <div class="col-md-4"><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido)"><i style="font-size: 14px;" class="fa-solid fa-list"></i></button></div>
+                    <div class="col d-flex justify-content-evenly">
+                        <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
+                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora)"><i style="font-size: 14px;" class="fa-solid fa-check"></i></button></div>
+                        <div><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido)"><i style="font-size: 14px;" class="fa-solid fa-list"></i></button></div>
+                    </div>
                 </div>
             </td>
             </tr>
@@ -113,8 +116,8 @@
         <div class="row">
             <form-floating :placeholder="'Cód. Transportadora:'" :id="'id_transportadora'" :type="'text'" v-model="editar.transp_nome_select" readonly></form-floating>
             <form-floating :placeholder="'Nome Transportadora:'" :id="'nome_transportadora'" :type="'text'" v-model="editar.transp_nome2_select" readonly></form-floating>
-            <form-floating :placeholder="'Valor:'" :id="'valor'" :type="'text'" v-model="editar.valor" ></form-floating>
-            <form-floating :placeholder="'Prazo (Dias):'" :id="'prazo'" :type="'text'" v-model="editar.prazo" ></form-floating>
+            <form-floating :placeholder="'Valor:'" :id="'valor'" :type="'number'" v-model="editar.valor" ></form-floating>
+            <form-floating :placeholder="'Prazo (Dias):'" :id="'prazo'" :type="'number'" v-model="editar.prazo" ></form-floating>
         </div>
         <div class="row mt-2">
             <div class="row mb-2">
@@ -162,14 +165,15 @@
     <loading v-if="carregandoinfo"></loading>
     <div v-if="!carregandoinfo">
         <div class="row">
-            <form-floating :placeholder="'Número do Pedido:'" :id="'numped'" :type="'number'" v-model="numped" ></form-floating><br>
-            <p style="color: red;" v-if="alertaPedido">Pedido não encontrado no Protheus.</p>
+            <select-floating :placeholder="'Filial'" :id="'user-setor'" :options="optionsFiliais" v-model="filial"></select-floating>
+            <form-floating :placeholder="'Número do Orçamento:'" :id="'numped'" :type="'number'" v-model="numped" ></form-floating><br>
+            <p style="color: red;" v-if="alertaPedido">Orçamento não encontrado no Protheus. Verificar se esse pedido pertençe a filial.</p>
         </div>
     </div>
     </template>
     <template v-slot:buttons v-if="!carregandoinfo">
         <button class="button-8 mt-2" @click="fecharNovaCotacaoModal()">Fechar</button>
-        <button class="button-8 mt-2" @click="salvarModalCotacao(numped)">Salvar</button>
+        <button class="button-8 mt-2" @click="salvarModalCotacao(numped, filial)">Salvar</button>
     </template>
 </modal>
 
@@ -253,6 +257,7 @@ import TableSearch from '../ui/TableSearch.vue';
 import FormFloating from '../ui/FormFloating.vue';
 import Modal from '../ui/Modal.vue';
 import Loading from '../ui/Loading.vue';
+import SelectFloating from '../ui/SelectFloating.vue';
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -267,6 +272,7 @@ const config = {
 
 export default{
     components: {
+        SelectFloating,
         FormFloating,
         TableSearch,
         TableTop,
@@ -276,6 +282,8 @@ export default{
     },
     data(){
         return{
+            filial: '',
+            setor: '',
             pedidoAllRev: false,
             cliente: [],
             clienteModal: false,
@@ -309,12 +317,38 @@ export default{
             }
         }
     },
+    computed: {
+    optionsFiliais(){
+            return [
+                {valor: "0101001", descri: 'FIBRACEM MATRIZ'},
+                {valor: "0101002", descri: 'FIBRACEM FILIAL CD.'},
+                {valor: "0101003", descri: 'FIBRACEM ESPIRITO SANTO CD'},
+                {valor: "0101004", descri: 'FIBRACEM INDUSTRIA LINHARES'},
+                {valor: "0101005", descri: 'FIBRACEM IMPORTACAO LINHARES'},
+                {valor: "0101006", descri: 'FIBRACEM INJECOES'}
+            ];
+        },
+    },
     methods: {
+        async updateFreteCot(numped, id, valor, transp){
+            try {
+                this.carregando = true;
+                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}`, config);
+                this.popup = true;
+                setTimeout(()=>{
+                    this.popup = false;
+                }, 2000);
+                this.carregando = false;
+            } catch (error) {
+                this.carregando = false;
+                alert("Erro ao realizar ação. Favor tentar novamente mais tarde.")
+            }
+        },
         async showAllRev(){
             try {
                 this.pedidoAllRev = true;
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial//proposta-de-frete-semrev`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete-semrev`, config);
                 this.respostas = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
@@ -372,25 +406,25 @@ export default{
                 alert("Falha ao buscar informações. Tente novamente mais tarde.")
             }
         },
-        async salvarModalCotacao(numped){
+        async salvarModalCotacao(numped, filial){
             try {
                 this.carregandoinfo = true;
-                if(numped){
+                if(numped && filial){
                     const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/sck/${numped}`, config);
                     if(response){
                         const itens = []
                         response.data.objects.forEach(element => {
                             itens.push({produto: element.produto, qtdven: element.qtdven, loja: element.loja, descri: element.descri, obs: element.obs, valor: element.valor})
                         });
-                        this.fecharNovaCotacaoModal();
-                        this.carregando = true;
                         const token = document.cookie.replace('jwt=', '');
                         const decoded = jwtDecode(token);
-                        await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/nova-proposta-de-frete/${numped}/${decoded.id}`, itens, config);
+                        const respostaScj = await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/nova-proposta-de-frete/${numped}/${decoded.id}/${filial}`, itens, config);
+                        this.fecharNovaCotacaoModal();
+                        this.carregando = true;
                         this.refresh();
                     }
                 }else{
-                    alert("Favor preencher o número do pedido.");
+                    alert("Favor preencher o número do pedido e filial.");
                     this.carregandoinfo = false;
                 }
             } catch (error) {
@@ -465,7 +499,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': document.cookie,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -499,7 +533,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': document.cookie,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -533,7 +567,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': document.cookie,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -566,7 +600,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': document.cookie,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
