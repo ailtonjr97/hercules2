@@ -4,10 +4,10 @@
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
     <table-top :resultados="resultados">
         <template v-slot:tableButtons>
-            <button class="button-8 mb-2" @click="novaCotacao">Nova Cotação</button>
-            <button class="button-8 mb-2" @click="refresh">Atualizar</button>
-            <button class="button-8 mb-2" @click="showAllRev">Mostrar todas revisões</button>
-            <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
+            <button class="button-8 mb-2" @click="novaCotacao()" v-if="setor == 'Comercial'">Nova Cotação</button>
+            <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
+            <button class="button-8 mb-2" @click="showAllRev()">Mostrar todas revisões</button>
+            <!-- <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button> -->
         </template>
     </table-top>
     <div class="row mb-2">
@@ -30,6 +30,7 @@
             <th>Revisão</th>
             <th>Valor</th>
             <th>Transportadora</th>
+            <th>Cotação</th>
             <th>Prazo</th>
             <th>Cotador</th>
             <th>Ações</th>
@@ -69,6 +70,9 @@
             </td>
             <td>
                 <p>{{ resposta.nome_transportadora }}</p>
+            </td>
+            <td>
+                <p>{{ resposta.cod_cot }}</p>
             </td>
             <td>
                 <p>{{ resposta.prazo }} <span v-if="resposta.prazo">dias</span></p>
@@ -114,10 +118,24 @@
     <loading v-if="carregandoinfo"></loading>
     <div v-if="!carregandoinfo">
         <div class="row">
-            <form-floating :placeholder="'Cód. Transportadora:'" :id="'id_transportadora'" :type="'text'" v-model="editar.transp_nome_select" readonly></form-floating>
-            <form-floating :placeholder="'Nome Transportadora:'" :id="'nome_transportadora'" :type="'text'" v-model="editar.transp_nome2_select" readonly></form-floating>
-            <form-floating :placeholder="'Valor:'" :id="'valor'" :type="'number'" v-model="editar.valor" ></form-floating>
-            <form-floating :placeholder="'Prazo (Dias):'" :id="'prazo'" :type="'number'" v-model="editar.prazo" ></form-floating>
+            <div class="col">
+                <form-floating :placeholder="'Cód. Transportadora:'" :id="'id_transportadora'" :type="'text'" v-model="editar.transp_nome_select" readonly></form-floating>
+            </div>
+            <div class="col">
+                <form-floating :placeholder="'Nome Transportadora:'" :id="'nome_transportadora'" :type="'text'" v-model="editar.transp_nome2_select" readonly></form-floating>
+            </div>
+            <div class="col-sm-2">
+                <form-floating :placeholder="'Valor:'" :id="'valor'" :type="'number'" v-model="editar.valor" ></form-floating>
+            </div>
+            <div class="col-sm-2">
+                <form-floating :placeholder="'Prazo (Dias):'" :id="'prazo'" :type="'number'" v-model="editar.prazo" ></form-floating>
+            </div>
+            <div class="col-sm-1">
+                <form-floating :placeholder="'Filial:'" :id="'filial'" :type="'text'" v-model="proposta.filial" readonly></form-floating>
+            </div>
+            <div class="col-sm-2">
+                <form-floating :placeholder="'Código Cotação:'" :id="'codcot'" :type="'text'" v-model="editar.codcot"></form-floating>
+            </div>
         </div>
         <div class="row mt-2">
             <div class="row mb-2">
@@ -167,7 +185,7 @@
         <div class="row">
             <select-floating :placeholder="'Filial'" :id="'user-setor'" :options="optionsFiliais" v-model="filial"></select-floating>
             <form-floating :placeholder="'Número do Orçamento:'" :id="'numped'" :type="'number'" v-model="numped" ></form-floating><br>
-            <p style="color: red;" v-if="alertaPedido">Orçamento não encontrado no Protheus. Verificar se esse pedido pertençe a filial.</p>
+            <p style="color: red;" v-if="alertaPedido">Orçamento não encontrado no Protheus. Verificar se esse orçamento pertence a filial.</p>
         </div>
     </div>
     </template>
@@ -264,6 +282,7 @@ function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
 const config = {
     headers: {
     'Authorization': getCookie('jwt'),
@@ -417,7 +436,7 @@ export default{
                             itens.push({produto: element.produto, qtdven: element.qtdven, loja: element.loja, descri: element.descri, obs: element.obs, valor: element.valor})
                         });
                         const token = document.cookie.replace('jwt=', '');
-                        const decoded = jwtDecode(token);
+                        const decoded = jwtDecode(getCookie('jwt'));
                         const respostaScj = await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/nova-proposta-de-frete/${numped}/${decoded.id}/${filial}`, itens, config);
                         this.fecharNovaCotacaoModal();
                         this.carregando = true;
@@ -458,10 +477,10 @@ export default{
                     this.modalInfo = false;
                     this.carregando = true;
                     const token = document.cookie.replace('jwt=', '');
-                    const decoded = jwtDecode(token);
+                    const decoded = jwtDecode(getCookie('jwt'));
                     this.editar.cotador_id_2 = decoded.id
                     this.erroBuscaTransp = false;
-                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/${id}`, this.editar, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/${id}`, [this.editar, this.proposta.filial], config);
                     this.refresh();
                     this.editar = {};
                 };
@@ -677,12 +696,16 @@ export default{
                     'Authorization': getCookie('jwt'),
                     }
                 }
+                const decoded = jwtDecode(getCookie('jwt'));
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete`, config);
                 this.respostas = response.data;
+                const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
+                this.setor = logado.data[0].setor;
                 this.resultados = response.data.length;
                 this.fullLoad = true;
                 this.carregando = false;
             } catch (error) {
+                console.log(error)
                 alert("Erro ao carregar página. Favor tentar mais tarde.");
                 this.carregando = false;
             }

@@ -29,6 +29,7 @@ import EngenhariaMoldes from './components/engenharia/EngenhariaMoldes.vue';
 import EngenhariaMolde from './components/engenharia/EngenhariaMolde.vue';
 import ComercialLanding from './components/comercial/ComercialLanding.vue';
 import ComercialCotacaoFrete from './components/comercial/ComercialCotacaoFrete.vue';
+import ComercialTrack from './components/comercial/ComercialTrack.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -60,6 +61,7 @@ const router = createRouter({
       {path: '/engenharia/moldes/:id', component: EngenhariaMolde},
       {path: '/comercial', component: ComercialLanding},
       {path: '/comercial/cotacao-de-frete', component: ComercialCotacaoFrete},
+      {path: '/comercial/track-order', component: ComercialTrack},
       { path: '/:notFound(.*)', redirect: '/home' }
     ]
   });
@@ -95,8 +97,13 @@ router.beforeEach(async function(to, from, next) {
       if (!loggedIn) {
         return next('/login');
       } else if (loggedIn) {
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(';').shift();
+        }
         if(to.path == '/usuarios' || to.path == '/totvs'){
-          const token = document.cookie
+          const token = getCookie('jwt')
           let config = {
               headers: {
                   'Authorization': token

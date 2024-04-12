@@ -16,14 +16,14 @@
                         </div>
                     </router-link>
                 </li>
-                <li class="nav-item" style="margin-left: 5%;">
+                <!-- <li class="nav-item" style="margin-left: 5%;">
                     <router-link to="/totvs" class="nav-link">
                         <div class="item">
                             <img src="/images/totvs_icon.png" alt="" style="width: 90%; border-radius: 5px;">
                         </div>
                     </router-link>
-                </li>
-                <li class="nav-item" style="margin-left: 1%;">
+                </li> -->
+                <!-- <li class="nav-item" style="margin-left: 1%;">
                     <router-link to="/korp" class="nav-link">
                         <div class="item">
                             <img src="/images/korp.png" alt="" style="width: 90%; border-radius: 5px;">
@@ -53,7 +53,7 @@
                             <span class="caption">Engenharia</span>
                         </div>
                     </router-link>
-                </li>
+                </li> -->
                 <li class="nav-item" style="margin: 0 0 0 0; width: 120px;">
                     <router-link to="/comercial" class="nav-link">
                         <div class="item">
@@ -62,14 +62,14 @@
                         </div>
                     </router-link>
                 </li>
-                <li class="nav-item" style="margin: 0 0 0 0; width: 110px;">
+                <!-- <li class="nav-item" style="margin: 0 0 0 0; width: 110px;">
                     <router-link to="/chamados" class="nav-link">
                         <div class="item">
                             <i class="fa-solid fa-table-cells" style="margin-left: 50%;"></i>
                             <span class="caption">Chamados</span>
                         </div>
                     </router-link>
-                </li>
+                </li> -->
                 <li :style="[isAdmin != 0 ? {'display': 'block'} : {'display': 'none'}]" class="nav-item pl-1 bloqueados">
                     <router-link to="/usuarios" class="nav-link">
                         <div class="item">
@@ -145,8 +145,6 @@ export default{
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         this.isAdmin = response.data[0].admin;
         this.name = response.data[0].name;
-        const dolar = await axios.get('http://economia.awesomeapi.com.br/json/last/USD-BRL');
-        this.cotacao = dolar.data.USDBRL.ask;
     }
 }
 </script>

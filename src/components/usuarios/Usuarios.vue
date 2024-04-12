@@ -107,10 +107,16 @@ import TableTop from '../ui/TableTop.vue';
 import TableSearch from '../ui/TableSearch.vue';
 import Topbar from '../navbar/Topbar.vue';
 
-let config = {
-  headers: {
-    'Authorization': document.cookie.replace('jwt=', ''),
-  }
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+const config = {
+    headers: {
+    'Authorization': getCookie('jwt'),
+    }
 }
 
  export default{
@@ -177,6 +183,11 @@ let config = {
               {valor: "Qualidade", descri: 'Qualidade'},
               {valor: "PCP", descri: 'PCP'},
               {valor: "Produção", descri: 'Produção'},
+              {valor: "Financeiro", descri: 'Financeiro'},
+              {valor: "Comercial", descri: 'Comercial'},
+              {valor: "Logística", descri: 'Logística'},
+              {valor: "Diretoria", descri: 'Diretoria'},
+              {valor: "Controladoria", descri: 'Controladoria'},
           ];
       },
   },
@@ -292,10 +303,15 @@ let config = {
   },
   async created(){
     try {
-      let config = {
-        headers: {
-          'Authorization': document.cookie.replace('jwt=', ''),
-        }
+      function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(';').shift();
+      }
+      const config = {
+          headers: {
+          'Authorization': getCookie('jwt'),
+          }
       }
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/get_all`, config)
       this.usuarios = response.data

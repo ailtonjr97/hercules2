@@ -2,23 +2,14 @@
 <div id="cabecalho">
     <div class="row"  style="width: 99.8%; margin-left: 0.2%; height: 100vh;">
       <div class="col-md-6 offset-md-3" style="width: 40%; margin-left: 30%;">
-        <form v-on:submit.prevent="submit">
         <div class="card my-5" style="margin-top: 29% !important; ">
           <span class="card-body cardbody-color p-lg-5">
-            <div class="mb-3">
-              <input type="email" class="form-control" id="Username" aria-describedby="emailHelp" placeholder="Email" name="email" v-model="form.email">
-            </div>
-            <div class="mb-3">
-              <input type="password" class="form-control" id="password" placeholder="Senha" v-model="form.password" name="password">
-            </div>
             <div class="text-center">
-              <button type="submit" class="btn btn-color px-5 mb-2 w-100">Login</button>
+              <button @click="redireciona()" class="btn btn-color px-5 mb-2 w-100">Login</button>
               <div id="loading" v-if="logador" style="margin-bottom: 50%;"></div>
             </div>
-            <h5 style="text-align: center;" class="mt-2">Favor pedir acesso por Spark.</h5>
           </span>
         </div>
-      </form>
       </div>
     </div>
   </div>
@@ -50,6 +41,9 @@ export default{
         }
     },
     methods: {
+        async redireciona(){
+          window.location.href = `http://aplicacao.fibracem.com/home`;
+        },
         close(){
           this.error = false
         },
