@@ -21,8 +21,8 @@
             <th>Filial</th>
             <th>Pedido</th>
             <th>Data de Entrega</th>
-            <th>Separado CD</th>
             <th>Liberado Comercial</th>
+            <th>Separado CD</th>
             <th>Liberado Faturamento</th>
             <th>Faturado</th>
             <th>Liberado Expedição</th>
@@ -53,7 +53,7 @@
                                             <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
                                             <td>{{ iten.C6_QTDVEN }}</td>
                                             <td>{{ iten.C6_DESCRI }}</td>
-                                            <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD ? true: false" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event)"></td>
+                                            <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD ? true: false" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event)" :disabled="!api.C5_XLIBCOM"></td>
                                             <td>{{ iten.C6_XNSEPCD }}</td>
                                             <td>{{ iten.C6_XHSEPCD }}</td>
                                         </tr>
@@ -68,17 +68,17 @@
                 <td>{{ api.C5_NUM}}</td>
                 <td>{{ api.C5_FECENT}}</td>
                 <td>
+                    <input class="mt-4" @click="marcaLibCom(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBFAT, $event)" type="checkbox" name="liberado_comercial" id="liberado_comercial" :checked="api.C5_XLIBCOM ? true : false"><br>
+                    {{ api.C5_XNLIBCO  }}<br>
+                    {{ api.C5_XHLIBCO }}
+                </td>
+                <td>
                     <input class="mt-4" @click="$event.preventDefault()" type="checkbox" name="separado_cd" id="separado_cd" :checked="api.C5_XSEPCD ? true : false"><br>
                     {{ api.C5_XNSEPCD  }}<br>
                     {{ api.C5_XHSEPCD }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaLibCom(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBFAT, $event)" type="checkbox" name="liberado_comercial" id="liberado_comercial" :checked="api.C5_XLIBCOM ? true : false" :disabled="!api.C5_XSEPCD"><br>
-                    {{ api.C5_XNLIBCO  }}<br>
-                    {{ api.C5_XHLIBCO }}
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT ? true : false" :disabled="!api.C5_XLIBCOM"><br>
+                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT ? true : false" :disabled="!api.C5_XSEPCD"><br>
                     {{ api.C5_XNLIBFA  }}<br>
                     {{ api.C5_XHLIBFA }}
                 </td>

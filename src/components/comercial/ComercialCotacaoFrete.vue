@@ -7,20 +7,22 @@
             <button class="button-8 mb-2" @click="novaCotacao()" v-if="setor == 'Comercial'">Nova Cotação</button>
             <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button class="button-8 mb-2" @click="showAllRev()">Mostrar todas revisões</button>
-            <!-- <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button> -->
+            <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating :placeholder="'Pedido:'" :id="'pedido'" :type="'text'" v-model="pedido" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results)"></form-floating>
-        <form-floating :placeholder="'Pedido todas revisões:'" :id="'pedido'" :type="'text'" v-if="pedidoAllRev" v-model="pedido" v-on:keyup.enter="pesquisaAllRev(pedido, cotador_id, results)"></form-floating>
-        <form-floating :placeholder="'Resultados:'" :id="'resultado'" :type="'number'" v-model="results" v-on:keyup.enter="pesquisa(pedido, cotador_id, results)"></form-floating>
+        <form-floating :placeholder="'Orçamento:'" :id="'pedido'" :type="'text'" v-model="pedido" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor)"></form-floating>
+        <form-floating :placeholder="'Vendedor:'" :id="'vendedor'" :type="'text'" v-model="vendedor" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor)"></form-floating>
+        <form-floating :placeholder="'Orçamento todas revisões:'" :id="'pedido'" :type="'text'" v-if="pedidoAllRev" v-model="pedido" v-on:keyup.enter="pesquisaAllRev(pedido, cotador_id, results, vendedor)"></form-floating>
+        <form-floating :placeholder="'Resultados:'" :id="'resultado'" :type="'number'" v-model="results" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor)"></form-floating>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
         <thead>
             <tr style="height: 25px">
             <th>ID</th>
-            <th>Pedido</th>
+            <th>Filial</th>
+            <th>Nº Orçamento</th>
             <th>Cliente</th>
             <th>Valor</th>
             <th>Vendedor</th>
@@ -30,7 +32,7 @@
             <th>Revisão</th>
             <th>Valor</th>
             <th>Transportadora</th>
-            <th>Cotação</th>
+            <th>Cotação Transp.</th>
             <th>Prazo</th>
             <th>Cotador</th>
             <th>Ações</th>
@@ -42,14 +44,20 @@
                 <p>{{ resposta.id }}</p>
             </td>
             <td>
+                <p>{{ resposta.filial }}</p>
+            </td>
+            <td>
                 <p>{{ resposta.pedido }}</p>
             </td>
             <td>
                 <button title="Editar" class="button-8" @click="openClienteModal(resposta.cliente)">{{ resposta.cliente }}</button>
             </td>
             <td>
-                <p>{{ resposta.valor_pedido }}</p>
+                <p>CONSULTAR TOTVS</p>
             </td>
+<!--             <td>
+                <p>{{ resposta.valor_pedido }}</p>
+            </td> -->
             <td>
                 <p>{{ resposta.vendedor }}</p>
             </td>
@@ -84,7 +92,8 @@
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-evenly">
                         <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
-                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora)"><i style="font-size: 14px;" class="fa-solid fa-check"></i></button></div>
+                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-check"></i></button></div>
+                        <div><button title="Arquivar" class="button-8" v-if="resposta.arquivar != 0" @click="arquivaFreteCot(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-box-archive"></i></button></div>
                         <div><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido)"><i style="font-size: 14px;" class="fa-solid fa-list"></i></button></div>
                     </div>
                 </div>
@@ -239,6 +248,9 @@
             <div class="col">
                 <form-floating :placeholder="'Nome:'" :id="'nome'" :type="'text'" v-model="cliente.nome" readonly></form-floating><br>
             </div>
+            <div class="col-sm-2">
+                <form-floating :placeholder="'CNPJ:'" :id="'cnpj'" :type="'text'" v-model="cliente.cgc" readonly></form-floating><br>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-4">
@@ -301,6 +313,7 @@ export default{
     },
     data(){
         return{
+            vendedor: '',
             filial: '',
             setor: '',
             pedidoAllRev: false,
@@ -349,10 +362,20 @@ export default{
         },
     },
     methods: {
-        async updateFreteCot(numped, id, valor, transp){
+        async arquivaFreteCot(id){
             try {
                 this.carregando = true;
-                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}`, config);
+                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/arquiva-frete`, [id], config);
+                this.refresh()
+            } catch (error) {
+                this.carregando = false;
+                alert("Erro ao realizar ação. Favor tentar novamente mais tarde.")
+            }
+        },
+        async updateFreteCot(numped, id, valor, transp, revisao){
+            try {
+                this.carregando = true;
+                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}&revisao=${revisao}`, config);
                 this.popup = true;
                 setTimeout(()=>{
                     this.popup = false;
@@ -385,7 +408,6 @@ export default{
                 this.carregandoinfo = true;
                 this.clienteModal = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${numped}`, config);
-                console.log(response.data)
                 this.cliente = response.data
                 this.carregandoinfo = false;
             } catch (error) {
@@ -429,7 +451,7 @@ export default{
             try {
                 this.carregandoinfo = true;
                 if(numped && filial){
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/sck/${numped}`, config);
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/sck/${numped}/${filial}`, config);
                     if(response){
                         const itens = []
                         response.data.objects.forEach(element => {
@@ -518,7 +540,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -552,7 +574,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -586,7 +608,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -619,7 +641,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': document.cookie,
+                        'Authorization': getCookie('jwt'),
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -644,10 +666,10 @@ export default{
                 this.carregando = false;
             }
         },
-        async pesquisa(pedido, cotador_id, results){
+        async pesquisa(pedido, cotador_id, results, vendedor){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}`, config);
                 this.respostas = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
@@ -656,10 +678,10 @@ export default{
                 this.carregando = false;
             }
         },
-        async pesquisaAllRev(pedido, cotador_id, results){
+        async pesquisaAllRev(pedido, cotador_id, results, vendedor){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete-semrev/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete-semrev/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}`, config);
                 this.respostas = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
