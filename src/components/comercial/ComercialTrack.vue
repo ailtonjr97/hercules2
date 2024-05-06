@@ -20,6 +20,7 @@
             <th>ID</th>
             <th>Filial</th>
             <th>Pedido</th>
+            <th>Cliente</th>
             <th>Data de Entrega</th>
             <th>Liberado Comercial</th>
             <th>Separado CD</th>
@@ -66,6 +67,9 @@
                 <td>{{ api.R_E_C_N_O_ }}</td>
                 <td>{{ api.C5_FILIAL}}</td>
                 <td>{{ api.C5_NUM}}</td>
+                <td>
+                    <button title="Editar" class="button-8" @click="openClienteModal(api.C5_CLIENTE)">{{ api.C5_CLIENTE }}</button>
+                </td>                
                 <td>{{ api.C5_FECENT}}</td>
                 <td>
                     <input class="mt-4" @click="marcaLibCom(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBFAT, $event)" type="checkbox" name="liberado_comercial" id="liberado_comercial" :checked="api.C5_XLIBCOM ? true : false"><br>
@@ -111,6 +115,45 @@
     </template>
     <template v-slot:buttons v-if="!carregandoinfo">
         <button class="button-8 mt-2" @click="this.mostraErro = false">Fechar</button>
+    </template>
+</modal>
+
+<modal v-if="clienteModal" :title="`Cliente:`">
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="row">
+            <div class="col-sm-2">
+                <form-floating :placeholder="'Código:'" :id="'cod'" :type="'text'" v-model="cliente.cod" readonly></form-floating><br>
+            </div>
+            <div class="col">
+                <form-floating :placeholder="'Nome:'" :id="'nome'" :type="'text'" v-model="cliente.nome" readonly></form-floating><br>
+            </div>
+            <div class="col-sm-2">
+                <form-floating :placeholder="'CNPJ:'" :id="'cnpj'" :type="'text'" v-model="cliente.cgc" readonly></form-floating><br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <form-floating :placeholder="'Endereço:'" :id="'end'" :type="'text'" v-model="cliente.end" readonly></form-floating><br>
+            </div>
+            <div class="col-sm-2">
+                <form-floating :placeholder="'Código Município:'" :id="'cod_mun'" :type="'text'" v-model="cliente.cod_mun" readonly></form-floating><br>
+            </div>
+            <div class="col-md-3">
+                <form-floating :placeholder="'Município:'" :id="'mun'" :type="'text'" v-model="cliente.mun" readonly></form-floating><br>
+            </div>
+            <div class="col-sm-1">
+                <form-floating :placeholder="'Estado:'" :id="'est'" :type="'text'" v-model="cliente.est" readonly></form-floating><br>
+            </div>
+            <div class="col-sm-2">
+                <form-floating :placeholder="'CEP:'" :id="'cep'" :type="'text'" v-model="cliente.cep" readonly></form-floating><br>
+            </div>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8 mt-2" @click="fecharClienteModal()">Fechar</button>
     </template>
 </modal>
 
@@ -172,6 +215,8 @@ data(){
         resultados: 0,
         carregando: true,
         apis: [],
+        clienteModal: false,
+        cliente: [],     
     }
 },
 methods: {
@@ -380,7 +425,25 @@ methods: {
             this.mostraModal("Falha ao recarregar página.")
         }
     },
+async fecharClienteModal(){
+            this.clienteModal = false;
+            this.cliente = [];
+        },
+async openClienteModal(numped){
+            try {
+                this.carregandoinfo = true;
+                this.clienteModal = true;
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${numped}`, config);
+                this.cliente = response.data
+                this.carregandoinfo = false;
+            } catch (error) {
+                this.carregandoinfo = false;
+                alert('Falha ao buscar informações. Favor tentar novamente mais tarde.')
+            }
+        },
 },
+
+
 async created(){
     try {
         function getCookie(name) {

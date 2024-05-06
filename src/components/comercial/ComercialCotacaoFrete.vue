@@ -53,11 +53,8 @@
                 <button title="Editar" class="button-8" @click="openClienteModal(resposta.cliente)">{{ resposta.cliente }}</button>
             </td>
             <td>
-                <p>CONSULTAR TOTVS</p>
+                <p>{{ resposta.valor_pedido.toLocaleString('pt-BR')}}</p>
             </td>
-<!--             <td>
-                <p>{{ resposta.valor_pedido }}</p>
-            </td> -->
             <td>
                 <p>{{ resposta.vendedor }}</p>
             </td>
