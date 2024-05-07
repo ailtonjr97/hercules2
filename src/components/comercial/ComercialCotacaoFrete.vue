@@ -30,7 +30,7 @@
             <th>Data Solicitação</th>
             <th>Data Resposta</th>
             <th>Revisão</th>
-            <th>Valor</th>
+            <th>Valor Frete</th>
             <th>Transportadora</th>
             <th>Cotação Transp.</th>
             <th>Prazo</th>
@@ -274,6 +274,21 @@
 </modal>
 
 </template>
+
+<style>
+table {
+	 table-layout: fixed;
+}
+ table th {
+    resize: horizontal;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+table td{
+	overflow: hidden;
+}
+</style>
     
 <script>
 import { jwtDecode } from "jwt-decode";
