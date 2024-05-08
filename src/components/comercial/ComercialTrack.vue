@@ -8,10 +8,11 @@
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"   :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'" :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor" :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'" :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="dataEnt"  :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="limit"    :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'" :type="'number'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="filialFiltro" :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"       :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"     :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="dataEnt"      :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="limit"        :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
@@ -202,6 +203,7 @@ components: {
 },
 data(){
     return{
+        filialFiltro: '',
         vendedor: '',
         dataEnt: '',
         mostraErro: false,
@@ -245,7 +247,7 @@ methods: {
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=${this.limit}&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=${this.limit}&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
@@ -421,7 +423,7 @@ methods: {
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
@@ -463,7 +465,7 @@ async created(){
             }
         }
         const decoded = jwtDecode(getCookie('jwt'));
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=`, config);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=`, config);
         const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         this.apis = response.data;
         this.setor = logado.data[0].setor;
