@@ -50,7 +50,7 @@
                 <p>{{ resposta.pedido }}</p>
             </td>
             <td>
-                <button title="Editar" class="button-8" @click="openClienteModal(resposta.cliente)">{{ resposta.cliente }}</button>
+                <button title="Editar" class="button-8" @click="openClienteModal(resposta.cliente, resposta.loja_cliente)">{{ resposta.cliente }}</button>
             </td>
             <td>
                 <p>{{ resposta.valor_pedido.toLocaleString('pt-BR')}}</p>
@@ -240,30 +240,30 @@
     <div v-if="!carregandoinfo">
         <div class="row">
             <div class="col-sm-2">
-                <form-floating :placeholder="'Código:'" :id="'cod'" :type="'text'" v-model="cliente.cod" readonly></form-floating><br>
+                <form-floating :placeholder="'Código:'" :id="'cod'" :type="'text'" v-model="cliente.A1_COD" readonly></form-floating><br>
             </div>
             <div class="col">
-                <form-floating :placeholder="'Nome:'" :id="'nome'" :type="'text'" v-model="cliente.nome" readonly></form-floating><br>
+                <form-floating :placeholder="'Nome:'" :id="'nome'" :type="'text'" v-model="cliente.A1_NOME" readonly></form-floating><br>
             </div>
             <div class="col-sm-2">
-                <form-floating :placeholder="'CNPJ:'" :id="'cnpj'" :type="'text'" v-model="cliente.cgc" readonly></form-floating><br>
+                <form-floating :placeholder="'CNPJ:'" :id="'cnpj'" :type="'text'" v-model="cliente.A1_CGC" readonly></form-floating><br>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <form-floating :placeholder="'Endereço:'" :id="'end'" :type="'text'" v-model="cliente.end" readonly></form-floating><br>
+                <form-floating :placeholder="'Endereço:'" :id="'end'" :type="'text'" v-model="cliente.A1_END" readonly></form-floating><br>
             </div>
             <div class="col-sm-2">
-                <form-floating :placeholder="'Código Município:'" :id="'cod_mun'" :type="'text'" v-model="cliente.cod_mun" readonly></form-floating><br>
+                <form-floating :placeholder="'Código Município:'" :id="'cod_mun'" :type="'text'" v-model="cliente.A1_COD_MUN" readonly></form-floating><br>
             </div>
             <div class="col-md-3">
-                <form-floating :placeholder="'Município:'" :id="'mun'" :type="'text'" v-model="cliente.mun" readonly></form-floating><br>
+                <form-floating :placeholder="'Município:'" :id="'mun'" :type="'text'" v-model="cliente.A1_MUN" readonly></form-floating><br>
             </div>
             <div class="col-sm-1">
-                <form-floating :placeholder="'Estado:'" :id="'est'" :type="'text'" v-model="cliente.est" readonly></form-floating><br>
+                <form-floating :placeholder="'Estado:'" :id="'est'" :type="'text'" v-model="cliente.A1_EST" readonly></form-floating><br>
             </div>
             <div class="col-sm-2">
-                <form-floating :placeholder="'CEP:'" :id="'cep'" :type="'text'" v-model="cliente.cep" readonly></form-floating><br>
+                <form-floating :placeholder="'CEP:'" :id="'cep'" :type="'text'" v-model="cliente.A1_CEP" readonly></form-floating><br>
             </div>
         </div>
     </div>
@@ -415,12 +415,12 @@ export default{
             this.clienteModal = false;
             this.cliente = [];
         },
-        async openClienteModal(numped){
+        async openClienteModal(numped, loja){
             try {
                 this.carregandoinfo = true;
                 this.clienteModal = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${numped}`, config);
-                this.cliente = response.data
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${numped}/${loja}`, config);
+                this.cliente = response.data.objects[0]
                 this.carregandoinfo = false;
             } catch (error) {
                 this.carregandoinfo = false;
