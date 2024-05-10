@@ -8,6 +8,7 @@
             <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button class="button-8 mb-2" @click="showAllRev()">Mostrar todas revisões</button>
             <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
+            <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivados</router-link>
         </template>
     </table-top>
     <div class="row mb-2">
@@ -20,7 +21,7 @@
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
         <thead>
-            <tr style="height: 25px">
+            <tr style="height: 25px;">
             <th>Ações</th>
             <th>ID</th>
             <th>Filial</th>
@@ -281,6 +282,7 @@ table {
 	 table-layout: fixed;
 }
  table th {
+    z-index: 1;
     resize: horizontal;
 	overflow: hidden;
 	white-space: nowrap;
@@ -389,13 +391,14 @@ export default{
         async updateFreteCot(numped, id, valor, transp, revisao){
             try {
                 this.carregando = true;
-                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}&revisao=${revisao}&cod_cot=${cod_cot}&filial=${filial}`, config);
+                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}&revisao=${revisao}`, config);
                 this.popup = true;
                 setTimeout(()=>{
                     this.popup = false;
                 }, 2000);
                 this.carregando = false;
             } catch (error) {
+                console.log(error)
                 this.carregando = false;
                 alert("Erro ao realizar ação. Favor tentar novamente mais tarde.")
             }
