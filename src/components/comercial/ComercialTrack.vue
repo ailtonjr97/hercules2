@@ -58,7 +58,7 @@
                                             <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
                                             <td>{{ iten.C6_QTDVEN }}</td>
                                             <td>{{ iten.C6_DESCRI }}</td>
-                                            <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD ? true: false" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event)"></td>
+                                            <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD ? true: false" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, api.C5_VEND1, api.C5_CLIENTE)"></td>
                                             <td>{{ iten.C6_XNSEPCD }}</td>
                                             <td>{{ iten.C6_XHSEPCD }}</td>
                                         </tr>
@@ -388,7 +388,7 @@ methods: {
             e.preventDefault();
         }
     },
-    async marcaSepC6(filial, num, item, produto, event){
+    async marcaSepC6(filial, num, item, produto, event, vendedor, cliente){
         try {
             if(!event.target.checked){
                 event.preventDefault()
@@ -397,7 +397,7 @@ methods: {
                 event.preventDefault()
             }else{
                 this.carregando = true;
-                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}`, config);
+                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}`, config);
                 this.refresh();
                 this.popup = true;
                 setTimeout(()=>{

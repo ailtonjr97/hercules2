@@ -11,15 +11,17 @@
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating :placeholder="'Orçamento:'" :id="'pedido'" :type="'text'" v-model="pedido" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor)"></form-floating>
-        <form-floating :placeholder="'Vendedor:'" :id="'vendedor'" :type="'text'" v-model="vendedor" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor)"></form-floating>
-        <form-floating :placeholder="'Orçamento todas revisões:'" :id="'pedido'" :type="'text'" v-if="pedidoAllRev" v-model="pedido" v-on:keyup.enter="pesquisaAllRev(pedido, cotador_id, results, vendedor)"></form-floating>
-        <form-floating :placeholder="'Resultados:'" :id="'resultado'" :type="'number'" v-model="results" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor)"></form-floating>
+        <form-floating :placeholder="'ID:'" :id="'id'" :type="'text'" v-model="identificador" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
+        <form-floating :placeholder="'Orçamento:'" :id="'pedido'" :type="'text'" v-model="pedido" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
+        <form-floating :placeholder="'Vendedor:'" :id="'vendedor'" :type="'text'" v-model="vendedor" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
+        <form-floating :placeholder="'Orçamento todas revisões:'" :id="'pedido'" :type="'text'" v-if="pedidoAllRev" v-model="pedido" v-on:keyup.enter="pesquisaAllRev(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
+        <form-floating :placeholder="'Resultados:'" :id="'resultado'" :type="'number'" v-model="results" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
         <thead>
             <tr style="height: 25px">
+            <th>Ações</th>
             <th>ID</th>
             <th>Filial</th>
             <th>Nº Orçamento</th>
@@ -35,11 +37,20 @@
             <th>Cotação Transp.</th>
             <th>Prazo</th>
             <th>Cotador</th>
-            <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="resposta in respostas" :key="resposta.id">
+            <td>
+                <div class="row" style="width: 80%; margin-left: 15%;">
+                    <div class="col d-flex justify-content-evenly">
+                        <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
+                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-check"></i></button></div>
+                        <div><button title="Arquivar" class="button-8" v-if="resposta.arquivar != 0" @click="arquivaFreteCot(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-box-archive"></i></button></div>
+                        <div><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-list"></i></button></div>
+                    </div>
+                </div>
+            </td>
             <td>
                 <p>{{ resposta.id }}</p>
             </td>
@@ -84,16 +95,6 @@
             </td>
             <td>
                 <p>{{ resposta.cotador }}</p>
-            </td>
-            <td>
-                <div class="row" style="width: 80%; margin-left: 15%;">
-                    <div class="col d-flex justify-content-evenly">
-                        <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
-                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-check"></i></button></div>
-                        <div><button title="Arquivar" class="button-8" v-if="resposta.arquivar != 0" @click="arquivaFreteCot(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-box-archive"></i></button></div>
-                        <div><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-list"></i></button></div>
-                    </div>
-                </div>
             </td>
             </tr>
         </tbody>
@@ -325,6 +326,7 @@ export default{
     },
     data(){
         return{
+            identificador: '',
             vendedor: '',
             filial: '',
             setor: '',
@@ -387,7 +389,7 @@ export default{
         async updateFreteCot(numped, id, valor, transp, revisao){
             try {
                 this.carregando = true;
-                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}&revisao=${revisao}`, config);
+                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}&revisao=${revisao}&cod_cot=${cod_cot}&filial=${filial}`, config);
                 this.popup = true;
                 setTimeout(()=>{
                     this.popup = false;
@@ -678,10 +680,10 @@ export default{
                 this.carregando = false;
             }
         },
-        async pesquisa(pedido, cotador_id, results, vendedor){
+        async pesquisa(pedido, cotador_id, results, vendedor, identificador){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}&identificador=${identificador}`, config);
                 this.respostas = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
@@ -693,7 +695,7 @@ export default{
         async pesquisaAllRev(pedido, cotador_id, results, vendedor){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete-semrev/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete-semrev/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}&identificador=${identificador}`, config);
                 this.respostas = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
