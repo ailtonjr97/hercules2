@@ -29,6 +29,7 @@ import EngenhariaMoldes from './components/engenharia/EngenhariaMoldes.vue';
 import EngenhariaMolde from './components/engenharia/EngenhariaMolde.vue';
 import ComercialLanding from './components/comercial/ComercialLanding.vue';
 import ComercialCotacaoFrete from './components/comercial/ComercialCotacaoFrete.vue';
+import ComercialCotacaoFreteArquivados from './components/comercial/ComercialCotacaoFreteArquivados.vue';
 import ComercialTrack from './components/comercial/ComercialTrack.vue';
 
 const router = createRouter({
@@ -61,6 +62,7 @@ const router = createRouter({
       {path: '/engenharia/moldes/:id', component: EngenhariaMolde},
       {path: '/comercial', component: ComercialLanding},
       {path: '/comercial/cotacao-de-frete', component: ComercialCotacaoFrete},
+      {path: '/comercial/cotacao-de-frete-arquivadas', component: ComercialCotacaoFreteArquivados},
       {path: '/comercial/track-order', component: ComercialTrack},
       { path: '/:notFound(.*)', redirect: '/home' }
     ]

@@ -8,11 +8,21 @@
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="filialFiltro" :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"       :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"     :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="dataEnt"      :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="limit"        :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="filialFiltro" :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="pedido"       :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="vendedor"     :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="dataEnt"      :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="limit"        :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <input                      type="radio" name="filtro_radio" id="filtro_separado_cd"           @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')"><label for="filtro_separado_cd">Aguardando Separado CD</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_comercial"    @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'T', 'F')"><label for="filtro_liberado_comercial">Aguardando Liberado Comercial</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_faturamento"  @click="pesquisa('C5_XLIBCOM', 'C5_XLIBFAT', 'T', 'F')"><label for="filtro_liberado_faturamento">Aguardando Liberado Faturamento</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_faturado"              @click="pesquisa('C5_XLIBFAT', 'C5_XFATURD', 'T', 'F')"><label for="filtro_faturado">Aguardando Faturado</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_expedicao"    @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_expedido"              @click="pesquisa('C5_XLIBEXP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
+        </div>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
@@ -233,7 +243,7 @@ methods: {
         this.textoPad = erro;
         this.carregando = false;
     },
-    async pesquisa(){
+    async pesquisa(pCampo, sCampo, pValor, sValor){
         try {
             this.carregando = true;
             function getCookie(name) {
@@ -247,7 +257,7 @@ methods: {
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=${this.limit}&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=${this.limit}&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&pcampo=${pCampo}&scampo=${sCampo}&pvalor=${pValor}&svalor=${sValor}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
@@ -465,7 +475,7 @@ async created(){
             }
         }
         const decoded = jwtDecode(getCookie('jwt'));
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=`, config);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=&pcampo=&scampo=&pvalor=&svalor=`, config);
         const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         this.apis = response.data;
         this.setor = logado.data[0].setor;
@@ -481,7 +491,7 @@ async created(){
 </script>
 
 <style>
-.esconder{
-    display: none;
-}
+    .separa-radio{
+        margin-left: 2%;
+    }
 </style>

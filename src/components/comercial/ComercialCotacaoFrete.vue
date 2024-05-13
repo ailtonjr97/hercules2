@@ -6,9 +6,8 @@
         <template v-slot:tableButtons>
             <button class="button-8 mb-2" @click="novaCotacao()" v-if="setor == 'Comercial'">Nova Cotação</button>
             <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
-            <button class="button-8 mb-2" @click="showAllRev()">Mostrar todas revisões</button>
             <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
-            <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivados</router-link>
+            <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivadas</router-link>
         </template>
     </table-top>
     <div class="row mb-2">
@@ -29,7 +28,6 @@
             <th>Cliente</th>
             <th>Valor</th>
             <th>Vendedor</th>
-            <th>Status</th>
             <th>Data Solicitação</th>
             <th>Data Resposta</th>
             <th>Revisão</th>
@@ -69,9 +67,6 @@
             </td>
             <td>
                 <p>{{ resposta.vendedor }}</p>
-            </td>
-            <td>
-                <p>{{ resposta.status }}</p>
             </td>
             <td>
                 <p>{{ resposta.data_solicit }}</p>

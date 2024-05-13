@@ -34,7 +34,7 @@
 
         </div>
     </div>
-    <h6 style="width: 5%; color: #fff; text-align: center; margin-left: 150px;" v-if="mostraStatus">TOTVS INDISPONÍVEL</h6>
+    <h6 style="width: 5%; color: #fff; text-align: center; margin-left: 150px;" v-if="mostraStatus">SISTEMA INDISPONÍVEL</h6>
   </div>
 </nav>
 
