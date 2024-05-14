@@ -8,20 +8,25 @@
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="filialFiltro" :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="pedido"       :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="vendedor"     :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="dataEnt"      :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')" v-model="limit"        :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="filialFiltro" :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"       :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"     :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="dataEnt"      :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="limit"        :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
     </div>
     <div class="row mb-2">
         <div class="col">
-            <input                      type="radio" name="filtro_radio" id="filtro_separado_cd"           @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')"><label for="filtro_separado_cd">Aguardando Separado CD</label>
+            <input                      type="radio" name="filtro_radio" id="filtro_separado_cd"           @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')"><label for="filtro_separado_cd">Aguard. Separado CD</label>
             <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_comercial"    @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'T', 'F')"><label for="filtro_liberado_comercial">Aguardando Liberado Comercial</label>
             <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_faturamento"  @click="pesquisa('C5_XLIBCOM', 'C5_XLIBFAT', 'T', 'F')"><label for="filtro_liberado_faturamento">Aguardando Liberado Faturamento</label>
             <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_faturado"              @click="pesquisa('C5_XLIBFAT', 'C5_XFATURD', 'T', 'F')"><label for="filtro_faturado">Aguardando Faturado</label>
             <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_expedicao"    @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_expedido"              @click="pesquisa('C5_XLIBEXP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <input                      type="radio" name="filtro_radio" id="filtro_expedido" @click="pesquisa('C5_XLIBEXP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_todos"    @click="pesquisa()" checked><label for="filtro_todos">Todos</label>
         </div>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
@@ -245,6 +250,9 @@ methods: {
     },
     async pesquisa(pCampo, sCampo, pValor, sValor){
         try {
+            if(!pCampo || pCampo == 'undefined'){
+                document.getElementById('filtro_todos').checked = true;
+            }
             this.carregando = true;
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -264,6 +272,7 @@ methods: {
             this.resultados = response.data.length;
             this.carregando = false;
         } catch (error) {
+            console.log(error)
             if(error.response.status == 404){
                 this.mostraModal("Nenhum resultado encontrado.");
             }else{
