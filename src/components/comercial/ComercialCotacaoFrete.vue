@@ -8,6 +8,7 @@
             <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
             <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivadas</router-link>
+            <button class="button-8 mb-2" @click="abrirModalFob">Liberar FOB</button>
         </template>
     </table-top>
     <div class="row mb-2">
@@ -270,6 +271,24 @@
     </template>
 </modal>
 
+<modal v-if="abreModalFob" :title="`Transformar orçamento em FOB:`">
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="row">
+            <h4>O tipo de frete do orçamento irá virar FOB e o valor do frete será zerado.</h4>
+            <select-floating :placeholder="'Filial'" :id="'user-setor'" :options="optionsFiliais" v-model="filial"></select-floating>
+            <form-floating :placeholder="'Número do Orçamento:'" :id="'numped'" :type="'number'" v-model="numped" ></form-floating><br>
+            <p style="color: red;" v-if="alertaPedido">Orçamento não encontrado no Protheus. Verificar se esse orçamento pertence a filial.</p>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8 mt-2" @click="fecharModalFob()">Fechar</button>
+        <button class="button-8 mt-2" @click="salvarModalFob(numped, filial)">Salvar</button>
+    </template>
+</modal>
+
 </template>
 
 <style>
@@ -323,6 +342,8 @@ export default{
     },
     data(){
         return{
+            nomeLogado: '',
+            abreModalFob: false,
             identificador: '',
             vendedor: '',
             filial: '',
@@ -373,6 +394,42 @@ export default{
         },
     },
     methods: {
+        async salvarModalFob(numped, filial){
+            try {
+                this.carregandoinfo = true;
+                if(numped && filial){
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/vira-fob?numped=${numped}&filial=${filial}&logado=${this.nomeLogado}`, config);
+                    this.carregandoinfo = false;
+                    this.fecharModalFob();
+                    this.popup = true;
+                    setTimeout(()=>{
+                        this.popup = false;
+                    }, 2000);
+                }else{
+                    alert("Favor preencher o número do pedido e filial.");
+                    this.carregandoinfo = false;
+                }
+            } catch (error) {
+                alert("Pedido não encontrado.")
+                this.carregandoinfo = false;
+            }
+        },
+        async abrirModalFob(){
+            try {
+                this.abreModalFob = true;
+            } catch (error) {
+                alert("Erro ao abrir modal. Favor tentar novamente mais tarde.")
+            }
+        },
+        async fecharModalFob(){
+            try {
+                this.abreModalFob = false;
+                this.filial = '';
+                this.numped = '';
+            } catch (error) {
+                alert("Erro ao fechar modal. Favor tentar novamente mais tarde.")
+            }
+        },
         async arquivaFreteCot(id){
             try {
                 this.carregando = true;
@@ -393,7 +450,6 @@ export default{
                 }, 2000);
                 this.carregando = false;
             } catch (error) {
-                console.log(error)
                 this.carregando = false;
                 alert("Erro ao realizar ação. Favor tentar novamente mais tarde.")
             }
@@ -735,6 +791,7 @@ export default{
                 this.respostas = response.data;
                 const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
                 this.setor = logado.data[0].setor;
+                this.nomeLogado = logado.data[0].name;
                 this.resultados = response.data.length;
                 this.fullLoad = true;
                 this.carregando = false;
