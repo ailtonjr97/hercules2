@@ -8,7 +8,7 @@
             <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
             <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivadas</router-link>
-            <button class="button-8 mb-2" @click="abrirModalFob">Liberar CIF</button>
+            <button class="button-8 mb-2" @click="abrirModalFob">Liberar FOB</button>
         </template>
     </table-top>
     <div class="row mb-2">
@@ -271,12 +271,12 @@
     </template>
 </modal>
 
-<modal v-if="abreModalFob" :title="`Transformar orçamento em CIF:`">
+<modal v-if="abreModalFob" :title="`Transformar orçamento em FOB:`">
     <template v-slot:body>
     <loading v-if="carregandoinfo"></loading>
     <div v-if="!carregandoinfo">
         <div class="row">
-            <h4>O tipo de frete do orçamento irá virar CIF e o valor do frete será zerado.</h4>
+            <h4>O tipo de frete do orçamento irá virar FOB e o valor do frete será zerado.</h4>
             <select-floating :placeholder="'Filial'" :id="'user-setor'" :options="optionsFiliais" v-model="filial"></select-floating>
             <form-floating :placeholder="'Número do Orçamento:'" :id="'numped'" :type="'number'" v-model="numped" ></form-floating><br>
             <p style="color: red;" v-if="alertaPedido">Orçamento não encontrado no Protheus. Verificar se esse orçamento pertence a filial.</p>
