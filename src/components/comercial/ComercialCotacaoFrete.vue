@@ -9,6 +9,7 @@
             <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
             <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivadas</router-link>
             <button class="button-8 mb-2" @click="abrirModalFob">Liberar FOB</button>
+            <button class="button-8 mb-2" v-if="setor == 'Controladoria'" @click="abrirModalCif">Liberar CIF</button>
         </template>
     </table-top>
     <div class="row mb-2">
@@ -289,6 +290,24 @@
     </template>
 </modal>
 
+<modal v-if="abreModalCif" :title="`Transformar orçamento em CIF:`">
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="row">
+            <h4>O tipo de frete do orçamento irá virar CIF e o valor do frete será zerado.</h4>
+            <select-floating :placeholder="'Filial'" :id="'user-setor'" :options="optionsFiliais" v-model="filial"></select-floating>
+            <form-floating :placeholder="'Número do Orçamento:'" :id="'numped'" :type="'number'" v-model="numped" ></form-floating><br>
+            <p style="color: red;" v-if="alertaPedido">Orçamento não encontrado no Protheus. Verificar se esse orçamento pertence a filial.</p>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8 mt-2" @click="fecharModalCif()">Fechar</button>
+        <button class="button-8 mt-2" @click="salvarModalCif(numped, filial)">Salvar</button>
+    </template>
+</modal>
+
 </template>
 
 <style>
@@ -342,6 +361,7 @@ export default{
     },
     data(){
         return{
+            abreModalCif: false,
             nomeLogado: '',
             abreModalFob: false,
             identificador: '',
@@ -394,6 +414,42 @@ export default{
         },
     },
     methods: {
+        async salvarModalCif(numped, filial){
+            try {
+                this.carregandoinfo = true;
+                if(numped && filial){
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/vira-cif?numped=${numped}&filial=${filial}&logado=${this.nomeLogado}`, config);
+                    this.carregandoinfo = false;
+                    this.fecharModalCif();
+                    this.popup = true;
+                    setTimeout(()=>{
+                        this.popup = false;
+                    }, 2000);
+                }else{
+                    alert("Favor preencher o número do pedido e filial.");
+                    this.carregandoinfo = false;
+                }
+            } catch (error) {
+                alert("Pedido não encontrado.")
+                this.carregandoinfo = false;
+            }
+        },
+        async fecharModalCif(){
+            try {
+                this.abreModalCif = false;
+                this.filial = '';
+                this.numped = '';
+            } catch (error) {
+                alert("Erro ao fechar modal. Favor tentar novamente mais tarde.")
+            }
+        },
+        async abrirModalCif(){
+            try {
+                this.abreModalCif = true;
+            } catch (error) {
+                alert("Erro ao abrir modal. Favor tentar novamente mais tarde.")
+            }
+        },
         async salvarModalFob(numped, filial){
             try {
                 this.carregandoinfo = true;
