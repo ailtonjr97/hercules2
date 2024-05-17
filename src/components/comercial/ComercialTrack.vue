@@ -289,8 +289,10 @@ methods: {
                 this.carregando = true;
                 if(e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XEXPEDI/T/${this.nome}/C5_XNEXPED/C5_XHEXPED`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado Expedido do pedido ${num}, filial ${filial}.`], config);                    
                 }else if (!e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XEXPEDI/F/${this.nome}/C5_XNEXPED/C5_XHEXPED`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Expedido Expedicao do pedido ${num}, filial ${filial}.`], config);
                 }
                 this.refresh();
                 this.popup = true;
@@ -315,8 +317,10 @@ methods: {
                 this.carregando = true;
                 if(e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XLIBEXP/T/${this.nome}/C5_XNLIBEX/C5_XHLIBEX`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado Liberado Expedicao do pedido ${num}, filial ${filial}.`], config);
                 }else if (!e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XLIBEXP/F/${this.nome}/C5_XNLIBEX/C5_XHLIBEX`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Liberado Expedicao do pedido ${num}, filial ${filial}.`], config);
                 }
                 this.refresh();
                 this.popup = true;
@@ -341,8 +345,10 @@ methods: {
                 this.carregando = true;
                 if(e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XFATURD/T/${this.nome}/C5_XNFATUR/C5_XHFATUR`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado Faturado do pedido ${num}, filial ${filial}.`], config);
                 }else if (!e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XFATURD/F/${this.nome}/C5_XNFATUR/C5_XHFATUR`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Faturado do pedido ${num}, filial ${filial}.`], config);
                 }
                 this.refresh();
                 this.popup = true;
@@ -367,8 +373,10 @@ methods: {
                 this.carregando = true;
                 if(e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XLIBFAT/T/${this.nome}/C5_XNLIBFA/C5_XHLIBFA`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado Liberado Faturamento do pedido ${num}, filial ${filial}.`], config);
                 }else if (!e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XLIBFAT/F/${this.nome}/C5_XNLIBFA/C5_XHLIBFA`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Liberado Faturamento do pedido ${num}, filial ${filial}.`], config);
                 }
                 this.refresh();
                 this.popup = true;
@@ -393,8 +401,10 @@ methods: {
                 this.carregando = true;
                 if(e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XLIBCOM/T/${this.nome}/C5_XNLIBCO/C5_XHLIBCO`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado Liberado Comercial do pedido ${num}, filial ${filial}.`], config);
                 }else if (!e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XLIBCOM/F/${this.nome}/C5_XNLIBCO/C5_XHLIBCO`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Liberado Comercial do pedido ${num}, filial ${filial}.`], config);
                 }
                 this.refresh();
                 this.popup = true;
@@ -417,6 +427,7 @@ methods: {
             }else{
                 this.carregando = true;
                 await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}`, config);
+                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
                 this.refresh();
                 this.popup = true;
                 setTimeout(()=>{

@@ -23,6 +23,14 @@
                 </div>
             </div>
 
+            <div class="dropdown" style="margin-left: 20%;">
+                <i class="fa-solid fa-dollar" style="color: white; font-size: 20px; margin-top: 80%; cursor: pointer;" data-bs-toggle="dropdown"></i>
+                <div class="dropdown-menu">
+                    <h6 class="dropdown-header">Financeiro</h6>
+                    <router-link to="/financeiro/analise-de-credito" class="nav-link" style="padding: 0 8px;">Análise de Crédito</router-link>
+                </div>
+            </div>
+
             <div class="dropdown" style="margin-left: 25%;">
                 <i class="fa-solid fa-user" style="color: white; font-size: 20px; margin-top: 50%; cursor: pointer;" data-bs-toggle="dropdown"></i>
                 <div class="dropdown-menu">
@@ -94,7 +102,25 @@ export default{
             this.isAdmin = response.data[0].admin;
             this.name = response.data[0].name;
         } catch (error) {
-            console.log(error);
+            if(error.response.status == 401){
+                function deleteAllCookies() {
+                    const cookies = document.cookie.split(";");
+
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i];
+                        const eqPos = cookie.indexOf("=");
+                        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    }
+                }
+            deleteAllCookies();
+            function delete_cookie(name) {
+                document.cookie = name +'=; Path=/qualidade; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              }
+              delete_cookie('jwt')
+              window.location.href = 'http://intranet.fibracem.com/logout';
+            }
             this.mostraStatus = true;
         }
     }

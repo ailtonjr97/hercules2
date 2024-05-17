@@ -44,7 +44,7 @@
             <tr v-for="resposta in respostas" :key="resposta.id">
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
-                    <div class="col d-flex justify-content-evenly">
+                    <div class="col d-flex justify-content-start">
                         <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
                         <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-check"></i></button></div>
                         <div><button title="Arquivar" class="button-8" v-if="resposta.arquivar != 0" @click="arquivaFreteCot(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-box-archive"></i></button></div>
@@ -500,6 +500,7 @@ export default{
             try {
                 this.carregando = true;
                 await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}&revisao=${revisao}`, config);
+                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nomeLogado, `Escolhida cotação ${id}, do pedido ${numped}.`], config);
                 this.popup = true;
                 setTimeout(()=>{
                     this.popup = false;
@@ -587,6 +588,7 @@ export default{
                         this.fecharNovaCotacaoModal();
                         this.carregando = true;
                         this.refresh();
+
                     }
                 }else{
                     alert("Favor preencher o número do pedido e filial.");
