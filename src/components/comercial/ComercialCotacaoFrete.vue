@@ -62,7 +62,7 @@
                 <p>{{ resposta.pedido }}</p>
             </td>
             <td>
-                <button title="Editar" class="button-8" @click="openClienteModal(resposta.cliente, resposta.loja_cliente)">{{ resposta.cliente }}</button>
+                <button title="Ver Cliente" class="button-8" @click="openClienteModal(resposta.cliente, resposta.loja_cliente)">{{ resposta.cliente }}</button>
             </td>
             <td>
                 <p>{{ resposta.valor_pedido.toLocaleString('pt-BR')}}</p>
@@ -419,6 +419,7 @@ export default{
                 this.carregandoinfo = true;
                 if(numped && filial){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/vira-cif?numped=${numped}&filial=${filial}&logado=${this.nomeLogado}`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nomeLogado, `Alterado orçamento ${numped}, filial ${filial} para CIF e zerado valor de frete.`], config);
                     this.carregandoinfo = false;
                     this.fecharModalCif();
                     this.popup = true;
@@ -455,6 +456,7 @@ export default{
                 this.carregandoinfo = true;
                 if(numped && filial){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/vira-fob?numped=${numped}&filial=${filial}&logado=${this.nomeLogado}`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nomeLogado, `Alterado orçamento ${numped}, filial ${filial} para FOB e zerado valor de frete.`], config);
                     this.carregandoinfo = false;
                     this.fecharModalFob();
                     this.popup = true;
@@ -500,7 +502,7 @@ export default{
             try {
                 this.carregando = true;
                 await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/update-frete-cot?cj_num=${numped}&cj_cst_fts=${id}&valor=${valor}&transp=${transp}&revisao=${revisao}`, config);
-                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nomeLogado, `Escolhida cotação ${id}, do pedido ${numped}.`], config);
+                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nomeLogado, `Escolhida cotação ${id}, do orçamento ${numped}.`], config);
                 this.popup = true;
                 setTimeout(()=>{
                     this.popup = false;

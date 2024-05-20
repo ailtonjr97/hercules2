@@ -1,6 +1,6 @@
 <template>
   <!-- Modal -->
-  <div class="modal mb-2" id="modal-name" :style="[close ? {'display': 'none'} : {'display': 'block'}]">
+  <div class="modal" id="modal-name" :style="[close ? {'display': 'none'} : {'display': 'block'}]">
     <div class="modal-sandbox"></div>
     <div class="modal-box">
       <div class="modal-header">
