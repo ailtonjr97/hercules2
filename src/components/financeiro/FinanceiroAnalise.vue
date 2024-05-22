@@ -1,4 +1,6 @@
 <template>
+    <img style="margin-left: 30%; margin-top: 5%;" src="/images/construcao.gif" alt="Logo">
+    <div v-if="construcao">
     <popup v-if="popup"></popup>
     <div v-if="carregando" id="loading"></div>
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
@@ -132,6 +134,11 @@
                 </div>
             </div>
         </div>
+        <div class="row mt-2">
+            <div class="col-lg-6">
+                <span-textarea :span="'Obs. Cadastro'" :altura="'50'" v-model="infoDocumento.OBS_CADASTRO"></span-textarea>
+            </div>
+        </div>
     </div>
     </template>
     <template v-slot:buttons v-if="!carregandoinfo">
@@ -233,7 +240,7 @@
         <button class="button-8 mt-2" @click="ConfirmaDocOk()">Sim</button>
     </template>
 </modal>
-
+</div>
 </template>
 
 <style>
@@ -263,6 +270,7 @@ import Modal from '../ui/Modal.vue';
 import Loading from '../ui/Loading.vue';
 import SelectFloating from '../ui/SelectFloating.vue';
 import FormSpan from '../ui/formSpan.vue';
+import SpanTextarea from '../ui/spanTextarea.vue';
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -278,6 +286,7 @@ const config = {
 
 export default{
     components: {
+        SpanTextarea,
         FormSpan,
         SelectFloating,
         FormFloating,
@@ -289,6 +298,7 @@ export default{
     },
     data(){
         return{
+            construcao: false,
             docValor: null,
             docOk: false,
             docId: null,
@@ -300,6 +310,7 @@ export default{
             vendedor: {},
             vendedorModal: null,
             infoDocumento: {
+                OBS_CADASTRO: '',
                 LIMITE_ATUAL: null,
                 VALOR_PEDIDO: null,
                 VALOR_PEDIDO_INALTERADO: null,
@@ -352,7 +363,8 @@ export default{
     methods: {
         async ConfirmaDocOk(){
             try {
-                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/docok?id=${this.docId}&valor=${this.docValor}`, config);
+                this.carregandoinfo = true;
+                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/docok?id=${this.docId}&valor=${this.docValor}&obs=${this.infoDocumento.OBS_CADASTRO}`, config);
                 this.popup = true;
                 setTimeout(()=>{
                     this.popup = false;
@@ -370,11 +382,13 @@ export default{
                     timeZone: 'America/Sao_Paulo'  // Ajuste conforme o seu fuso horário, se necessário
                 };
                 this.infoDocumento.DATA_DOC_OK = data.toLocaleString('pt-BR', options).replace(',', '');
+                this.infoDocumento.OBS_CADASTRO = campo.data[0].OBS_CADASTRO;
                 this.docOk = false;
                 this.docId = null;
+                this.carregandoinfo = false;
             } catch (error) {
-                console.log(error)
-                alert("Falha ao executar ação. Tente novamente mais tarde.")
+                console.log(error);
+                alert("Falha ao executar ação. Tente novamente mais tarde.");
             }
         },
         async perguntaDocOk(id, valor){
@@ -509,7 +523,8 @@ export default{
                     DT_SOLICIT_DOCUMENTO: '',
                     EMAIL: response.data[0].EMAIL_CLIENTE,
                     NOME_CLIENTE: response.data[0].CLIENTE,
-                    DATA_DOC_OK: ''
+                    DATA_DOC_OK: '',
+                    OBS_CADASTRO: response.data[0].OBS_CADASTRO
                 };
 
 

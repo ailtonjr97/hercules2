@@ -2,33 +2,44 @@
     <div class="col">
         <div class="form-group">
             <span>{{span}}</span>
-            <input :readonly="readonly" class="form-field" :type="type" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)">
+            <textarea :style="`height: ${altura}px`" class="form-field" :placeholder="placeholder" :id="id" @input="$emit('update:modelValue', $event.target.value)" :readonly="readonly">{{ modelValue }}</textarea>
         </div>
     </div>
 </template>
 
 <script>
-    export default {
+    export default{
         props: {
             span: {
                 type: String,
                 required: true,
                 default: 'Não preenchido'
             },
+            altura: {
+                type: String,
+                default: '80',
+                required: false
+            },
+            id: {
+                type: String,
+                required: true,
+                default: 'Inserir ID.'
+            },
+            placeholder: {
+                type: String,
+                required: true,
+                default: ''
+            },
             modelValue: {
-                type: null,
-                required: false,
+                type: String,
+                required: true,
+                default: ''
             },
             readonly: {
                 type: Boolean,
                 required: false,
                 default: false
-            },
-            type: {
-                type: String,
-                required: false,
-                default: "text"
-            },
+            }
         }
     }
 </script>
