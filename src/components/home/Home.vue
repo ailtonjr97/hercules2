@@ -61,7 +61,7 @@
     copyToClipboard() {
         try {
             const el = document.createElement('textarea');
-            el.value = `Bearer ${this.token}`;
+            el.value = this.token;
             document.body.appendChild(el);
             el.select();
             document.execCommand('copy');
