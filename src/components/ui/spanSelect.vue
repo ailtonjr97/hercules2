@@ -1,7 +1,7 @@
 <template>
  <div class="form-group">
     <span>{{span}}</span>
-    <select class="form-field" :id="id" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" >
+    <select class="form-field" :id="id" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)">
         <option v-for="option in options" :value="option.valor">{{ option.descri }}</option>
     </select>
 </div>

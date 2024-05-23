@@ -63,7 +63,7 @@
     </div>
 
 <modal v-if="documentoModal" :title="`Solicitação de Crédito:`">
-    <template v-slot:close><button class="button-8" @click="modalRelatorio = false">Fechar</button></template>
+    <template v-slot:close><button class="button-8" @click="fecharSolicitarDocumento()">Fechar</button></template>
     <template v-slot:body>
     <loading v-if="carregandoinfo"></loading>
     <div v-if="!carregandoinfo">
@@ -156,7 +156,7 @@
                 <span-select :span="'Result. Análise'" :options="optionsRespAnalise" v-model="resultAnal"></span-select>
             </div>
             <div class="col-md-3">
-                <form-span :readonly="true" :span="'Novo Limite'" :type="'number'"></form-span>
+                <form-span :readonly="true" :span="'Novo Limite'" :type="'text'" v-model="infoDocumento.NOVO_LIMITE"></form-span>
             </div>
         </div>
         <div class="row mt-2">
@@ -169,7 +169,7 @@
         </div>
         <div class="row mt-2">
             <div class="col-lg-6">
-                <form-span :readonly="false" :span="'Resposta análise'" :type="'text'"></form-span>
+                <form-span :readonly="false" :span="'Resposta análise'" :type="'text'" ></form-span>
             </div>
         </div>
         <div class="row mt-2">
@@ -187,7 +187,7 @@
         </div>
         <div class="row mt-2">
             <div class="col-lg-6">
-                <button class="button-8" @click="credFinaliza()" style="width: 100%;">Finalizar Solicitação de Crédito</button>
+                <button v-if="nameLogado == infoDocumento.RESPONSAVEL_APROV" class="button-8" @click="credFinaliza()" style="width: 100%;">Finalizar Solicitação de Crédito</button>
             </div>
         </div>
     </div>
@@ -352,7 +352,7 @@ export default{
     data(){
         return{
             resultAnal: '',
-            construcao: true,
+            construcao: false,
             docValor: null,
             docOk: false,
             docId: null,
@@ -381,7 +381,10 @@ export default{
                 EMAIL: null,
                 NOME_CLIENTE: null,
                 DATA_DOC_OK: null,
-                RESPONSAVEL_APROV: ''
+                RESPONSAVEL_APROV: '',
+                FALTA_LIMITE_NUM: null,
+                LIMITE_ATUAL_NUM: null,
+                NOVO_LIMITE: null
             },
             cliente: [],
             clienteModal: false,
@@ -444,10 +447,22 @@ export default{
                 if(!this.resultAnal){
                     alert("Campo 'Result. Análise' não pode ser vazio.");
                     this.carregandoinfo = false;
+                }else{
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/financeiro/cred-finaliza`, [
+                        {'result': this.resultAnal},
+                        {'diferenca': this.infoDocumento.FALTA_LIMITE_NUM},
+                        {'limite': this.infoDocumento.LIMITE_ATUAL_NUM},
+                        {'id': this.infoDocumento.ID}
+                    ], config);
+                    this.carregandoinfo = false;
+                    const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.infoDocumento.ID}`, config);
+                    this.resultAnal = campo.data[0].RESULTADO_ANALISE;
+                    this.infoDocumento.NOVO_LIMITE = this.formattedValor(campo.data[0].NOVO_LIMITE * 1);
+                    
                 }
                 this.carregandoinfo = false;
-                console.log(this.resultAnal)
             } catch (error) {
+                console.log(error)
                 this.carregandoinfo = false;
                 alert("Falha ao executar ação. Tente novamente mais tarde")
             }
@@ -618,15 +633,20 @@ export default{
                     DATA_DOC_OK: '',
                     OBS_CADASTRO: response.data[0].OBS_CADASTRO,
                     RESPONSAVEL_APROV: response.data[0].RESPONSAVEL_APROV,
+                    FALTA_LIMITE_NUM: response.data[0].LIMITE_ATUAL - response.data[0].VALOR_PEDIDO,
+                    LIMITE_ATUAL_NUM: response.data[0].LIMITE_ATUAL * 1,
+                    NOVO_LIMITE: this.formattedValor(response.data[0].NOVO_LIMITE * 1) || null,
+                    RESULTADO_ANALISE: response.data[0].RESULTADO_ANALISE
                 };
 
+                this.resultAnal = response.data[0].RESULTADO_ANALISE
 
                 if(response.data[0].DT_SOLICIT_DOCUMENTO != null){
                     this.infoDocumento.DT_SOLICIT_DOCUMENTO = data.toLocaleString('pt-BR', options).replace(',', '');
                 }
 
                 if(response.data[0].DATA_DOC_OK != null){
-                    this.infoDocumento.DATA_DOC_OK = data.toLocaleString('pt-BR', options).replace(',', '');
+                    this.infoDocumento.DATA_DOC_OK = data2.toLocaleString('pt-BR', options).replace(',', '');
                 }
 
                 if(response.data[0].OBS_CADASTRO != null){
