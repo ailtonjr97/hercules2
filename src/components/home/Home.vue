@@ -78,7 +78,17 @@
   },
   async created(){
       try {
-          this.token = document.cookie.replace('jwt=', '');
+          function getCookieValue(name) {
+              const cookies = document.cookie.split('; ');
+              for (let cookie of cookies) {
+                  const [cookieName, cookieValue] = cookie.split('=');
+                  if (cookieName === name) {
+                      return cookieValue;
+                  }
+              }
+              return null;
+          }
+          this.token = getCookieValue('jwt');
       } catch (error) {
           console.log(error)
           alert("Erro ao carregar página. Favor tentar mais tarde.");
