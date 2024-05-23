@@ -1,6 +1,6 @@
 <template>
-    <img style="margin-left: 30%; margin-top: 5%;" src="/images/construcao.gif" alt="Logo">
-    <div v-if="construcao">
+    <img v-if="construcao" style="margin-left: 30%; margin-top: 5%;" src="/images/construcao.gif" alt="Logo">
+    <div v-if="!construcao">
     <popup v-if="popup"></popup>
     <div v-if="carregando" id="loading"></div>
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
@@ -63,6 +63,7 @@
     </div>
 
 <modal v-if="documentoModal" :title="`Solicitação de Crédito:`">
+    <template v-slot:close><button class="button-8" @click="modalRelatorio = false">Fechar</button></template>
     <template v-slot:body>
     <loading v-if="carregandoinfo"></loading>
     <div v-if="!carregandoinfo">
@@ -137,6 +138,56 @@
         <div class="row mt-2">
             <div class="col-lg-6">
                 <span-textarea :span="'Obs. Cadastro'" :altura="'50'" v-model="infoDocumento.OBS_CADASTRO"></span-textarea>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-6">
+                <form-span :readonly="true" :span="'Responsável pela Aprovação'" v-model="infoDocumento.RESPONSAVEL_APROV"></form-span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-6">
+                <input type="checkbox" name="" id="somente-pedido">
+                <label style="margin-left: 1%;" for="somente-pedido"> Aprovar somente este pedido (Não altera crédito).</label>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <span-select :span="'Result. Análise'" :options="optionsRespAnalise" v-model="resultAnal"></span-select>
+            </div>
+            <div class="col-md-3">
+                <form-span :readonly="true" :span="'Novo Limite'" :type="'number'"></form-span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <span-select :span="'Porcent. à vista'" :options="optionsPercent"></span-select>
+            </div>
+            <div class="col-md-3">
+                <form-span :readonly="true" :span="'Valor à vista para o pedido'" :type="'number'"></form-span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-6">
+                <form-span :readonly="false" :span="'Resposta análise'" :type="'text'"></form-span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-6">
+                <span-textarea :span="'Observação'" :altura="'50'"></span-textarea>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <form-span :readonly="true" :span="'Data Resposta'" :type="'text'"></form-span>
+            </div>
+            <div class="col-md-3">
+                <form-span :readonly="true" :span="'Prazo Resposta'" :type="'text'"></form-span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-6">
+                <button class="button-8" @click="credFinaliza()" style="width: 100%;">Finalizar Solicitação de Crédito</button>
             </div>
         </div>
     </div>
@@ -271,6 +322,7 @@ import Loading from '../ui/Loading.vue';
 import SelectFloating from '../ui/SelectFloating.vue';
 import FormSpan from '../ui/formSpan.vue';
 import SpanTextarea from '../ui/spanTextarea.vue';
+import SpanSelect from '../ui/spanSelect.vue';
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -294,11 +346,13 @@ export default{
         TableTop,
         Popup,
         Modal,
-        Loading
+        Loading,
+        SpanSelect
     },
     data(){
         return{
-            construcao: false,
+            resultAnal: '',
+            construcao: true,
             docValor: null,
             docOk: false,
             docId: null,
@@ -326,7 +380,8 @@ export default{
                 DT_SOLICIT_DOCUMENTO: null,
                 EMAIL: null,
                 NOME_CLIENTE: null,
-                DATA_DOC_OK: null
+                DATA_DOC_OK: null,
+                RESPONSAVEL_APROV: ''
             },
             cliente: [],
             clienteModal: false,
@@ -359,8 +414,44 @@ export default{
                 {valor: "0101006", descri: 'FIBRACEM INJECOES'}
             ];
         },
+        optionsRespAnalise(){
+            return [
+                {valor: "APROVADO", descri: 'APROVADO'},
+                {valor: "REPROVADO", descri: 'REPROVADO'},
+                {valor: "PARCIAL", descri: 'PARCIAL'}
+            ];
+        },
+        optionsPercent(){
+            return [
+            {valor: "10", descri: '10'},
+            {valor: "15", descri: '15'},
+            {valor: "20", descri: '20'},
+            {valor: "25", descri: '25'},
+            {valor: "30", descri: '30'},
+            {valor: "40", descri: '40'},
+            {valor: "50", descri: '50'},
+            {valor: "60", descri: '60'},
+            {valor: "70", descri: '70'},
+            {valor: "75", descri: '75'}
+
+            ];
+        },
     },
     methods: {
+        async credFinaliza(){
+            try {
+                this.carregandoinfo = true;
+                if(!this.resultAnal){
+                    alert("Campo 'Result. Análise' não pode ser vazio.");
+                    this.carregandoinfo = false;
+                }
+                this.carregandoinfo = false;
+                console.log(this.resultAnal)
+            } catch (error) {
+                this.carregandoinfo = false;
+                alert("Falha ao executar ação. Tente novamente mais tarde")
+            }
+        },
         async ConfirmaDocOk(){
             try {
                 this.carregandoinfo = true;
@@ -383,6 +474,7 @@ export default{
                 };
                 this.infoDocumento.DATA_DOC_OK = data.toLocaleString('pt-BR', options).replace(',', '');
                 this.infoDocumento.OBS_CADASTRO = campo.data[0].OBS_CADASTRO;
+                this.infoDocumento.RESPONSAVEL_APROV = campo.data[0].RESPONSAVEL_APROV;
                 this.docOk = false;
                 this.docId = null;
                 this.carregandoinfo = false;
@@ -524,7 +616,8 @@ export default{
                     EMAIL: response.data[0].EMAIL_CLIENTE,
                     NOME_CLIENTE: response.data[0].CLIENTE,
                     DATA_DOC_OK: '',
-                    OBS_CADASTRO: response.data[0].OBS_CADASTRO
+                    OBS_CADASTRO: response.data[0].OBS_CADASTRO,
+                    RESPONSAVEL_APROV: response.data[0].RESPONSAVEL_APROV,
                 };
 
 
@@ -534,6 +627,12 @@ export default{
 
                 if(response.data[0].DATA_DOC_OK != null){
                     this.infoDocumento.DATA_DOC_OK = data.toLocaleString('pt-BR', options).replace(',', '');
+                }
+
+                if(response.data[0].OBS_CADASTRO != null){
+                    this.infoDocumento.OBS_CADASTRO = response.data[0].OBS_CADASTRO;
+                }else{
+                    this.infoDocumento.OBS_CADASTRO = '';
                 }
             } catch (error) {
                 console.log(error);
@@ -569,6 +668,9 @@ export default{
                 await this.esperar(1000);
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
                 this.respostas = response.data;
+                response.data.forEach(element => {
+                    this.valoresPedido.push((element.VALOR_PEDIDO * 1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }))
+                });
                 this.resultados = response.data.length;
                 this.fullLoad = true;
                 this.carregando = false;

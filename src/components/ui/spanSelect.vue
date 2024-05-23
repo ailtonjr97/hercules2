@@ -1,11 +1,12 @@
 <template>
-    <div class="col">
-        <div class="form-group">
-            <span>{{span}}</span>
-            <textarea :style="`height: ${altura}px`" class="form-field" @input="$emit('update:modelValue', $event.target.value)" :readonly="readonly">{{ modelValue }}</textarea>
-        </div>
-    </div>
+ <div class="form-group">
+    <span>{{span}}</span>
+    <select class="form-field" :id="id" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" >
+        <option v-for="option in options" :value="option.valor">{{ option.descri }}</option>
+    </select>
+</div>
 </template>
+
 
 <script>
     export default{
@@ -13,27 +14,25 @@
             span: {
                 type: String,
                 required: true,
-                default: 'Não preenchido'
+                default: "Inserir span"
             },
-            altura: {
+            id: {
                 type: String,
-                default: '80',
-                required: false
+                required: false,
+                default: 'Inserir ID'
+            },
+            options: {
+                type: Array,
+                required: true,
+                default: 'Inserir Value'
             },
             modelValue: {
-                type: String,
-                required: true,
-                default: ''
-            },
-            readonly: {
-                type: Boolean,
+                type: null,
                 required: false,
-                default: false
             }
         }
     }
 </script>
-
 
 <style>
     :root {
