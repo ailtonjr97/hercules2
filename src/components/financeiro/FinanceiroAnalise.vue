@@ -19,7 +19,7 @@
             <th>Ações</th>
             <th>ID</th>
             <th>Filial</th>
-            <th>Pedido</th>
+            <th>Orçamento</th>
             <th>Data Hora Solicitação</th>
             <th>Cliente</th>
             <th>Vendedor</th>
@@ -161,33 +161,33 @@
         </div>
         <div class="row mt-2">
             <div class="col-md-3">
-                <span-select :span="'Porcent. à vista'" :options="optionsPercent"></span-select>
+                <span-select :span="'Porcent. à vista'" :options="optionsPercent" v-model="infoDocumento.PERCENTUAL_ADIANT"></span-select>
             </div>
             <div class="col-md-3">
-                <form-span :readonly="true" :span="'Valor à vista para o pedido'" :type="'number'"></form-span>
+                <form-span :readonly="true" :span="'Valor à vista para o pedido'" v-model="infoDocumento.VALOR_ADIANT"></form-span>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-lg-6">
-                <form-span :readonly="false" :span="'Resposta análise'" :type="'text'" ></form-span>
+                <form-span :readonly="false" :span="'Resposta análise'" :type="'text'" v-model="infoDocumento.RESPOSTA_ANALISE"></form-span>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-lg-6">
-                <span-textarea :span="'Observação'" :altura="'50'"></span-textarea>
+                <span-textarea :span="'Observação'" :altura="'50'" v-model="infoDocumento.OBS_RESPOSTA"></span-textarea>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-3">
-                <form-span :readonly="true" :span="'Data Resposta'" :type="'text'"></form-span>
+                <form-span :readonly="true" :span="'Data Resposta'" :type="'text'" v-model="infoDocumento.DATA_RESP"></form-span>
             </div>
             <div class="col-md-3">
-                <form-span :readonly="true" :span="'Prazo Resposta'" :type="'text'"></form-span>
+                <form-span :readonly="false" :span="'Prazo Resposta'" :type="'text'" v-model="infoDocumento.PRAZO_RESPOSTA"></form-span>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-lg-6">
-                <button v-if="nameLogado == infoDocumento.RESPONSAVEL_APROV" class="button-8" @click="credFinaliza()" style="width: 100%;">Finalizar Solicitação de Crédito</button>
+                <button v-if="nameLogado == infoDocumento.RESPONSAVEL_APROV && infoDocumento.DATA_RESP == ''" class="button-8" @click="confirmCredFinaliza()" style="width: 100%;">Finalizar Solicitação de Crédito</button>
             </div>
         </div>
     </div>
@@ -291,6 +291,36 @@
         <button class="button-8 mt-2" @click="ConfirmaDocOk()">Sim</button>
     </template>
 </modal>
+
+<modal v-if="credConfimModal" :title="`Confirmação de Análise de Crédito:`">
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="row">
+            <div class="col">
+                <h3>Deseja confirmar a finalização de análise de crédito para esse orçamento?</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <input type="checkbox" id="checkEmailCliente" v-model="checkEmailCliente">
+                <label for="checkEmailCliente" style="margin-left: 0.5%;">Deseja enviar e-mail para o cliente?</label>
+            </div>
+        </div>
+        <div class="row mt-1">
+            <div class="col">
+                <input type="checkbox" id="checkEmailVendedor" v-model="checkEmailVendedor">
+                <label for="checkEmailVendedor" style="margin-left: 0.5%;">Deseja enviar e-mail para o vendedor?</label>
+            </div>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8 mt-2" @click="this.credConfimModal = false;">Não</button>
+        <button class="button-8 mt-2" @click="credFinaliza()">Sim</button>
+    </template>
+</modal>
+
 </div>
 </template>
 
@@ -351,6 +381,10 @@ export default{
     },
     data(){
         return{
+            percent: null,
+            checkEmailCliente: false,
+            checkEmailVendedor: false,
+            credConfimModal: false,
             resultAnal: '',
             construcao: false,
             docValor: null,
@@ -384,7 +418,14 @@ export default{
                 RESPONSAVEL_APROV: '',
                 FALTA_LIMITE_NUM: null,
                 LIMITE_ATUAL_NUM: null,
-                NOVO_LIMITE: null
+                NOVO_LIMITE: null,
+                VALOR_PEDIDO_NUM: null,
+                PERCENTUAL_ADIANT: null,
+                VALOR_ADIANT: null,
+                RESPOSTA_ANALISE: null,
+                OBS_RESPOSTA: null,
+                PRAZO_RESPOSTA: null,
+                DATA_RESP: null
             },
             cliente: [],
             clienteModal: false,
@@ -441,24 +482,49 @@ export default{
         },
     },
     methods: {
+        async confirmCredFinaliza(){
+            this.credConfimModal = true;
+        },
         async credFinaliza(){
             try {
+                this.credConfimModal = false;
                 this.carregandoinfo = true;
                 if(!this.resultAnal){
                     alert("Campo 'Result. Análise' não pode ser vazio.");
+                    this.carregandoinfo = false;
+                }else if(this.resultAnal == 'PARCIAL' && !this.infoDocumento.PERCENTUAL_ADIANT){
+                    alert("Campo 'Porcent. à vista' não pode ser vazio.");
                     this.carregandoinfo = false;
                 }else{
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/financeiro/cred-finaliza`, [
                         {'result': this.resultAnal},
                         {'diferenca': this.infoDocumento.FALTA_LIMITE_NUM},
                         {'limite': this.infoDocumento.LIMITE_ATUAL_NUM},
-                        {'id': this.infoDocumento.ID}
+                        {'id': this.infoDocumento.ID},
+                        {'checkEmailCli': this.checkEmailCliente},
+                        {'checkEmailVend': this.checkEmailVendedor},
+                        {'emailCli': this.infoDocumento.EMAIL},
+                        {'pedido': this.infoDocumento.NUMERO_PEDIDO},
+                        {'filial': this.infoDocumento.FILIAL},
+                        {'vendCod': this.infoDocumento.VENDEDOR},
+                        {'porcentagem': this.infoDocumento.PERCENTUAL_ADIANT},
+                        {'valor': this.infoDocumento.VALOR_PEDIDO_NUM},
+                        {'respostaAnalise': this.infoDocumento.RESPOSTA_ANALISE},
+                        {'obsResposta': this.infoDocumento.OBS_RESPOSTA}
                     ], config);
-                    this.carregandoinfo = false;
                     const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.infoDocumento.ID}`, config);
                     this.resultAnal = campo.data[0].RESULTADO_ANALISE;
                     this.infoDocumento.NOVO_LIMITE = this.formattedValor(campo.data[0].NOVO_LIMITE * 1);
-                    
+                    this.infoDocumento.VALOR_ADIANT = this.formattedValor(campo.data[0].VALOR_ADIANT * 1);
+                    this.infoDocumento.PERCENTUAL_ADIANT = campo.data[0].PERCENTUAL_ADIANT * 1;
+                    this.infoDocumento.RESPOSTA_ANALISE = campo.data[0].RESPOSTA_ANALISE;
+                    this.infoDocumento.OBS_RESPOSTA = campo.data[0].OBS_RESPOSTA;
+                    this.infoDocumento.DATA_RESP = this.formatDateTime(campo.data[0].DATA_RESP);
+                    this.carregandoinfo = false;
+                    this.popup = true;
+                    setTimeout(()=>{
+                        this.popup = false;
+                    }, 2000);
                 }
                 this.carregandoinfo = false;
             } catch (error) {
@@ -582,6 +648,26 @@ export default{
 
             return `${dia}/${mes}/${ano}`;
         },
+        formatDateTime(dateTimeStr) {
+            // Verifica se a string de data e hora é nula ou indefinida
+            if (!dateTimeStr) {
+                return '';
+            }
+
+            // Cria um objeto Date a partir da string ISO
+            const date = new Date(dateTimeStr);
+
+            // Extrai os componentes da data e hora
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Os meses são base 0
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+
+            // Formata a data e hora no padrão desejado
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        },
         async openClienteModal(numped, loja){
             try {
                 this.carregandoinfo = true;
@@ -636,9 +722,15 @@ export default{
                     FALTA_LIMITE_NUM: response.data[0].LIMITE_ATUAL - response.data[0].VALOR_PEDIDO,
                     LIMITE_ATUAL_NUM: response.data[0].LIMITE_ATUAL * 1,
                     NOVO_LIMITE: this.formattedValor(response.data[0].NOVO_LIMITE * 1) || null,
-                    RESULTADO_ANALISE: response.data[0].RESULTADO_ANALISE
+                    RESULTADO_ANALISE: response.data[0].RESULTADO_ANALISE,
+                    VALOR_PEDIDO_NUM: response.data[0].VALOR_PEDIDO || null,
+                    PERCENTUAL_ADIANT: response.data[0].PERCENTUAL_ADIANT * 1 || null,
+                    VALOR_ADIANT: this.formattedValor(response.data[0].VALOR_ADIANT * 1) || null,
+                    RESPOSTA_ANALISE: response.data[0].RESPOSTA_ANALISE || null,
+                    OBS_RESPOSTA: response.data[0].OBS_RESPOSTA || null,
+                    PRAZO_RESPOSTA: this.formatDateTime(response.data[0].PRAZO_RESPOSTA) || null,
+                    DATA_RESP: this.formatDateTime(response.data[0].DATA_RESP) || null
                 };
-
                 this.resultAnal = response.data[0].RESULTADO_ANALISE
 
                 if(response.data[0].DT_SOLICIT_DOCUMENTO != null){
