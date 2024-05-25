@@ -310,7 +310,7 @@
 
 </template>
 
-<style>
+<style scoped>
 table {
 	 table-layout: fixed;
 }

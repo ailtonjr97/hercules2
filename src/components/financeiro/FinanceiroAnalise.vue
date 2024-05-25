@@ -7,6 +7,8 @@
     <table-top :resultados="resultados">
         <template v-slot:tableButtons>
             <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
+            <button v-if="!mostraArquivadas" class="button-8 mb-2" @click="arquivadas()">Arquivadas</button>
+            <button v-if="mostraArquivadas" class="button-8 mb-2" @click="abertas()">Abertas</button>
         </template>
     </table-top>
     <div class="row mb-2">
@@ -31,7 +33,8 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-center">
-                        <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID)"><i style="font-size: 14px;" class="fas fa-money-bill"></i></button></div>
+                        <button v-if="resposta.ARQUIVA == 1 && resposta.ARQUIVADO == 0" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
+                        <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID, resposta.COD_CLIENTE, resposta.LOJA)"><i style="font-size: 14px;" class="fas fa-eye"></i></button></div>
                     </div>
                 </div>
             </td>
@@ -68,126 +71,167 @@
     <loading v-if="carregandoinfo"></loading>
     <div v-if="!carregandoinfo">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-lg-6">
                 <div class="row">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'ID'" v-model="infoDocumento.ID"></form-span>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'ID'" v-model="infoDocumento.ID"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Pedido'" v-model="infoDocumento.NUMERO_PEDIDO"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Cliente'" v-model="infoDocumento.COD_CLIENTE"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Valor'" v-model="infoDocumento.VALOR_PEDIDO"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Limite Atual'" v-model="infoDocumento.LIMITE_ATUAL"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Diferença'" v-model="infoDocumento.FALTA_LIMITE"></form-span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Data Solicit.'" v-model="infoDocumento.DATA_SOLICIT"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Vendedor'" v-model="infoDocumento.VENDEDOR"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Filial'" v-model="infoDocumento.FILIAL"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <form-span :readonly="true" :span="'Loja'" v-model="infoDocumento.LOJA"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col d-flex justify-content-start">
+                                <form-span :readonly="true" :span="'Solicit Cli.'" v-model="infoDocumento.DT_SOLICIT_DOCUMENTO"></form-span>
+                                <div v-if="!mostraArquivadas" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col d-flex justify-content-start">
+                                <form-span :readonly="true" :span="'Doc. OK'" v-model="infoDocumento.DATA_DOC_OK"></form-span>
+                                <div v-if="!mostraArquivadas" style="margin-left: 2%;"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Pedido'" v-model="infoDocumento.NUMERO_PEDIDO"></form-span>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Cliente'" v-model="infoDocumento.COD_CLIENTE"></form-span>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Valor'" v-model="infoDocumento.VALOR_PEDIDO"></form-span>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Limite Atual'" v-model="infoDocumento.LIMITE_ATUAL"></form-span>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Diferença'" v-model="infoDocumento.FALTA_LIMITE"></form-span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
                 <div class="row">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Data Solicit.'" v-model="infoDocumento.DATA_SOLICIT"></form-span>
+                    <div class="col-lg-12">
+                        <div class="row mt-2">
+                            <span-textarea :span="'Obs. Cadastro'" :altura="'50'" v-model="infoDocumento.OBS_CADASTRO"></span-textarea>
+                        </div>
+                        <div class="row mt-2">
+                            <form-span :readonly="true" :span="'Responsável pela Aprovação'" v-model="infoDocumento.RESPONSAVEL_APROV"></form-span>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <input type="checkbox" name="" id="somente-pedido">
+                                <label style="margin-left: 1%;" for="somente-pedido"> Aprovar somente este pedido (Não altera crédito).</label>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-6">
+                                <span-select :span="'Result. Análise'" :options="optionsRespAnalise" v-model="resultAnal"></span-select>
+                            </div>
+                            <div class="col-lg-6">
+                                <form-span :readonly="true" :span="'Novo Limite'" :type="'text'" v-model="infoDocumento.NOVO_LIMITE"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-6">
+                                <span-select :span="'Porcent. à vista'" :options="optionsPercent" v-model="infoDocumento.PERCENTUAL_ADIANT"></span-select>
+                            </div>
+                            <div class="col-lg-6">
+                                <form-span :readonly="true" :span="'Valor à vista para o pedido'" v-model="infoDocumento.VALOR_ADIANT"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <form-span :readonly="false" :span="'Resposta análise'" :type="'text'" v-model="infoDocumento.RESPOSTA_ANALISE"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <span-textarea :span="'Observação'" :altura="'50'" v-model="infoDocumento.OBS_RESPOSTA"></span-textarea>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-6">
+                                <form-span :readonly="true" :span="'Data Resposta'" :type="'text'" v-model="infoDocumento.DATA_RESP"></form-span>
+                            </div>
+                            <div class="col-lg-6">
+                                <form-span :readonly="false" :span="'Prazo Resposta'" :type="'text'" v-model="infoDocumento.PRAZO_RESPOSTA"></form-span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <button v-if="nameLogado == infoDocumento.RESPONSAVEL_APROV && infoDocumento.ARQUIVA == 0" class="button-8" @click="confirmCredFinaliza()" style="width: 100%;">Finalizar Solicitação de Crédito</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Vendedor'" v-model="infoDocumento.VENDEDOR"></form-span>
-                    </div>
+            </div>
+            <div class="col-lg-6">
+                <loading v-if="carregandoInfoTabela"></loading>
+                <div v-if="!carregandoInfoTabela" class="table-wrapper table-responsive table-striped mb-5">
+                    <table class="fl-table" id="myTable">
+                        <thead>
+                          <tr style="height: 25px;">
+                            <th>Filial</th>
+                            <th>Prefixo</th>
+                            <th>Número</th>
+                            <th>Parcela</th>
+                            <th>Vencimento</th>
+                            <th>Valor</th>
+                            <th>Saldo</th>
+                            <th>Loja</th>
+                            <th>Emissão</th>
+                            <th>Status</th>
+                            <th>LC</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(parcela, index) in parcelas" :key="parcela.E1_PARCELA">
+                            <td>{{ parcela.E1_FILIAL }}</td>
+                            <td>{{ parcela.E1_PREFIXO }}</td>
+                            <td>{{ parcela.E1_NUM }}</td>
+                            <td>{{ parcela.E1_PARCELA }}</td>
+                            <td>{{ parcela.E1_VENCTO }}</td>
+                            <td>{{ parcela.E1_VALOR }}</td>
+                            <td>{{ parcela.E1_SALDO }}</td>
+                            <td>{{ parcela.E1_LOJA }}</td>
+                            <td>{{ parcela.E1_EMISSAO }}</td>
+                            <td>{{ parcela.E1_STATUS }}</td>
+                            <td>{{ parcela.A1_LC }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                 </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Filial'" v-model="infoDocumento.FILIAL"></form-span>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <form-span :readonly="true" :span="'Loja'" v-model="infoDocumento.LOJA"></form-span>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col d-flex justify-content-start">
-                        <form-span :readonly="true" :span="'Solicit Cli.'" v-model="infoDocumento.DT_SOLICIT_DOCUMENTO"></form-span>
-                        <div style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col d-flex justify-content-start">
-                        <form-span :readonly="true" :span="'Doc. OK'" v-model="infoDocumento.DATA_DOC_OK"></form-span>
-                        <div style="margin-left: 2%;"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-lg-6">
-                <span-textarea :span="'Obs. Cadastro'" :altura="'50'" v-model="infoDocumento.OBS_CADASTRO"></span-textarea>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-lg-6">
-                <form-span :readonly="true" :span="'Responsável pela Aprovação'" v-model="infoDocumento.RESPONSAVEL_APROV"></form-span>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-lg-6">
-                <input type="checkbox" name="" id="somente-pedido">
-                <label style="margin-left: 1%;" for="somente-pedido"> Aprovar somente este pedido (Não altera crédito).</label>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-3">
-                <span-select :span="'Result. Análise'" :options="optionsRespAnalise" v-model="resultAnal"></span-select>
-            </div>
-            <div class="col-md-3">
-                <form-span :readonly="true" :span="'Novo Limite'" :type="'text'" v-model="infoDocumento.NOVO_LIMITE"></form-span>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-3">
-                <span-select :span="'Porcent. à vista'" :options="optionsPercent" v-model="infoDocumento.PERCENTUAL_ADIANT"></span-select>
-            </div>
-            <div class="col-md-3">
-                <form-span :readonly="true" :span="'Valor à vista para o pedido'" v-model="infoDocumento.VALOR_ADIANT"></form-span>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-lg-6">
-                <form-span :readonly="false" :span="'Resposta análise'" :type="'text'" v-model="infoDocumento.RESPOSTA_ANALISE"></form-span>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-lg-6">
-                <span-textarea :span="'Observação'" :altura="'50'" v-model="infoDocumento.OBS_RESPOSTA"></span-textarea>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-3">
-                <form-span :readonly="true" :span="'Data Resposta'" :type="'text'" v-model="infoDocumento.DATA_RESP"></form-span>
-            </div>
-            <div class="col-md-3">
-                <form-span :readonly="false" :span="'Prazo Resposta'" :type="'text'" v-model="infoDocumento.PRAZO_RESPOSTA"></form-span>
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-lg-6">
-                <button v-if="nameLogado == infoDocumento.RESPONSAVEL_APROV && infoDocumento.DATA_RESP == ''" class="button-8" @click="confirmCredFinaliza()" style="width: 100%;">Finalizar Solicitação de Crédito</button>
             </div>
         </div>
     </div>
@@ -321,24 +365,41 @@
     </template>
 </modal>
 
+<modal v-if="arquivaModal" :title="`Confirmação para Arquivar:`">
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="row">
+            <div class="col">
+                <h3>Deseja realmente arquivar essa análise de crédito?</h3>
+            </div>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8 mt-2" @click="this.arquivaModal = false;">Não</button>
+        <button class="button-8 mt-2" @click="arquivar()">Sim</button>
+    </template>
+</modal>
+
 </div>
 </template>
 
-<style>
-table {
-	 table-layout: fixed;
-}
- table th {
-    z-index: 1;
-    resize: horizontal;
-	overflow: hidden;
-	white-space: nowrap;
-}
-
-table td{
-	overflow: hidden;
-}
+<style scoped>
+    table {
+         table-layout: auto;
+    }
+     table th {
+        z-index: 1;
+        resize: none;
+        overflow: hidden;
+    }
+    
+    table td{
+        overflow: hidden;
+    }
 </style>
+
     
 <script>
 import { jwtDecode } from "jwt-decode";
@@ -381,6 +442,11 @@ export default{
     },
     data(){
         return{
+            parcelas: null,
+            carregandoInfoTabela: false,
+            mostraArquivadas: false,
+            arquivaId: null,
+            arquivaModal: false,
             percent: null,
             checkEmailCliente: false,
             checkEmailVendedor: false,
@@ -482,6 +548,53 @@ export default{
         },
     },
     methods: {
+        async abertas(){
+            try {
+                this.mostraArquivadas = false;
+                this.carregando = true;
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
+                this.respostas = response.data;
+                this.carregando = false;
+            } catch (error) {
+                console.log(error)
+                alert('Falha ao executar ação. Tente novamente mais tarde.')
+            }
+        },
+        async arquivadas(){
+            try {
+                this.mostraArquivadas = true;
+                this.carregando = true;
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito-arquivadas`, config);
+                this.respostas = response.data;
+                this.carregando = false;
+            } catch (error) {
+                console.log(error);
+                alert('Falha ao executar ação. Tente novamente mais tarde.');
+            }
+        },
+        async arquivar(){
+            try {
+                this.carregandoinfo = true;
+                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/financeiro/arquivar`, {'id': this.arquivaId}, config);
+                this.arquivaModal = false;
+                this.carregandoinfo = false;
+                this.popup = true;
+                setTimeout(()=>{
+                    this.popup = false;
+                }, 2000);
+                this.carregando = true;
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
+                this.respostas = response.data;
+                this.carregando = false;
+            } catch (error) {
+                this.carregandoinfo = false;
+                alert('Falha ao executar ação, favor tentar novamente mais tarde.');
+            }
+        },
+        async confirmaArquivar(id){
+            this.arquivaModal = true;
+            this.arquivaId = id;
+        },
         async confirmCredFinaliza(){
             this.credConfimModal = true;
         },
@@ -520,11 +633,14 @@ export default{
                     this.infoDocumento.RESPOSTA_ANALISE = campo.data[0].RESPOSTA_ANALISE;
                     this.infoDocumento.OBS_RESPOSTA = campo.data[0].OBS_RESPOSTA;
                     this.infoDocumento.DATA_RESP = this.formatDateTime(campo.data[0].DATA_RESP);
+                    this.infoDocumento.ARQUIVA = campo.data[0].ARQUIVA;
                     this.carregandoinfo = false;
                     this.popup = true;
                     setTimeout(()=>{
                         this.popup = false;
                     }, 2000);
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
+                    this.respostas = response.data;
                 }
                 this.carregandoinfo = false;
             } catch (error) {
@@ -684,10 +800,14 @@ export default{
             this.clienteModal = false;
             this.cliente = [];
         },
-        async abreSolicitarDocumento(id){
+        async abreSolicitarDocumento(id, cod, loja){
             try {
                 this.documentoModal = true;
+                this.carregandoInfoTabela = true;
+                this.carregandoinfo = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${id}`, config);
+                const cliente = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${cod}/${loja}`, config);
+                const cgc = cliente.data.objects[0].A1_CGC;
                 const data = new Date(response.data[0].DT_SOLICIT_DOCUMENTO);
                 const data2 = new Date(response.data[0].DATA_DOC_OK);
                 const options = {
@@ -729,8 +849,10 @@ export default{
                     RESPOSTA_ANALISE: response.data[0].RESPOSTA_ANALISE || null,
                     OBS_RESPOSTA: response.data[0].OBS_RESPOSTA || null,
                     PRAZO_RESPOSTA: this.formatDateTime(response.data[0].PRAZO_RESPOSTA) || null,
-                    DATA_RESP: this.formatDateTime(response.data[0].DATA_RESP) || null
+                    DATA_RESP: this.formatDateTime(response.data[0].DATA_RESP) || null,
+                    ARQUIVA: response.data[0].ARQUIVA
                 };
+
                 this.resultAnal = response.data[0].RESULTADO_ANALISE
 
                 if(response.data[0].DT_SOLICIT_DOCUMENTO != null){
@@ -746,6 +868,11 @@ export default{
                 }else{
                     this.infoDocumento.OBS_CADASTRO = '';
                 }
+
+                this.carregandoinfo = false;
+                this.parcelas = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/parcelas?cgc=${cgc}`, config);
+                this.parcelas = this.parcelas.data
+                this.carregandoInfoTabela = false;
             } catch (error) {
                 console.log(error);
                 alert('Falha ao executar ação. Favor tentar novamente mais tarde.');
@@ -775,6 +902,7 @@ export default{
         },
         async refresh(){
             try {
+                this.mostraArquivadas = false;
                 this.carregando = true;
                 await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/atualiza-proposta-de-frete`, config);
                 await this.esperar(1000);
