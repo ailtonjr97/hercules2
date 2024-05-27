@@ -55,7 +55,7 @@
                 <button title="Ver Cliente" class="button-8" @click="openClienteModal(resposta.COD_CLIENTE, resposta.LOJA)">{{ resposta.COD_CLIENTE }}</button>
             </td>
             <td>
-                <p>{{nomeClientes[index] }}</p>
+                <p>{{ resposta.CLIENTE }}</p>
             </td>
             <td>
                 <button title="Ver Vendedor" class="button-8" @click="openVendedorModal(resposta.VENDEDOR)">{{ resposta.VENDEDOR }}</button>
@@ -971,6 +971,7 @@ export default{
                 const decoded = jwtDecode(getCookie('jwt'));
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
                 this.respostas = response.data;
+                console.log(this.respostas)
                 this.respostas.forEach(element => {
                     this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
                 });
