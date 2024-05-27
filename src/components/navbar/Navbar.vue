@@ -103,7 +103,7 @@ export default{
             this.name = response.data[0].name;
         } catch (error) {
             console.log(error)
-            if(error.response.status == 401){
+            // if(error.response.status == 401){
             //     function deleteAllCookies() {
             //         const cookies = document.cookie.split(";");
 
@@ -121,7 +121,7 @@ export default{
             //   }
             //   delete_cookie('jwt')
             //   window.location.href = 'http://intranet.fibracem.com/logout';
-            }
+            // }
             this.mostraStatus = true;
         }
     }
