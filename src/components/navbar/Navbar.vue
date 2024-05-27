@@ -93,7 +93,7 @@ export default{
                 const token = getCookie('jwt')
                 let config = {
                     headers: {
-                        'Authorization': token
+                        'Authorization': `jwt=${token}`
                     }
             };
             const decoded = jwtDecode(token);
@@ -102,24 +102,25 @@ export default{
             this.isAdmin = response.data[0].admin;
             this.name = response.data[0].name;
         } catch (error) {
+            console.log(error)
             if(error.response.status == 401){
-                function deleteAllCookies() {
-                    const cookies = document.cookie.split(";");
+            //     function deleteAllCookies() {
+            //         const cookies = document.cookie.split(";");
 
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i];
-                        const eqPos = cookie.indexOf("=");
-                        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-                        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                    }
-                }
-            deleteAllCookies();
-            function delete_cookie(name) {
-                document.cookie = name +'=; Path=/qualidade; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-                document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-              }
-              delete_cookie('jwt')
-              window.location.href = 'http://intranet.fibracem.com/logout';
+            //         for (let i = 0; i < cookies.length; i++) {
+            //             const cookie = cookies[i];
+            //             const eqPos = cookie.indexOf("=");
+            //             const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            //             document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            //         }
+            //     }
+            // deleteAllCookies();
+            // function delete_cookie(name) {
+            //     document.cookie = name +'=; Path=/qualidade; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            //     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            //   }
+            //   delete_cookie('jwt')
+            //   window.location.href = 'http://intranet.fibracem.com/logout';
             }
             this.mostraStatus = true;
         }

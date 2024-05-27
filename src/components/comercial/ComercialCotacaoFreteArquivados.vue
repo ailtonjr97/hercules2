@@ -303,7 +303,7 @@ function getCookie(name) {
 
 const config = {
     headers: {
-    'Authorization': getCookie('jwt'),
+    'Authorization': `jwt=${getCookie('jwt')}`,
     }
 }
 
@@ -422,7 +422,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': `jwt=${getCookie('jwt')}`,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -456,7 +456,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': `jwt=${getCookie('jwt')}`,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -490,7 +490,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': `jwt=${getCookie('jwt')}`,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -523,7 +523,7 @@ export default{
                     method: 'GET',
                     responseType: 'blob', // important
                     headers: {
-                        'Authorization': getCookie('jwt'),
+                        'Authorization': `jwt=${getCookie('jwt')}`,
                     }
                 }).then((response) => {
                     // create file link in browser's memory
@@ -584,7 +584,7 @@ export default{
                 }
                 const config = {
                     headers: {
-                    'Authorization': getCookie('jwt'),
+                    'Authorization': `jwt=${getCookie('jwt')}`,
                     }
                 }
                 const decoded = jwtDecode(getCookie('jwt'));

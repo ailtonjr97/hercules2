@@ -115,7 +115,7 @@ function getCookie(name) {
 
 const config = {
     headers: {
-    'Authorization': getCookie('jwt'),
+    'Authorization': `jwt=${getCookie('jwt')}`,
     }
 }
 
@@ -310,7 +310,7 @@ const config = {
       }
       const config = {
           headers: {
-          'Authorization': getCookie('jwt'),
+          'Authorization': `jwt=${getCookie('jwt')}`,
           }
       }
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/get_all`, config)

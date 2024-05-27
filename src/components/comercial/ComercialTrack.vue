@@ -190,7 +190,7 @@ function getCookie(name) {
 }
 const config = {
     headers: {
-    'Authorization': getCookie('jwt'),
+    'Authorization': `jwt=${getCookie('jwt')}`,
     }
 }
 
@@ -261,7 +261,7 @@ methods: {
             }
             const config = {
                 headers: {
-                'Authorization': getCookie('jwt'),
+                'Authorization': `jwt=${getCookie('jwt')}`,
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
@@ -449,7 +449,7 @@ methods: {
             }
             const config = {
                 headers: {
-                'Authorization': getCookie('jwt'),
+                'Authorization': `jwt=${getCookie('jwt')}`,
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
@@ -491,7 +491,7 @@ async created(){
         }
         const config = {
             headers: {
-            'Authorization': getCookie('jwt'),
+            'Authorization': `jwt=${getCookie('jwt')}`,
             }
         }
         const decoded = jwtDecode(getCookie('jwt'));

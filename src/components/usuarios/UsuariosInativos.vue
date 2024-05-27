@@ -63,10 +63,15 @@
 <script>
 import axios from 'axios'
 
-let config = {
-  headers: {
-    'Authorization': document.cookie.replace('jwt=', ''),
-  }
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+const config = {
+    headers: {
+    'Authorization': `jwt=${getCookie('jwt')}`,
+    }
 }
 
  export default{
@@ -93,10 +98,15 @@ let config = {
     },
     async atualizarUsuarios(){
       try {
-        let config = {
-          headers: {
-            'Authorization': document.cookie.replace('jwt=', ''),
-          }
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        const config = {
+            headers: {
+            'Authorization': `jwt=${getCookie('jwt')}`,
+            }
         }
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/get_all/inactive`, config);
         this.usuarios = response.data;

@@ -12,7 +12,7 @@
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating :placeholder="'ID:'" :id="'id'" :type="'number'" v-model="id" v-on:keyup.enter="pesquisa()"></form-floating>
+        <form-floating :placeholder="'Orçamento:'" :id="orcamento" :type="'number'" v-model="orcamento" v-on:keyup.enter="pesquisa()"></form-floating>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
@@ -24,6 +24,7 @@
             <th>Orçamento</th>
             <th>Data Hora Solicitação</th>
             <th>Cliente</th>
+            <th>Nome Cliente</th>
             <th>Vendedor</th>
             <th>Valor</th>
             </tr>
@@ -54,7 +55,10 @@
                 <button title="Ver Cliente" class="button-8" @click="openClienteModal(resposta.COD_CLIENTE, resposta.LOJA)">{{ resposta.COD_CLIENTE }}</button>
             </td>
             <td>
-                <button title="Ver Cliente" class="button-8" @click="openVendedorModal(resposta.VENDEDOR)">{{ resposta.VENDEDOR }}</button>
+                <p>{{nomeClientes[index] }}</p>
+            </td>
+            <td>
+                <button title="Ver Vendedor" class="button-8" @click="openVendedorModal(resposta.VENDEDOR)">{{ resposta.VENDEDOR }}</button>
             </td>
             <td>
                 <p>{{ valoresPedido[index] }}</p>
@@ -148,18 +152,18 @@
                         <div class="row mt-2">
                             <form-span :readonly="true" :span="'Responsável pela Aprovação'" v-model="infoDocumento.RESPONSAVEL_APROV"></form-span>
                         </div>
-                        <div class="row mt-2">
+<!--                         <div class="row mt-2">
                             <div class="col-lg-12">
                                 <input type="checkbox" name="" id="somente-pedido">
                                 <label style="margin-left: 1%;" for="somente-pedido"> Aprovar somente este pedido (Não altera crédito).</label>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row mt-2">
                             <div class="col-lg-6">
                                 <span-select :span="'Result. Análise'" :options="optionsRespAnalise" v-model="resultAnal"></span-select>
                             </div>
                             <div class="col-lg-6">
-                                <form-span :readonly="true" :span="'Novo Limite'" :type="'text'" v-model="infoDocumento.NOVO_LIMITE"></form-span>
+                                <form-span :readonly="false" :span="'Novo Limite'" :type="'text'" v-model="infoDocumento.NOVO_LIMITE"></form-span>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -423,7 +427,7 @@ function getCookie(name) {
 
 const config = {
     headers: {
-    'Authorization': getCookie('jwt'),
+    'Authorization': `jwt=${getCookie('jwt')}`,
     }
 }
 
@@ -442,6 +446,8 @@ export default{
     },
     data(){
         return{
+            orcamento: '',
+            nomeClientes: [],
             parcelas: null,
             carregandoInfoTabela: false,
             mostraArquivadas: false,
@@ -553,6 +559,10 @@ export default{
                 this.mostraArquivadas = false;
                 this.carregando = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
+                this.nomeClientes = [];
+                response.data.forEach(element => {
+                    this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
+                });
                 this.respostas = response.data;
                 this.carregando = false;
             } catch (error) {
@@ -565,6 +575,10 @@ export default{
                 this.mostraArquivadas = true;
                 this.carregando = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito-arquivadas`, config);
+                this.nomeClientes = [];
+                response.data.forEach(element => {
+                    this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
+                });
                 this.respostas = response.data;
                 this.carregando = false;
             } catch (error) {
@@ -584,6 +598,10 @@ export default{
                 }, 2000);
                 this.carregando = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
+                this.nomeClientes = [];
+                response.data.forEach(element => {
+                    this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
+                });
                 this.respostas = response.data;
                 this.carregando = false;
             } catch (error) {
@@ -623,7 +641,8 @@ export default{
                         {'porcentagem': this.infoDocumento.PERCENTUAL_ADIANT},
                         {'valor': this.infoDocumento.VALOR_PEDIDO_NUM},
                         {'respostaAnalise': this.infoDocumento.RESPOSTA_ANALISE},
-                        {'obsResposta': this.infoDocumento.OBS_RESPOSTA}
+                        {'obsResposta': this.infoDocumento.OBS_RESPOSTA},
+                        {'novo_limite': this.infoDocumento.NOVO_LIMITE}
                     ], config);
                     const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.infoDocumento.ID}`, config);
                     this.resultAnal = campo.data[0].RESULTADO_ANALISE;
@@ -672,6 +691,7 @@ export default{
                 this.infoDocumento.DATA_DOC_OK = data.toLocaleString('pt-BR', options).replace(',', '');
                 this.infoDocumento.OBS_CADASTRO = campo.data[0].OBS_CADASTRO;
                 this.infoDocumento.RESPONSAVEL_APROV = campo.data[0].RESPONSAVEL_APROV;
+                this.infoDocumento.PRAZO_RESPOSTA = this.formatDateTime(campo.data[0].PRAZO_RESPOSTA);
                 this.docOk = false;
                 this.docId = null;
                 this.carregandoinfo = false;
@@ -885,20 +905,32 @@ export default{
                 alert('Falha ao executar ação. Favor tentar novamente mais tarde.');
             }
         },
-        async pesquisa(pedido, cotador_id, results, vendedor, identificador){
+        async pesquisa(){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}&identificador=${identificador}`, config);
+                let response
+                if(this.mostraArquivadas){
+                    response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito-arquivadas?orcamento=${this.orcamento}`, config);
+                }else{
+                    response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito?orcamento=${this.orcamento}`, config);
+                }
                 this.respostas = response.data;
+                this.respostas.forEach(element => {
+                    this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
+                });
                 this.resultados = response.data.length;
                 this.carregando = false;
             } catch (error) {
+                console.log(error)
                 alert("Falha ao pesquisar. Favor tentar mais tarde.");
                 this.carregando = false;
             }
         },
         esperar(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        },
+        trimTrailingSpaces(text) {
+            return text.replace(/\s+$/, '');
         },
         async refresh(){
             try {
@@ -910,6 +942,9 @@ export default{
                 this.respostas = response.data;
                 response.data.forEach(element => {
                     this.valoresPedido.push((element.VALOR_PEDIDO * 1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }))
+                });
+                this.respostas.forEach(element => {
+                    this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
                 });
                 this.resultados = response.data.length;
                 this.fullLoad = true;
@@ -930,12 +965,15 @@ export default{
                 }
                 const config = {
                     headers: {
-                    'Authorization': getCookie('jwt'),
+                    'Authorization': `jwt=${getCookie('jwt')}`,
                     }
                 }
                 const decoded = jwtDecode(getCookie('jwt'));
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
                 this.respostas = response.data;
+                this.respostas.forEach(element => {
+                    this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
+                });
                 const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
                 response.data.forEach(element => {
                     this.valoresPedido.push((element.VALOR_PEDIDO * 1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }))
@@ -945,6 +983,7 @@ export default{
                 this.fullLoad = true;
                 this.carregando = false;
             } catch (error) {
+                console.log(error)
                 alert("Erro ao carregar página. Favor tentar mais tarde.");
                 this.carregando = false;
             }
