@@ -22,7 +22,10 @@
             <th>ID</th>
             <th>Filial</th>
             <th>Orçamento</th>
-            <th>Data Hora Solicitação</th>
+            <th>Dt. Solicitação</th>
+            <th>Solicit. Cli.</th>
+            <th>Dt. Doc OK</th>
+            <th>Prazo Resposta</th>
             <th>Cliente</th>
             <th>Nome Cliente</th>
             <th>Vendedor</th>
@@ -52,6 +55,15 @@
                 <p>{{formatarData(resposta.DATA_SOLICIT) }} {{ resposta.HORA_SOLICIT }}</p>
             </td>
             <td>
+                <p>{{ formatarDataJs(resposta.DT_SOLICIT_DOCUMENTO) }}</p>
+            </td>
+            <td>
+                <p>{{ formatarDataJs(resposta.DATA_DOC_OK) }}</p>
+            </td>
+            <td>
+                <p>{{ formatarDataJs(resposta.PRAZO_RESPOSTA) }}</p>
+            </td>
+            <td>
                 <button title="Ver Cliente" class="button-8" @click="openClienteModal(resposta.COD_CLIENTE, resposta.LOJA)">{{ resposta.COD_CLIENTE }}</button>
             </td>
             <td>
@@ -77,6 +89,11 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="row">
+                    <div class="col">
+                        <form-span :readonly="true" :span="'Nome'" v-model="infoDocumento.NOME_CLIENTE"></form-span>
+                    </div>
+                </div>
+                <div class="row mt-2">
                     <div class="col-lg-6">
                         <div class="row">
                             <div class="col">
@@ -784,6 +801,23 @@ export default{
 
             return `${dia}/${mes}/${ano}`;
         },
+        formatarDataJs(dataISO) {
+            if (!dataISO) {
+                return '';
+            }
+
+            const data = new Date(dataISO);
+
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0'); // Janeiro é 0!
+            const ano = data.getFullYear();
+
+            const horas = String(data.getHours()).padStart(2, '0');
+            const minutos = String(data.getMinutes()).padStart(2, '0');
+            const segundos = String(data.getSeconds()).padStart(2, '0');
+
+            return `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`;
+        },
         formatDateTime(dateTimeStr) {
             // Verifica se a string de data e hora é nula ou indefinida
             if (!dateTimeStr) {
@@ -971,7 +1005,6 @@ export default{
                 const decoded = jwtDecode(getCookie('jwt'));
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
                 this.respostas = response.data;
-                console.log(this.respostas)
                 this.respostas.forEach(element => {
                     this.nomeClientes.push(this.trimTrailingSpaces(element.CLIENTE))
                 });

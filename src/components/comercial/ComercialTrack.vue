@@ -442,9 +442,9 @@ methods: {
         try {
             if(!event.target.checked){
                 event.preventDefault()
-            // }else if (this.setor != "Logística"){
-            //     this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.")
-            //     event.preventDefault()
+            }else if (this.setor != "Logística"){
+                this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.")
+                event.preventDefault()
             }else{
                 this.carregandoinfo = true;
                 console.log([filial, num, item, produto, event, vendedor, cliente])

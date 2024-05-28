@@ -8,6 +8,7 @@ import Login from './components/auth/Login.vue';
 import UsuariosInativos from './components/usuarios/UsuariosInativos.vue';
 import Controladoria from './components/controladoria/Controladoria.vue';
 import Qualidade from './components/qualidade/Qualidade.vue';
+import QualidadeCertificadoGarantia from './components/qualidade/CertificadoGarantia.vue';
 import QualidadeDocumentos from './components/qualidade/QualidadeDocumentos.vue';
 import AnexPage from './components/ui/AnexPage.vue';
 import DocumentosArquivados from './components/qualidade/DocumentosArquivados.vue';
@@ -40,6 +41,7 @@ const routes = [
     { path: '/usuarios/inativos', component: UsuariosInativos },
     { path: '/controladoria', component: Controladoria, meta: { carregando: true } },
     { path: '/qualidade', component: Qualidade, meta: { carregando: true } },
+    { path: '/qualidade/certificado-garantia', component: QualidadeCertificadoGarantia, meta: { carregando: true } },
     { path: '/qualidade/documentos', component: QualidadeDocumentos, meta: { carregando: true } },
     { path: '/qualidade/documentos/arquivados', component: DocumentosArquivados, meta: { carregando: true } },
     { path: '/rh', component: Rh },
