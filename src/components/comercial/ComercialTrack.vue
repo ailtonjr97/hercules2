@@ -50,39 +50,8 @@
             </tr>
         </thead>
         <tbody>
-            <div>
-                
-            </div>
             <tr v-for="api in apis">
-                <td>
-                    <button data-bs-toggle="collapse" :data-bs-target="'#a' + api.C5_FILIAL + api.C5_NUM" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button>
-                    <tr>
-                        <div :id="'a' + api.C5_FILIAL + api.C5_NUM" class="panel-collapse collapse mt-2 mb-2">
-                            <div class="table-wrapper table-striped">
-                                <table class="fl-table" id="myTable">
-                                    <thead>
-                                        <th>Código</th>
-                                        <th>Descrição</th>
-                                        <th>Quantidade</th>
-                                        <th>Separado CD</th>
-                                        <th>Usuário</th>
-                                        <th>Data</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="iten in api.itens[0]">
-                                            <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
-                                            <td>{{ iten.C6_QTDVEN }}</td>
-                                            <td>{{ iten.C6_DESCRI }}</td>
-                                            <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD ? true: false" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, api.C5_VEND1, api.C5_CLIENTE)"></td>
-                                            <td>{{ iten.C6_XNSEPCD }}</td>
-                                            <td>{{ iten.C6_XHSEPCD }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </tr>
-                </td>
+                <td><button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE)" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button></td>
                 <td>{{ api.R_E_C_N_O_ }}</td>
                 <td>{{ api.C5_FILIAL}}</td>
                 <td>{{ api.C5_NUM}}</td>
@@ -178,6 +147,39 @@
     </template>
 </modal>
 
+<modal v-if="itensModal" :title="`Itens do Orçamento:`">
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="table-wrapper table-striped">
+            <table class="fl-table" id="myTable">
+                <thead>
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                    <th>Separado CD</th>
+                    <th>Usuário</th>
+                    <th>Data</th>
+                </thead>
+                <tbody>
+                    <tr v-for="iten in itensLista" :key="iten.C6_ITEN">
+                        <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
+                        <td>{{ iten.C6_DESCRI }}</td>
+                        <td>{{ iten.C6_QTDVEN }}</td>
+                        <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD ? true: false" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem)"></td>
+                        <td>{{ iten.C6_XNSEPCD }}</td>
+                        <td>{{ iten.C6_XHSEPCD }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8 mt-2" @click="itensModal = false">Fechar</button>
+    </template>
+</modal>
+
 
 </template>
 
@@ -218,6 +220,10 @@ components: {
 },
 data(){
     return{
+        vendListaItem: null,
+        clienteListaItem: null,
+        itensLista: null,
+        itensModal: false,
         filialFiltro: '',
         vendedor: '',
         dataEnt: '',
@@ -243,6 +249,21 @@ data(){
     }
 },
 methods: {
+    async openItensModal(filial, numero, vendedor, cliente){
+        try {
+            this.vendListaItem = vendedor;
+            this.clienteListaItem = cliente;
+            this.carregandoinfo = true;
+            this.itensModal = true;
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/itens?filial=${filial}&numero=${numero}`, config);
+            this.itensLista = response.data;
+            this.carregandoinfo = false;
+        } catch (error) {
+            console.log(error)
+            alert('Falha ao executar ação. Tente novamente mais tarde');
+            this.carregandoinfo = false;
+        }
+    },
     async mostraModal(erro){
         this.mostraErro = true;
         this.textoPad = erro;
@@ -421,11 +442,12 @@ methods: {
         try {
             if(!event.target.checked){
                 event.preventDefault()
-            }else if (this.setor != "Logística"){
-                this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.")
-                event.preventDefault()
+            // }else if (this.setor != "Logística"){
+            //     this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.")
+            //     event.preventDefault()
             }else{
-                this.carregando = true;
+                this.carregandoinfo = true;
+                console.log([filial, num, item, produto, event, vendedor, cliente])
                 await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}`, config);
                 await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
                 this.refresh();
@@ -433,6 +455,9 @@ methods: {
                 setTimeout(()=>{
                     this.popup = false;
                 }, 2000);
+                this.openItensModal(filial, num, vendedor, cliente)
+                this.carregandoinfo = false;
+
             }
         } catch (error) {
             mostraModal("Falha ao executar ação. Tente novamente mais tarde.")
