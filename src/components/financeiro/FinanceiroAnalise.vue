@@ -13,6 +13,7 @@
     </table-top>
     <div class="row mb-2">
         <form-floating :placeholder="'Orçamento:'" :id="orcamento" :type="'number'" v-model="orcamento" v-on:keyup.enter="pesquisa()"></form-floating>
+        <form-floating :placeholder="'Cliente:'" :id="cliente" :type="'text'" v-model="nomCli" v-on:keyup.enter="pesquisa()"></form-floating>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
@@ -22,6 +23,7 @@
             <th>ID</th>
             <th>Filial</th>
             <th>Orçamento</th>
+            <th>Responsável</th>
             <th>Dt. Solicitação</th>
             <th>Solicit. Cli.</th>
             <th>Dt. Doc OK</th>
@@ -37,7 +39,8 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-center">
-                        <button v-if="resposta.ARQUIVA == 1 && resposta.ARQUIVADO == 0" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
+                        <!-- <button title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-trash"></i></button> -->
+                        <button title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
                         <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID, resposta.COD_CLIENTE, resposta.LOJA)"><i style="font-size: 14px;" class="fas fa-eye"></i></button></div>
                     </div>
                 </div>
@@ -50,6 +53,9 @@
             </td>
             <td>
                 <p>{{ resposta.NUMERO_PEDIDO }}</p>
+            </td>
+            <td>
+                <p>{{ resposta.RESPONSAVEL_APROV }}</p>
             </td>
             <td>
                 <p>{{formatarData(resposta.DATA_SOLICIT) }} {{ resposta.HORA_SOLICIT }}</p>
@@ -463,6 +469,7 @@ export default{
     },
     data(){
         return{
+            nomCli: '',
             orcamento: '',
             nomeClientes: [],
             parcelas: null,
@@ -944,9 +951,9 @@ export default{
                 this.carregando = true;
                 let response
                 if(this.mostraArquivadas){
-                    response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito-arquivadas?orcamento=${this.orcamento}`, config);
+                    response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito-arquivadas?orcamento=${this.orcamento}&cliente=${this.nomCli}`, config);
                 }else{
-                    response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito?orcamento=${this.orcamento}`, config);
+                    response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito?orcamento=${this.orcamento}&cliente=${this.nomCli}`, config);
                 }
                 this.respostas = response.data;
                 this.respostas.forEach(element => {
