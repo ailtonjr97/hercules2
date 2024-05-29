@@ -135,7 +135,11 @@ router.beforeEach(async (to, from, next) => {
       const token = getCookie('jwt');
       const decoded = jwtDecode(token);
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
-      const allowedIds = [705, 193, 189, 431];
+      const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
+      const allowedIds = [705, 193, 189, 431]; //Paloma, Ailton, Natali e Kesley.
+      vendedores.data.forEach(element => {
+        allowedIds.push(element.id)
+      });
 
       if (!allowedIds.includes(response.data[0].intranet_id)) {
         return next('/home');

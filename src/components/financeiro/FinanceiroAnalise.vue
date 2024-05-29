@@ -6,7 +6,7 @@
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
     <table-top :resultados="resultados">
         <template v-slot:tableButtons>
-            <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
+            <button v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188)" class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button v-if="!mostraArquivadas" class="button-8 mb-2" @click="arquivadas()">Arquivadas</button>
             <button v-if="mostraArquivadas" class="button-8 mb-2" @click="abertas()">Abertas</button>
         </template>
@@ -27,11 +27,13 @@
             <th>Dt. Solicitação</th>
             <th>Solicit. Cli.</th>
             <th>Dt. Doc OK</th>
+            <th>Dt. Resposta</th>
             <th>Prazo Resposta</th>
+            <th>Status</th>
             <th>Cliente</th>
-            <th>Nome Cliente</th>
             <th>Vendedor</th>
             <th>Valor</th>
+            <th>Nome Cliente</th>
             </tr>
         </thead>
         <tbody>
@@ -39,8 +41,7 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-center">
-                        <!-- <button title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-trash"></i></button> -->
-                        <button title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
+                        <button v-if="idLogado == 705 || idLogado == 193 || idLogado == 188" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
                         <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID, resposta.COD_CLIENTE, resposta.LOJA)"><i style="font-size: 14px;" class="fas fa-eye"></i></button></div>
                     </div>
                 </div>
@@ -67,19 +68,25 @@
                 <p>{{ formatarDataJs(resposta.DATA_DOC_OK) }}</p>
             </td>
             <td>
+                <p>{{ formatarDataJs(resposta.DATA_RESP) }}</p>
+            </td>
+            <td>
                 <p>{{ formatarDataJs(resposta.PRAZO_RESPOSTA) }}</p>
             </td>
             <td>
-                <button title="Ver Cliente" class="button-8" @click="openClienteModal(resposta.COD_CLIENTE, resposta.LOJA)">{{ resposta.COD_CLIENTE }}</button>
+                <p>{{ resposta.RESULTADO_ANALISE }}</p>
             </td>
             <td>
-                <p>{{ resposta.CLIENTE }}</p>
+                <button title="Ver Cliente" class="button-8" @click="openClienteModal(resposta.COD_CLIENTE, resposta.LOJA)">{{ resposta.COD_CLIENTE }}</button>
             </td>
             <td>
                 <button title="Ver Vendedor" class="button-8" @click="openVendedorModal(resposta.VENDEDOR)">{{ resposta.VENDEDOR }}</button>
             </td>
             <td>
                 <p>{{ valoresPedido[index] }}</p>
+            </td>
+            <td>
+                <p>{{ resposta.CLIENTE }}</p>
             </td>
             </tr>
         </tbody>
@@ -156,13 +163,13 @@
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Solicit Cli.'" v-model="infoDocumento.DT_SOLICIT_DOCUMENTO"></form-span>
-                                <div v-if="!mostraArquivadas" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188)" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Doc. OK'" v-model="infoDocumento.DATA_DOC_OK"></form-span>
-                                <div v-if="!mostraArquivadas" style="margin-left: 2%;"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188)"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
                             </div>
                         </div>
                     </div>
@@ -469,6 +476,7 @@ export default{
     },
     data(){
         return{
+            idLogado: null,
             nomCli: '',
             orcamento: '',
             nomeClientes: [],
@@ -1019,6 +1027,7 @@ export default{
                 response.data.forEach(element => {
                     this.valoresPedido.push((element.VALOR_PEDIDO * 1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }))
                 });
+                this.idLogado = logado.data[0].id
                 this.nameLogado = logado.data[0].name
                 this.resultados = response.data.length;
                 this.fullLoad = true;
