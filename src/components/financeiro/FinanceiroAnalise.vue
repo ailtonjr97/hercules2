@@ -107,6 +107,11 @@
                     </div>
                 </div>
                 <div class="row mt-2">
+                    <div class="col">
+                        <form-span :readonly="true" :span="'E-mail'" v-model="infoDocumento.EMAIL"></form-span>
+                    </div>
+                </div>
+                <div class="row mt-2">
                     <div class="col-lg-6">
                         <div class="row">
                             <div class="col">
@@ -163,13 +168,13 @@
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Solicit Cli.'" v-model="infoDocumento.DT_SOLICIT_DOCUMENTO"></form-span>
-                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188)" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188 || idLogado == 431)" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Doc. OK'" v-model="infoDocumento.DATA_DOC_OK"></form-span>
-                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188)"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188 || idLogado == 431)"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
                             </div>
                         </div>
                     </div>
@@ -231,8 +236,9 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <loading v-if="carregandoInfoTabela"></loading>
-                <div v-if="!carregandoInfoTabela" class="table-wrapper table-responsive table-striped mb-5">
+                <loading v-if="carregandoInfoTabela && !carregandoInfoTabelaErro"></loading>
+                <h3 style="text-align: center;" v-if="carregandoInfoTabelaErro">Falha ao buscar parcelas.</h3>
+                <div v-if="!carregandoInfoTabela && !carregandoInfoTabelaErro" class="table-wrapper table-responsive table-striped mb-5">
                     <table class="fl-table" id="myTable">
                         <thead>
                           <tr style="height: 25px;">
@@ -476,6 +482,7 @@ export default{
     },
     data(){
         return{
+            carregandoInfoTabelaErro: false,
             idLogado: null,
             nomCli: '',
             orcamento: '',
@@ -739,37 +746,46 @@ export default{
         },
         async DispararEmailDocumentos(){
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/email?id=${this.emailId}&email=${this.emailCliente}&nome=${this.nomeClienteTrim}`, config);
-                this.carregandoinfo = false;
-                this.perguntaDisparaEmail = false;
-                this.popup = true;
-                setTimeout(()=>{
-                    this.popup = false;
-                }, 2000);
-                const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.emailId}`, config);
-                const dataISO = campo.data[0].DT_SOLICIT_DOCUMENTO;
-                const data = new Date(dataISO);
-                const options = {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false,
-                    timeZone: 'America/Sao_Paulo'  // Ajuste conforme o seu fuso horário, se necessário
-                };
-                this.infoDocumento.DT_SOLICIT_DOCUMENTO = data.toLocaleString('pt-BR', options).replace(',', '');
+                if(!this.emailCliente){
+                    alert('E-mail do cliente não pode ser vazio. Favor arrumar no Protheus.')
+                }else{
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/email?id=${this.emailId}&email=${this.emailCliente}&nome=${this.nomeClienteTrim}`, config);
+                    this.carregandoinfo = false;
+                    this.perguntaDisparaEmail = false;
+                    this.popup = true;
+                    setTimeout(()=>{
+                        this.popup = false;
+                    }, 2000);
+                    const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.emailId}`, config);
+                    const dataISO = campo.data[0].DT_SOLICIT_DOCUMENTO;
+                    const data = new Date(dataISO);
+                    const options = {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                        timeZone: 'America/Sao_Paulo'  // Ajuste conforme o seu fuso horário, se necessário
+                    };
+                    this.infoDocumento.DT_SOLICIT_DOCUMENTO = data.toLocaleString('pt-BR', options).replace(',', '');
+                }
             } catch (error) {
                 this.carregandoinfo = false;
                 alert("Falha ao executar ação. Tente novamente mais tarde.")
             }
+        },
+        removerDepoisDoPontoEVirgula(email) {
+            return email.split(';')[0];
         },
         async perguntarDispararEmailCliente(cod, loja, id, email, nome_cliente){
             try {
                 this.perguntaDisparaEmail = true;
                 this.carregandoinfo = true;
                 this.nomeClienteTrim = nome_cliente.trimEnd();
-                this.emailCliente = email.trimEnd();
+                const emailFomatado = this.removerDepoisDoPontoEVirgula(email)
+                emailFomatado.trimEnd()
+                this.emailCliente = emailFomatado.trimEnd()
                 this.emailId = id;
                 this.carregandoinfo = false;
             } catch (error) {
@@ -873,6 +889,7 @@ export default{
             try {
                 this.documentoModal = true;
                 this.carregandoInfoTabela = true;
+                this.carregandoInfoTabelaErro = false;
                 this.carregandoinfo = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${id}`, config);
                 const cliente = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${cod}/${loja}`, config);
@@ -943,12 +960,17 @@ export default{
                 this.parcelas = this.parcelas.data
                 this.carregandoInfoTabela = false;
             } catch (error) {
-                console.log(error);
-                alert('Falha ao executar ação. Favor tentar novamente mais tarde.');
+                if(error.response.status == 404){
+                    this.carregandoInfoTabelaErro = true;
+                }else{
+                    console.log(error.response.status);
+                    alert('Falha ao executar ação. Favor tentar novamente mais tarde.');
+                }
             }
         },
         async fecharSolicitarDocumento(){
             try {
+                this.carregandoInfoTabelaErro = false;
                 this.documentoModal = false;
             } catch (error) {
                 alert('Falha ao executar ação. Favor tentar novamente mais tarde.');
