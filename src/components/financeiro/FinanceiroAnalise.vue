@@ -1027,7 +1027,7 @@ export default{
                 response.data.forEach(element => {
                     this.valoresPedido.push((element.VALOR_PEDIDO * 1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }))
                 });
-                this.idLogado = logado.data[0].id
+                this.idLogado = logado.data[0].intranet_id
                 this.nameLogado = logado.data[0].name
                 this.resultados = response.data.length;
                 this.fullLoad = true;
