@@ -79,7 +79,7 @@ export default {
       const doc = params.get('doc'); 
       const loja = params.get('loja'); 
 
-      axios.get(`http://192.168.0.88:5000/nf/itens?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`)
+      axios.get(`${import.meta.env.VITE_BACKEND_IP}/nf/itens?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`)
         .then(response => {
           this.itens = response.data;
         })
@@ -95,7 +95,7 @@ export default {
       const doc = params.get('doc'); 
       const loja = params.get('loja'); 
 
-      axios.get(`http://192.168.0.88:5000/nf/nota?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`)
+      axios.get(`${import.meta.env.VITE_BACKEND_IP}/nf/nota?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`)
         .then(response => {
           this.dados = response.data;
         })
