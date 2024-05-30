@@ -86,7 +86,7 @@
                     {{ api.C5_XNLIBEX  }}<br>
                     {{ api.C5_XHLIBEX }}<br>
                     <span v-if="api.C5_XLIBEXP">Nota: {{ api.C5_NOTA }}</span><br>
-                    <a v-if="api.C5_XLIBEXP" :href="`http://192.168.0.88:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>                </td>
+                    <a v-if="api.C5_XLIBEXP" :href="`http://aplicacao.fibracem.com:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>                </td>
                 <td>
                     <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI ? true : false" :disabled="!api.C5_XLIBEXP"><br>
                     {{ api.C5_XNEXPED  }}<br>
