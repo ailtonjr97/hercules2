@@ -83,7 +83,7 @@
                 <button title="Ver Vendedor" class="button-8" @click="openVendedorModal(resposta.VENDEDOR)">{{ resposta.VENDEDOR }}</button>
             </td>
             <td>
-                <p>{{ valoresPedido[index] }}</p>
+                <p>{{ resposta.VALOR_PEDIDO }}</p>
             </td>
             <td>
                 <p>{{ resposta.CLIENTE }}</p>
@@ -351,6 +351,12 @@
                 <h3>Deseja disparar e-mail solicitando documentos ao cliente {{nomeClienteTrim}}?</h3>
             </div>
         </div>
+        <div class="row mt-2">
+            <div class="col">
+                <input type="checkbox" id="checkEmailEnviado" v-model="checkEmailEnviado">
+                <label for="checkEmailEnviado" style="margin-left: 0.5%;">Esse e-mail já foi enviado manualmente?</label>
+            </div>
+        </div>
     </div>
     </template>
     <template v-slot:buttons v-if="!carregandoinfo">
@@ -482,6 +488,7 @@ export default{
     },
     data(){
         return{
+            checkEmailEnviado: false,
             carregandoInfoTabelaErro: false,
             idLogado: null,
             nomCli: '',
@@ -749,10 +756,11 @@ export default{
                 if(!this.emailCliente){
                     alert('E-mail do cliente não pode ser vazio. Favor arrumar no Protheus.')
                 }else{
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/email?id=${this.emailId}&email=${this.emailCliente}&nome=${this.nomeClienteTrim}`, config);
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/email?id=${this.emailId}&email=${this.emailCliente}&nome=${this.nomeClienteTrim}&checkemail=${this.checkEmailEnviado}`, config);
                     this.carregandoinfo = false;
                     this.perguntaDisparaEmail = false;
                     this.popup = true;
+                    this.checkEmailEnviado = false;
                     setTimeout(()=>{
                         this.popup = false;
                     }, 2000);
