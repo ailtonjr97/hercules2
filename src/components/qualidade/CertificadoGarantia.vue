@@ -72,36 +72,52 @@ export default {
     this.fetchCab();
   },
   methods: {
-    fetchItens() {
+
+    async fetchItens() {
+
       const params = new URLSearchParams(window.location.search);
       const filial = params.get('filial'); 
       const cli = params.get('cli'); 
       const doc = params.get('doc'); 
       const loja = params.get('loja'); 
+      
+      function getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                }
+                const config = {
+                    headers: {
+                    'Authorization': `jwt=${getCookie('jwt')}`,
+                    }
+                }
 
-      axios.get(`${import.meta.env.VITE_BACKEND_IP}/nf/itens?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`)
-        .then(response => {
-          this.itens = response.data;
-        })
-        .catch(error => {
-          console.error("Houve um erro ao buscar os itens: ", error);
-        });
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/nf/itens?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`,config)
+      this.itens = response.data
     },
 
-    fetchCab() {
+    async fetchCab() {
+
+      function getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                }
+                const config = {
+                    headers: {
+                    'Authorization': `jwt=${getCookie('jwt')}`,
+                    }
+                }
+
+                
       const params = new URLSearchParams(window.location.search);
       const filial = params.get('filial'); 
       const cli = params.get('cli'); 
       const doc = params.get('doc'); 
       const loja = params.get('loja'); 
 
-      axios.get(`${import.meta.env.VITE_BACKEND_IP}/nf/nota?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`)
-        .then(response => {
-          this.dados = response.data;
-        })
-        .catch(error => {
-          console.error("Houve um erro ao buscar os itens: ", error);
-        });
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/nf/nota?filial=${filial}&cli=${cli}&doc=${doc}&loja=${loja}`,config)
+      this.dados = response.data
     },
     
     formatDate(dateStr) {
