@@ -51,7 +51,7 @@
         </thead>
         <tbody>
             <tr v-for="api in apis">
-                <td><button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE)" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button></td>
+                <td><button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button></td>
                 <td>{{ api.R_E_C_N_O_ }}</td>
                 <td>{{ api.C5_FILIAL}}</td>
                 <td>{{ api.C5_NUM}}</td>
@@ -167,7 +167,7 @@
                         <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
                         <td>{{ iten.C6_DESCRI }}</td>
                         <td>{{ iten.C6_QTDVEN }}</td>
-                        <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD ? true: false" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem)"></td>
+                        <td><input type="checkbox" name="" id="" v-model="iten.C6_XSEPCD" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem, iten.C6_XSEPCD)"></td>
                         <td>{{ iten.C6_XNSEPCD }}</td>
                         <td>{{ iten.C6_XHSEPCD }}</td>
                     </tr>
@@ -221,6 +221,7 @@ components: {
 },
 data(){
     return{
+        libcom: null,
         vendListaItem: null,
         clienteListaItem: null,
         itensLista: null,
@@ -250,8 +251,9 @@ data(){
     }
 },
 methods: {
-    async openItensModal(filial, numero, vendedor, cliente){
+    async openItensModal(filial, numero, vendedor, cliente, libcom){
         try {
+            this.libcom = libcom
             this.vendListaItem = vendedor;
             this.clienteListaItem = cliente;
             this.carregandoinfo = true;
@@ -439,26 +441,39 @@ methods: {
             e.preventDefault();
         }
     },
-    async marcaSepC6(filial, num, item, produto, event, vendedor, cliente){
+    async marcaSepC6(filial, num, item, produto, event, vendedor, cliente, marcado){
         try {
-            if(!event.target.checked){
-                event.preventDefault()
-            }else if (this.setor != "Logística"){
-                this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.")
-                event.preventDefault()
+            if(this.libcom == true){
+                this.itensModal = false;
+                this.mostraModal("Não é permitido desmarcar itens se a opção 'Liberado Comercial' estiver marcada")
+                event.preventDefault();
             }else{
-                this.carregandoinfo = true;
-                console.log([filial, num, item, produto, event, vendedor, cliente])
-                await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}`, config);
-                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
-                this.refresh();
-                this.popup = true;
-                setTimeout(()=>{
-                    this.popup = false;
-                }, 2000);
-                this.openItensModal(filial, num, vendedor, cliente)
-                this.carregandoinfo = false;
-
+                if(!marcado){
+                    this.carregandoinfo = true;
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${false}`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
+                    this.refresh();
+                    this.popup = true;
+                    setTimeout(()=>{
+                        this.popup = false;
+                    }, 2000);
+                    this.openItensModal(filial, num, vendedor, cliente)
+                    this.carregandoinfo = false;
+                }else if (this.setor != "Logística"){
+                    this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.")
+                    event.preventDefault()
+                }else{
+                    this.carregandoinfo = true;
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${true}`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
+                    this.refresh();
+                    this.popup = true;
+                    setTimeout(()=>{
+                        this.popup = false;
+                    }, 2000);
+                    this.openItensModal(filial, num, vendedor, cliente)
+                    this.carregandoinfo = false;
+                }   
             }
         } catch (error) {
             mostraModal("Falha ao executar ação. Tente novamente mais tarde.")
