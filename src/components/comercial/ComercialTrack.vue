@@ -8,11 +8,12 @@
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="filialFiltro" :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"       :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"     :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="dataEnt"      :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="limit"        :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="filialFiltro"  :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"        :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"      :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="clienteFiltro" :id="'procuraBtn5'" :num="5" :placeholder="'Cliente:'"         :type="'text'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="dataEnt"       :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
+        <form-floating  v-on:keyup.enter="pesquisa()" v-model="limit"         :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
     </div>
     <div class="row mb-2">
         <div class="col">
@@ -40,6 +41,7 @@
             <th>Retorno</th>
             <th>Vendedor</th>            
             <th>Cliente</th>
+            <th>Nome Cliente</th>
             <th>Data de Entrega</th>
             <th>Separado CD</th>
             <th>Liberado Comercial</th>
@@ -59,7 +61,8 @@
                 <td>{{ api.C5_VEND1}}</td>              
                 <td>
                     <button title="Ver cliente" class="button-8" @click="openClienteModal(api.C5_CLIENTE, api.C5_LOJACLI)">{{ api.C5_CLIENTE }}</button>
-                </td>                
+                </td>
+                <td>{{ api.A1_NOME}}</td>             
                 <td>{{ api.C5_FECENT}}</td>
                 <td>
                     <input class="mt-4" @click="$event.preventDefault()" type="checkbox" name="separado_cd" id="separado_cd" :checked="api.C5_XSEPCD ? true : false"><br>
@@ -221,6 +224,7 @@ components: {
 },
 data(){
     return{
+        clienteFiltro: '',
         libcom: null,
         vendListaItem: null,
         clienteListaItem: null,
@@ -289,7 +293,7 @@ methods: {
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=${this.limit}&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&pcampo=${pCampo}&scampo=${sCampo}&pvalor=${pValor}&svalor=${sValor}`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=${this.limit}&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&pcampo=${pCampo}&scampo=${sCampo}&pvalor=${pValor}&svalor=${sValor}&clientenome=${this.clienteFiltro}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
@@ -536,7 +540,7 @@ async created(){
             }
         }
         const decoded = jwtDecode(getCookie('jwt'));
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=&pcampo=&scampo=&pvalor=&svalor=`, config);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=&pcampo=&scampo=&pvalor=&svalor=&clientenome=`, config);
         const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         this.apis = response.data;
         this.setor = logado.data[0].setor;
@@ -544,6 +548,7 @@ async created(){
         this.resultados = response.data.length;
         this.carregando = false;
     } catch (error) {
+        console.log(error)
         alert("Erro ao carregar página. Favor tentar mais tarde.");
         this.carregando = false;
     }
