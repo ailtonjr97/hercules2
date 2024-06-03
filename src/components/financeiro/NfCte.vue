@@ -109,6 +109,23 @@ export default{
         }
     },
     methods: {
+        async refresh(){
+            try {
+                this.carregando = true;
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte`, config);
+                this.items = response.data;
+                this.resultados = response.data.length;
+                this.carregando = false;
+            } catch (error) {
+                this.carregando = false;
+                if(error.response.status == 404){
+                    this.items = [];
+                    this.resultados = 0;
+                }else{
+                    alert('Falha na execução. Favor tentar novamente mais tarde.')
+                }
+            }
+        },
         async pesquisa(){
             try {
                 this.carregando = true;
