@@ -688,15 +688,6 @@ export default{
         },
         async credFinaliza(){
             try {
-                if(checkEmailCliente){
-                    if(this.infoDocumento.EMAIL.trim() === ''){
-                        alert('E-mail do cliente está vazio');
-                    }
-                }else if(checkEmailVendedor){
-                    if(this.infoDocumento.EMAIL_VENDEDOR.trim() === ''){
-                        alert('E-mail do vendedor está vazio');
-                    }
-                }else{
                     this.credConfimModal = false;
                     this.carregandoinfo = true;
                     if(!this.resultAnal){
@@ -740,7 +731,6 @@ export default{
                         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
                         this.respostas = response.data;
                     }   
-                }
                 this.carregandoinfo = false;
             } catch (error) {
                 console.log(error)
