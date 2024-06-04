@@ -39,7 +39,7 @@
             <!-- <th>ID</th> -->
             <th>Filial</th>
             <th>Pedido</th>
-            <th>Retorno</th>
+            <th>Retorno/Nota</th>
             <th>Vendedor</th>            
             <th>Cliente</th>
             <th>Nome Cliente</th>
@@ -84,7 +84,9 @@
                 <td>
                     <input class="mt-4" @click="marcaRetFis(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="retorno_fiscal" id="retorno_fiscal" :checked="api.C5_XRETFIS ? true : false" :disabled="!api.C5_XLIBFAT"><br>
                     {{ api.C5_XNRETFI }}<br>
-                    {{ api.C5_XHRETFI }}
+                    {{ api.C5_XHRETFI }}<br>
+                    <span v-if="api.C5_XRETFIS">Nota: {{ api.NOTA_RET }}</span>
+                    
                 </td>
                 <td>
                     <input class="mt-4" @click="marcaFaturd(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBEXP, $event)" type="checkbox" name="faturado" id="faturado" :checked="api.C5_XFATURD ? true : false" :disabled="!api.C5_XRETFIS"><br>

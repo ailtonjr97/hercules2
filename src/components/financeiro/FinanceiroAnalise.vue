@@ -688,48 +688,58 @@ export default{
         },
         async credFinaliza(){
             try {
-                this.credConfimModal = false;
-                this.carregandoinfo = true;
-                if(!this.resultAnal){
-                    alert("Campo 'Result. Análise' não pode ser vazio.");
-                    this.carregandoinfo = false;
-                }else if(this.resultAnal == 'PARCIAL' && !this.infoDocumento.PERCENTUAL_ADIANT){
-                    alert("Campo 'Porcent. à vista' não pode ser vazio.");
-                    this.carregandoinfo = false;
+                if(checkEmailCliente){
+                    if(this.infoDocumento.EMAIL.trim() === ''){
+                        alert('E-mail do cliente está vazio');
+                    }
+                }else if(checkEmailVendedor){
+                    if(this.infoDocumento.EMAIL_VENDEDOR.trim() === ''){
+                        alert('E-mail do vendedor está vazio');
+                    }
                 }else{
-                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/financeiro/cred-finaliza`, [
-                        {'result': this.resultAnal},
-                        {'diferenca': this.infoDocumento.FALTA_LIMITE_NUM},
-                        {'limite': this.infoDocumento.LIMITE_ATUAL_NUM},
-                        {'id': this.infoDocumento.ID},
-                        {'checkEmailCli': this.checkEmailCliente},
-                        {'checkEmailVend': this.checkEmailVendedor},
-                        {'emailCli': this.infoDocumento.EMAIL},
-                        {'pedido': this.infoDocumento.NUMERO_PEDIDO},
-                        {'filial': this.infoDocumento.FILIAL},
-                        {'vendCod': this.infoDocumento.VENDEDOR},
-                        {'porcentagem': this.infoDocumento.PERCENTUAL_ADIANT},
-                        {'valor': this.infoDocumento.VALOR_PEDIDO_NUM},
-                        {'respostaAnalise': this.infoDocumento.RESPOSTA_ANALISE},
-                        {'obsResposta': this.infoDocumento.OBS_RESPOSTA},
-                        {'novo_limite': this.infoDocumento.NOVO_LIMITE}
-                    ], config);
-                    const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.infoDocumento.ID}`, config);
-                    this.resultAnal = campo.data[0].RESULTADO_ANALISE;
-                    this.infoDocumento.NOVO_LIMITE = this.formattedValor(campo.data[0].NOVO_LIMITE * 1);
-                    this.infoDocumento.VALOR_ADIANT = this.formattedValor(campo.data[0].VALOR_ADIANT * 1);
-                    this.infoDocumento.PERCENTUAL_ADIANT = campo.data[0].PERCENTUAL_ADIANT * 1;
-                    this.infoDocumento.RESPOSTA_ANALISE = campo.data[0].RESPOSTA_ANALISE;
-                    this.infoDocumento.OBS_RESPOSTA = campo.data[0].OBS_RESPOSTA;
-                    this.infoDocumento.DATA_RESP = this.formatDateTime(campo.data[0].DATA_RESP);
-                    this.infoDocumento.ARQUIVA = campo.data[0].ARQUIVA;
-                    this.carregandoinfo = false;
-                    this.popup = true;
-                    setTimeout(()=>{
-                        this.popup = false;
-                    }, 2000);
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
-                    this.respostas = response.data;
+                    this.credConfimModal = false;
+                    this.carregandoinfo = true;
+                    if(!this.resultAnal){
+                        alert("Campo 'Result. Análise' não pode ser vazio.");
+                        this.carregandoinfo = false;
+                    }else if(this.resultAnal == 'PARCIAL' && !this.infoDocumento.PERCENTUAL_ADIANT){
+                        alert("Campo 'Porcent. à vista' não pode ser vazio.");
+                        this.carregandoinfo = false;
+                    }else{
+                        await axios.post(`${import.meta.env.VITE_BACKEND_IP}/financeiro/cred-finaliza`, [
+                            {'result': this.resultAnal},
+                            {'diferenca': this.infoDocumento.FALTA_LIMITE_NUM},
+                            {'limite': this.infoDocumento.LIMITE_ATUAL_NUM},
+                            {'id': this.infoDocumento.ID},
+                            {'checkEmailCli': this.checkEmailCliente},
+                            {'checkEmailVend': this.checkEmailVendedor},
+                            {'emailCli': this.infoDocumento.EMAIL},
+                            {'pedido': this.infoDocumento.NUMERO_PEDIDO},
+                            {'filial': this.infoDocumento.FILIAL},
+                            {'vendCod': this.infoDocumento.VENDEDOR},
+                            {'porcentagem': this.infoDocumento.PERCENTUAL_ADIANT},
+                            {'valor': this.infoDocumento.VALOR_PEDIDO_NUM},
+                            {'respostaAnalise': this.infoDocumento.RESPOSTA_ANALISE},
+                            {'obsResposta': this.infoDocumento.OBS_RESPOSTA},
+                            {'novo_limite': this.infoDocumento.NOVO_LIMITE}
+                        ], config);
+                        const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.infoDocumento.ID}`, config);
+                        this.resultAnal = campo.data[0].RESULTADO_ANALISE;
+                        this.infoDocumento.NOVO_LIMITE = this.formattedValor(campo.data[0].NOVO_LIMITE * 1);
+                        this.infoDocumento.VALOR_ADIANT = this.formattedValor(campo.data[0].VALOR_ADIANT * 1);
+                        this.infoDocumento.PERCENTUAL_ADIANT = campo.data[0].PERCENTUAL_ADIANT * 1;
+                        this.infoDocumento.RESPOSTA_ANALISE = campo.data[0].RESPOSTA_ANALISE;
+                        this.infoDocumento.OBS_RESPOSTA = campo.data[0].OBS_RESPOSTA;
+                        this.infoDocumento.DATA_RESP = this.formatDateTime(campo.data[0].DATA_RESP);
+                        this.infoDocumento.ARQUIVA = campo.data[0].ARQUIVA;
+                        this.carregandoinfo = false;
+                        this.popup = true;
+                        setTimeout(()=>{
+                            this.popup = false;
+                        }, 2000);
+                        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/analise-de-credito`, config);
+                        this.respostas = response.data;
+                    }   
                 }
                 this.carregandoinfo = false;
             } catch (error) {
@@ -812,14 +822,18 @@ export default{
         },
         async perguntarDispararEmailCliente(cod, loja, id, email, nome_cliente){
             try {
-                this.perguntaDisparaEmail = true;
-                this.carregandoinfo = true;
-                this.nomeClienteTrim = nome_cliente.trimEnd();
-                const emailFomatado = this.removerDepoisDoPontoEVirgula(email)
-                emailFomatado.trimEnd()
-                this.emailCliente = emailFomatado.trimEnd()
-                this.emailId = id;
-                this.carregandoinfo = false;
+                if(email.trim() === ''){
+                    alert('E-mail do cliente está vazio.')
+                }else{
+                    this.perguntaDisparaEmail = true;
+                    this.carregandoinfo = true;
+                    this.nomeClienteTrim = nome_cliente.trimEnd();
+                    const emailFomatado = this.removerDepoisDoPontoEVirgula(email)
+                    emailFomatado.trimEnd()
+                    this.emailCliente = emailFomatado.trimEnd()
+                    this.emailId = id;
+                    this.carregandoinfo = false;
+                }
             } catch (error) {
                 console.log(error)
                 this.carregandoinfo = false;
@@ -968,7 +982,8 @@ export default{
                     OBS_RESPOSTA: response.data[0].OBS_RESPOSTA || null,
                     PRAZO_RESPOSTA: this.formatDateTime(response.data[0].PRAZO_RESPOSTA) || null,
                     DATA_RESP: this.formatDateTime(response.data[0].DATA_RESP) || null,
-                    ARQUIVA: response.data[0].ARQUIVA
+                    ARQUIVA: response.data[0].ARQUIVA,
+                    EMAIL_VENDEDOR: response.data[0].EMAIL_VENDEDOR
                 };
 
                 this.resultAnal = response.data[0].RESULTADO_ANALISE
