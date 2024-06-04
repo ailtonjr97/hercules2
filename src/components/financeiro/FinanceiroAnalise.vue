@@ -6,7 +6,7 @@
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
     <table-top :resultados="resultados">
         <template v-slot:tableButtons>
-            <button v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188)" class="button-8 mb-2" @click="refresh()">Atualizar</button>
+            <button v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189)" class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button v-if="!mostraArquivadas" class="button-8 mb-2" @click="arquivadas()">Arquivadas</button>
             <button v-if="mostraArquivadas" class="button-8 mb-2" @click="abertas()">Abertas</button>
         </template>
@@ -41,7 +41,7 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-center">
-                        <button v-if="idLogado == 705 || idLogado == 193 || idLogado == 188" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
+                        <button v-if="idLogado == 705 || idLogado == 193 || idLogado == 189" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
                         <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID, resposta.COD_CLIENTE, resposta.LOJA)"><i style="font-size: 14px;" class="fas fa-eye"></i></button></div>
                     </div>
                 </div>
@@ -168,13 +168,13 @@
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Solicit Cli.'" v-model="infoDocumento.DT_SOLICIT_DOCUMENTO"></form-span>
-                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188 || idLogado == 431)" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431)" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Doc. OK'" v-model="infoDocumento.DATA_DOC_OK"></form-span>
-                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 188 || idLogado == 431)"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431)"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
                             </div>
                         </div>
                     </div>
@@ -185,7 +185,10 @@
                             <span-textarea :span="'Obs. Cadastro'" :altura="'50'" v-model="infoDocumento.OBS_CADASTRO"></span-textarea>
                         </div>
                         <div class="row mt-2">
-                            <form-span :readonly="true" :span="'Responsável pela Aprovação'" v-model="infoDocumento.RESPONSAVEL_APROV"></form-span>
+                            <div class="col d-flex justify-content-evenly">
+                                <span-select :span="'Responsável pela Aprovação'" :options="optionsRespAprov" v-model="infoDocumento.RESPONSAVEL_APROV"></span-select>
+                                <div style="margin-left: 0.5%;" v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431)"><button title="Trocar Responsável" class="button-8" @click="trocaResp(infoDocumento.ID, infoDocumento.RESPONSAVEL_APROV)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                            </div>
                         </div>
 <!--                         <div class="row mt-2">
                             <div class="col-lg-12">
@@ -583,6 +586,13 @@ export default{
                 {valor: "PARCIAL", descri: 'PARCIAL'}
             ];
         },
+        optionsRespAprov(){
+            return [
+                {valor: "Paloma Luana Veiga", descri: 'Paloma Luana Veiga'},
+                {valor: "Kesley Machado", descri: 'Kesley Machado'},
+                {valor: "Natali Evelin Peres Pereira", descri: 'Natali Evelin Peres Pereira'}
+            ];
+        },
         optionsPercent(){
             return [
             {valor: "10", descri: '10'},
@@ -600,6 +610,20 @@ export default{
         },
     },
     methods: {
+        async trocaResp(id, resp){
+            try {
+                this.carregandoinfo = true;
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/troca_resp?id=${id}&resp=${resp}`, config);
+                this.popup = true;
+                setTimeout(()=>{
+                    this.popup = false;
+                }, 2000);
+                this.carregandoinfo = false;
+            } catch (error) {
+                console.log(error)
+                alert('Falha ao executar ação. Tente novamente mais tarde.')
+            }
+        },
         async abertas(){
             try {
                 this.mostraArquivadas = false;

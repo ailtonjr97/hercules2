@@ -20,13 +20,14 @@
             <input                      type="radio" name="filtro_radio" id="filtro_separado_cd"           @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')"><label for="filtro_separado_cd">Aguard. Separado CD</label>
             <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_comercial"    @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'T', 'F')"><label for="filtro_liberado_comercial">Aguardando Liberado Comercial</label>
             <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_faturamento"  @click="pesquisa('C5_XLIBCOM', 'C5_XLIBFAT', 'T', 'F')"><label for="filtro_liberado_faturamento">Aguardando Liberado Faturamento</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_faturado"              @click="pesquisa('C5_XLIBFAT', 'C5_XFATURD', 'T', 'F')"><label for="filtro_faturado">Aguardando Faturado</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_expedicao"    @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_retorno_fiscal"        @click="pesquisa('C5_XLIBFAT', 'C5_XRETFIS', 'T', 'F')"><label for="filtro_retorno_fiscal">Aguardando Retorno Fiscal</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_faturado"              @click="pesquisa('C5_XRETFIS', 'C5_XFATURD', 'T', 'F')"><label for="filtro_faturado">Aguardando Faturado</label>
         </div>
     </div>
     <div class="row mb-2">
         <div class="col">
-            <input                      type="radio" name="filtro_radio" id="filtro_expedido" @click="pesquisa('C5_XLIBEXP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
+            <input type="radio" name="filtro_radio" id="filtro_liberado_expedicao"            @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_expedido" @click="pesquisa('C5_XLIBEXP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
             <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_todos"    @click="pesquisa()" checked><label for="filtro_todos">Todos</label>
         </div>
     </div>
@@ -35,7 +36,7 @@
         <thead>
             <tr style="height: 25px">
             <th>Itens</th>
-            <th>ID</th>
+            <!-- <th>ID</th> -->
             <th>Filial</th>
             <th>Pedido</th>
             <th>Retorno</th>
@@ -46,6 +47,7 @@
             <th>Separado CD</th>
             <th>Liberado Comercial</th>
             <th>Liberado Faturamento</th>
+            <th>Retorno Fiscal</th>
             <th>Faturado</th>
             <th>Liberado Expedição</th>
             <th>Expedido</th>
@@ -54,7 +56,7 @@
         <tbody>
             <tr v-for="api in apis">
                 <td><button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button></td>
-                <td>{{ api.R_E_C_N_O_ }}</td>
+                <!-- <td>{{ api.R_E_C_N_O_ }}</td> -->
                 <td>{{ api.C5_FILIAL}}</td>
                 <td>{{ api.C5_NUM}}</td>
                 <td>{{ api.C5_XPEDTR}}</td>    
@@ -75,12 +77,17 @@
                     {{ api.C5_XHLIBCO }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT ? true : false" :disabled="!api.C5_XLIBCOM"><br>
+                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XRETFIS, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT ? true : false" :disabled="!api.C5_XLIBCOM"><br>
                     {{ api.C5_XNLIBFA  }}<br>
                     {{ api.C5_XHLIBFA }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaFaturd(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBEXP, $event)" type="checkbox" name="faturado" id="faturado" :checked="api.C5_XFATURD ? true : false" :disabled="!api.C5_XLIBFAT"><br>
+                    <input class="mt-4" @click="marcaRetFis(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="retorno_fiscal" id="retorno_fiscal" :checked="api.C5_XRETFIS ? true : false" :disabled="!api.C5_XLIBFAT"><br>
+                    {{ api.C5_XNRETFI }}<br>
+                    {{ api.C5_XHRETFI }}
+                </td>
+                <td>
+                    <input class="mt-4" @click="marcaFaturd(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBEXP, $event)" type="checkbox" name="faturado" id="faturado" :checked="api.C5_XFATURD ? true : false" :disabled="!api.C5_XRETFIS"><br>
                     {{ api.C5_XNFATUR  }}<br>
                     {{ api.C5_XHFATUR  }}
                 </td>
@@ -389,10 +396,38 @@ methods: {
             e.preventDefault();
         }
     },
-    async marcaLibFat(filial, num, faturd, e){
+    async marcaRetFis(filial, num, faturd, e){
         try {
             if(faturd){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Faturado' estiver preenchido.");
+                e.preventDefault();
+            }else if(this.setor != "Logística"){
+                this.mostraModal("Somente usuários do setor Logística podem editar esse campo.");
+                e.preventDefault();
+            }else{
+                this.carregando = true;
+                if(e.target.checked){
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XRETFIS/T/${this.nome}/C5_XNRETFI/C5_XHRETFI`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado Retorno Fiscal do pedido ${num}, filial ${filial}.`], config);
+                }else if (!e.target.checked){
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XRETFIS/F/${this.nome}/C5_XNRETFI/C5_XHRETFI`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Retorno Fiscal do pedido ${num}, filial ${filial}.`], config);
+                }
+                this.refresh();
+                this.popup = true;
+                setTimeout(()=>{
+                    this.popup = false;
+                }, 2000);
+            }
+        } catch (error) {
+            this.mostraModal("Falha ao executar ação. Tente novamente mais tarde.");
+            e.preventDefault();
+        }
+    },
+    async marcaLibFat(filial, num, xretfis, e){
+        try {
+            if(xretfis){
+                this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Retorno Fiscal' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Financeiro"){
                 this.mostraModal("Somente usuários do setor Financeiro podem editar esse campo.");
@@ -498,7 +533,7 @@ methods: {
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&clientenome=${this.clienteFiltro}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
@@ -543,6 +578,7 @@ async created(){
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=&pcampo=&scampo=&pvalor=&svalor=&clientenome=`, config);
         const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         this.apis = response.data;
+        console.log(this.apis)
         this.setor = logado.data[0].setor;
         this.nome = logado.data[0].name;
         this.resultados = response.data.length;

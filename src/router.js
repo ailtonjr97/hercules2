@@ -31,6 +31,7 @@ import ComercialLanding from './components/comercial/ComercialLanding.vue';
 import ComercialCotacaoFrete from './components/comercial/ComercialCotacaoFrete.vue';
 import ComercialCotacaoFreteArquivados from './components/comercial/ComercialCotacaoFreteArquivados.vue';
 import ComercialTrack from './components/comercial/ComercialTrack.vue';
+import ComercialOrcamentos from './components/comercial/ComercialOrcamentos.vue';
 import FinanceiroAnalise from './components/financeiro/FinanceiroAnalise.vue';
 import NfCte from './components/financeiro/NfCte.vue';
 
@@ -65,6 +66,7 @@ const routes = [
     { path: '/comercial/cotacao-de-frete', component: ComercialCotacaoFrete },
     { path: '/comercial/cotacao-de-frete-arquivadas', component: ComercialCotacaoFreteArquivados },
     { path: '/comercial/track-order', component: ComercialTrack },
+    { path: '/comercial/orcamentos', component: ComercialOrcamentos },
     { path: '/financeiro/analise-de-credito', component: FinanceiroAnalise },
     { path: '/financeiro/nf-cte', component: NfCte },
     { path: '/:notFound(.*)', redirect: '/home' }
