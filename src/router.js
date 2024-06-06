@@ -34,6 +34,7 @@ import ComercialTrack from './components/comercial/ComercialTrack.vue';
 import ComercialOrcamentos from './components/comercial/ComercialOrcamentos.vue';
 import FinanceiroAnalise from './components/financeiro/FinanceiroAnalise.vue';
 import NfCte from './components/financeiro/NfCte.vue';
+import NfCteEntrada from './components/financeiro/NfCteEntrada.vue';
 
 const routes = [
     { path: '/', redirect: '/home' },
@@ -69,6 +70,7 @@ const routes = [
     { path: '/comercial/orcamentos', component: ComercialOrcamentos },
     { path: '/financeiro/analise-de-credito', component: FinanceiroAnalise },
     { path: '/financeiro/nf-cte', component: NfCte },
+    { path: '/financeiro/nf-cte-entrada', component: NfCteEntrada },
     { path: '/:notFound(.*)', redirect: '/home' }
 ];
 

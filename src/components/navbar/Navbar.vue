@@ -30,6 +30,7 @@
                     <h6 class="dropdown-header">Financeiro</h6>
                     <router-link to="/financeiro/analise-de-credito" class="nav-link" style="padding: 0 8px;">Análise de Crédito</router-link>
                     <router-link to="/financeiro/nf-cte" class="nav-link" style="padding: 0 8px;">NF CT-e</router-link>
+                    <!-- <router-link to="/financeiro/nf-cte-entrada" class="nav-link" style="padding: 0 8px;">NF CT-e (Entrada)</router-link> -->
                 </div>
             </div>
 

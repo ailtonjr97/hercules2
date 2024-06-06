@@ -18,16 +18,14 @@
         <th>Pedido</th>
         <th>Frete Pedido</th>
         <th>NF Frete</th>
-        <th>NF ICMS Frete</th>
         </tr>
     </thead>
     <tbody>
         <tr v-for="(item, index) in items" :key="item.R_E_C_N_O_">
-            <td>{{item.F2_DOC}}</td>
-            <td>{{item.C5_NUM}}</td>
-            <td>{{item.C5_FRETE}}</td>
-            <td>{{item.F2_FRETE}}</td>
-            <td>{{item.F2_ICMFRET}}</td>
+            <td>{{item.F1_DOC}}</td>
+            <td>PEDIDO</td>
+            <td>FRETE PEDIDO</td>
+            <td>{{item.F1_FRETE}}</td>
         </tr>
     </tbody>
     </table>
@@ -99,13 +97,6 @@ export default{
             fullLoad: false,
             carregandoinfo: false,
             carregando: true,
-            editar: {
-                transp_nome_select: '',
-                transp_nome2_select: '',
-                valor: '',
-                prazo: '',
-                cotador_id_2: null
-            }
         }
     },
     methods: {
@@ -157,7 +148,7 @@ export default{
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte-entrada`, config);
             this.items = response.data;
             this.resultados = response.data.length;
             this.fullLoad = true;

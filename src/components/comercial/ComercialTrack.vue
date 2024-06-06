@@ -233,6 +233,7 @@ components: {
 },
 data(){
     return{
+        userId: null,
         clienteFiltro: '',
         libcom: null,
         vendListaItem: null,
@@ -403,7 +404,7 @@ methods: {
             if(faturd){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Faturado' estiver preenchido.");
                 e.preventDefault();
-            }else if(this.setor != "Logística"){
+            }else if(this.setor != "Logística" || this.userId != 441){
                 this.mostraModal("Somente usuários do setor Logística podem editar esse campo.");
                 e.preventDefault();
             }else{
@@ -580,11 +581,11 @@ async created(){
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=&pcampo=&scampo=&pvalor=&svalor=&clientenome=`, config);
         const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         this.apis = response.data;
-        console.log(this.apis)
         this.setor = logado.data[0].setor;
         this.nome = logado.data[0].name;
         this.resultados = response.data.length;
         this.carregando = false;
+        this.userId = logado.data[0].intranet_id
     } catch (error) {
         console.log(error)
         alert("Erro ao carregar página. Favor tentar mais tarde.");
