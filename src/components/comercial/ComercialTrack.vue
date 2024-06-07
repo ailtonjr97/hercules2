@@ -404,7 +404,7 @@ methods: {
             if(faturd){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Faturado' estiver preenchido.");
                 e.preventDefault();
-            }else if(this.setor != "Logística" || this.userId != 441){
+            }else if(this.setor != "Logística" && this.userId != 441){
                 this.mostraModal("Somente usuários do setor Logística podem editar esse campo.");
                 e.preventDefault();
             }else{
