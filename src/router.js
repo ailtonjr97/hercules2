@@ -36,6 +36,8 @@ import FinanceiroAnalise from './components/financeiro/FinanceiroAnalise.vue';
 import NfCte from './components/financeiro/NfCte.vue';
 import NfCteEntrada from './components/financeiro/NfCteEntrada.vue';
 
+import FinanceiroCte from './components/financeiro/FinanceiroCte.vue';
+
 const routes = [
     { path: '/', redirect: '/home' },
     { path: '/login', component: Login, meta: { hideNavbar: true, requiresAuth: false } },
@@ -71,6 +73,7 @@ const routes = [
     { path: '/financeiro/analise-de-credito', component: FinanceiroAnalise },
     { path: '/financeiro/nf-cte', component: NfCte },
     { path: '/financeiro/nf-cte-entrada', component: NfCteEntrada },
+    { path: '/financeiro/cte', component: FinanceiroCte },
     { path: '/:notFound(.*)', redirect: '/home' }
 ];
 

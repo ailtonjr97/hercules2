@@ -23,8 +23,8 @@
     <tbody>
         <tr v-for="(item, index) in items" :key="item.R_E_C_N_O_">
             <td>{{item.F1_DOC}}</td>
-            <td>PEDIDO</td>
-            <td>FRETE PEDIDO</td>
+            <td>{{item.F1_XNUMORC}}</td>
+            <td>{{item.C7_FRETE}}</td>
             <td>{{item.F1_FRETE}}</td>
         </tr>
     </tbody>
@@ -103,7 +103,7 @@ export default{
         async refresh(){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte-entrada`, config);
                 this.items = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
@@ -120,7 +120,7 @@ export default{
         async pesquisa(){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte?numero=${this.nf}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte-entrada?numero=${this.nf}`, config);
                 this.items = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
