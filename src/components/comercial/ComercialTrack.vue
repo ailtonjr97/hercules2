@@ -26,9 +26,10 @@
     </div>
     <div class="row mb-2">
         <div class="col">
-            <input type="radio" name="filtro_radio" id="filtro_liberado_expedicao"            @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_expedido" @click="pesquisa('C5_XLIBEXP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_todos"    @click="pesquisa()" checked><label for="filtro_todos">Todos</label>
+            <input type="radio" name="filtro_radio" id="filtro_liberado_expedicao"                 @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_nota_impressa" @click="pesquisa('C5_XLIBEXP', 'C5_XNOTIMP', 'T', 'F')"><label for="filtro_nota_impressa">Aguardando Nota Impressa</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_expedido"      @click="pesquisa('C5_XNOTIMP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
+            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_todos"         @click="pesquisa()" checked><label for="filtro_todos">Todos</label>
         </div>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
@@ -50,6 +51,7 @@
             <th>Retorno Fiscal</th>
             <th>Faturado</th>
             <th>Liberado Expedição</th>
+            <th>Nota Impressa</th>
             <th>Expedido</th>
             </tr>
         </thead>
@@ -94,11 +96,17 @@
                     {{ api.C5_XHFATUR  }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaLibexp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="liberado_expedicao" id="liberado_expedicao" :checked="api.C5_XLIBEXP ? true : false" :disabled="!api.C5_XFATURD"><br>
+                    <input class="mt-4" @click="marcaLibexp(api.C5_FILIAL, api.C5_NUM, api.C5_XNOTIMP, $event)" type="checkbox" name="liberado_expedicao" id="liberado_expedicao" :checked="api.C5_XLIBEXP ? true : false" :disabled="!api.C5_XFATURD"><br>
                     {{ api.C5_XNLIBEX  }}<br>
                     {{ api.C5_XHLIBEX }}<br>
                     <span v-if="api.C5_XLIBEXP">Nota: {{ api.C5_NOTA }}</span><br>
-                    <a v-if="api.C5_XLIBEXP" :href="`http://aplicacao.fibracem.com:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>                </td>
+                    <a v-if="api.C5_XLIBEXP" :href="`http://aplicacao.fibracem.com:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>
+                </td>
+                <td>
+                    <input class="mt-4" @click="marcaNotaImp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="nota_impressa" id="nota_impressa" :checked="api.C5_XNOTIMP ? true : false" :disabled="!api.C5_XLIBEXP"><br>
+                    {{ api.C5_XNNOTIM  }}<br>
+                    {{ api.C5_XHNOTIM }}<br>
+                </td>
                 <td>
                     <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI ? true : false" :disabled="!api.C5_XLIBEXP"><br>
                     {{ api.C5_XNEXPED  }}<br>
@@ -331,6 +339,34 @@ methods: {
                 }else if (!e.target.checked){
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XEXPEDI/F/${this.nome}/C5_XNEXPED/C5_XHEXPED`, config);
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Expedido Expedicao do pedido ${num}, filial ${filial}.`], config);
+                }
+                this.refresh();
+                this.popup = true;
+                setTimeout(()=>{
+                    this.popup = false;
+                }, 2000);
+            }
+        } catch (error) {
+            this.mostraModal("Falha ao executar ação. Tente novamente mais tarde.");
+            e.preventDefault();
+        }
+    },
+    async marcaNotaImp(filial, num, expedi, e){
+        try {
+            if(expedi){
+                this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Expedido' estiver preenchido.");
+                e.preventDefault();
+            }else if(this.setor != "Logística"){
+                this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.");
+                e.preventDefault();
+            }else{
+                this.carregando = true;
+                if(e.target.checked){
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XNOTIMP/T/${this.nome}/C5_XNNOTIM/C5_XHNOTIM`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado Nota Impressa do pedido ${num}, filial ${filial}.`], config);
+                }else if (!e.target.checked){
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_campo/${filial}/${num}/C5_XNOTIMP/F/${this.nome}/C5_XNNOTIM/C5_XHNOTIM`, config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado Nota Impressa do pedido ${num}, filial ${filial}.`], config);
                 }
                 this.refresh();
                 this.popup = true;
