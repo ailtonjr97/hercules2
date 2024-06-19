@@ -103,7 +103,7 @@
                     <a v-if="api.C5_XLIBEXP" :href="`http://aplicacao.fibracem.com:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaNotaImp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="nota_impressa" id="nota_impressa" :checked="api.C5_XNOTIMP ? true : false" :disabled="!api.C5_XLIBEXP"><br>
+                    <input class="mt-4" @click="marcaNotaImp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="nota_impressa" id="nota_impressa" :checked="api.C5_XNOTIMP ? true : false"><br>
                     {{ api.C5_XNNOTIM  }}<br>
                     {{ api.C5_XHNOTIM }}<br>
                 </td>
@@ -353,10 +353,7 @@ methods: {
     },
     async marcaNotaImp(filial, num, expedi, e){
         try {
-            if(expedi){
-                this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Expedido' estiver preenchido.");
-                e.preventDefault();
-            }else if(this.setor != "Logística"){
+            if(this.setor != "Logística"){
                 this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.");
                 e.preventDefault();
             }else{
