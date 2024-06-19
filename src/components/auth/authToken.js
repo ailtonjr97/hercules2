@@ -11,3 +11,13 @@ export function getAuthConfig() {
         }
     };
 }
+
+export function getAuthConfig2() {
+    return {
+        headers: {
+            'Authorization': `jwt=${getCookie('jwt')}`,
+            'Content-Type': 'application/pdf',
+        },
+        responseType: 'blob', // Para garantir que o arquivo seja tratado como um blob
+    };
+}

@@ -37,6 +37,7 @@ import NfCte from './components/financeiro/NfCte.vue';
 import NfCteEntrada from './components/financeiro/NfCteEntrada.vue';
 
 import FinanceiroCte from './components/financeiro/FinanceiroCte.vue';
+import FinanceiroPdfNf from './components/financeiro/FinanceiroPdfNf.vue';
 
 const routes = [
     { path: '/', redirect: '/home' },
@@ -74,6 +75,7 @@ const routes = [
     { path: '/financeiro/nf-cte', component: NfCte },
     { path: '/financeiro/nf-cte-entrada', component: NfCteEntrada },
     { path: '/financeiro/cte', component: FinanceiroCte },
+    { path: '/financeiro/pdf-nf', component: FinanceiroPdfNf },
     { path: '/:notFound(.*)', redirect: '/home' }
 ];
 
