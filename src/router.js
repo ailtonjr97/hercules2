@@ -157,6 +157,24 @@ router.beforeEach(async (to, from, next) => {
     }
     }
 
+    if (['/financeiro/pdf-nf'].includes(to.path)) {
+        const config = {
+          headers: { 'Authorization': `jwt=${getCookie('jwt')}` }
+        };
+        const token = getCookie('jwt');
+        const decoded = jwtDecode(token);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
+        const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Financeiro`, config);
+        const allowedIds = [193, 189, 431, 157]; //Paloma, Ailton, Everson e Kesley.
+        vendedores.data.forEach(element => {
+          allowedIds.push(element.intranet_id)
+        });
+  
+        if (!allowedIds.includes(response.data[0].intranet_id)) {
+          return next('/home');
+      }
+      }
+
     next();
 });
 
