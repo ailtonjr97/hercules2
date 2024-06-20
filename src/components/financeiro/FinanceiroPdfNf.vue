@@ -126,9 +126,15 @@
                 this.resultados = response.data.length;
                 this.carregando = false;
           } catch (error) {
-            console.log(error)
-            alert('Falha ao executar ação. Tente novamente mais tarde.');
-            this.carregando = false;
+              if(error.response.status == 404){
+                this.apis = [];
+                this.resultados = 0;
+                this.carregando = false;
+              }else{
+                console.log(error)
+                alert('Falha ao executar ação. Tente novamente mais tarde.');
+                this.carregando = false;
+              }
           }
         },
     },
