@@ -38,6 +38,7 @@ import NfCteEntrada from './components/financeiro/NfCteEntrada.vue';
 
 import FinanceiroCte from './components/financeiro/FinanceiroCte.vue';
 import FinanceiroPdfNf from './components/financeiro/FinanceiroPdfNf.vue';
+import FinanceiroGuia from './components/financeiro/FinanceiroGuia.vue';
 
 const routes = [
     { path: '/', redirect: '/home' },
@@ -76,6 +77,7 @@ const routes = [
     { path: '/financeiro/nf-cte-entrada', component: NfCteEntrada },
     { path: '/financeiro/cte', component: FinanceiroCte },
     { path: '/financeiro/pdf-nf', component: FinanceiroPdfNf },
+    { path: '/financeiro/guia-nf', component: FinanceiroGuia },
     { path: '/:notFound(.*)', redirect: '/home' }
 ];
 
@@ -166,7 +168,7 @@ router.beforeEach(async (to, from, next) => {
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         const financeiro = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Financeiro`, config);
         const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
-        const allowedIds = [431, 157, 185, 385, 298, 494]; //Ailton, Everson, Jefferson, Juliana, Rafael, Wesley
+        const allowedIds = [431, 157, 185, 385, 298, 494, 1]; //Ailton, Everson, Jefferson, Juliana, Rafael, Wesley, Carlos
         
         vendedores.data.forEach(element => {
           allowedIds.push(element.intranet_id)

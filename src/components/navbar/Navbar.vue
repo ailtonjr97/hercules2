@@ -32,6 +32,7 @@
                     <router-link to="/financeiro/nf-cte" class="nav-link" style="padding: 0 8px;">Frete NF/Pedido</router-link>
                     <router-link to="/financeiro/cte" class="nav-link" style="padding: 0 8px;">CTE</router-link>
                     <router-link to="/financeiro/pdf-nf" class="nav-link" style="padding: 0 8px;">NF Saída PDF</router-link>
+                    <router-link to="/financeiro/guia-nf" class="nav-link" style="padding: 0 8px;">Guia NF</router-link>
                 </div>
             </div>
 

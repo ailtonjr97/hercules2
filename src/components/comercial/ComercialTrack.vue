@@ -353,7 +353,10 @@ methods: {
     },
     async marcaNotaImp(filial, num, expedi, e){
         try {
-            if(this.setor != "Logística"){
+            if(expedi){
+                this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Expedido' estiver preenchido.");
+                e.preventDefault();
+            }else if(this.setor != "Logística"){
                 this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.");
                 e.preventDefault();
             }else{
@@ -379,7 +382,7 @@ methods: {
     async marcaLibexp(filial, num, expedi, e){
         try {
             if(expedi){
-                this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Expedido' estiver preenchido.");
+                this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Nota Impressa' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Financeiro"){
                 this.mostraModal("Somente usuários do setor Financeiro podem editar esse campo.");
