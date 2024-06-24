@@ -23,7 +23,9 @@
             <tr :style="{ backgroundColor: api.frete_cte > api.frete_nf ? '#fffacd' : 'initial' }" v-for="api in apis" :key="api.R_E_C_N_O_">
                 <td>{{ api.F2_FILIAL }}</td>
                 <td>{{ api.F2_DOC }}</td>
-                <td></td>
+                <td>
+                  
+                </td>
             </tr>
           </tbody>
         </table>
@@ -67,7 +69,7 @@
     },
     data() {
       return {
-        numero: null,
+        numero: '',
         popup: false,
         disableBtn: false,
         carregandoinfo: false,
@@ -86,7 +88,7 @@
         async refresh(){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/local/atualizar-scj`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/guia-nf`, config);
                 this.apis = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
@@ -99,20 +101,14 @@
         async pesquisa(numero){
           try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/pdf-nf?numero=${numero}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/guia-nf?numero=${numero}`, config);
                 this.apis = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
           } catch (error) {
-              if(error.response.status == 404){
-                this.apis = [];
-                this.resultados = 0;
-                this.carregando = false;
-              }else{
                 console.log(error)
                 alert('Falha ao executar ação. Tente novamente mais tarde.');
                 this.carregando = false;
-              }
           }
         },
     },
