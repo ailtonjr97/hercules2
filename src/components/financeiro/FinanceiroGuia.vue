@@ -16,7 +16,8 @@
             <tr style="height: 25px">
                 <th>Filial</th>
                 <th>Número</th>
-                <th>Ações</th>
+                <th>Guia</th>
+                <th>Pasta</th>
             </tr>
           </thead>
           <tbody>
@@ -24,7 +25,12 @@
                 <td>{{ api.F2_FILIAL }}</td>
                 <td>{{ api.F2_DOC }}</td>
                 <td>
-                  
+                  <input type="checkbox" @click="marcar(api.F2_FILIAL, api.F2_DOC, 'GUIA', api.GUIA, $event)"  :checked="api.GUIA   ? true : false">
+                  <p>{{api.GUIA_DATA}}</p>
+                </td>
+                <td>
+                  <input type="checkbox" @click="marcar(api.F2_FILIAL, api.F2_DOC, 'PASTA', api.PASTA, $event)" :checked="api.PASTA  ? true : false">
+                  <p>{{api.PASTA_DATA}}</p>
                 </td>
             </tr>
           </tbody>
@@ -35,6 +41,7 @@
   </template>
   
   <script>
+  import { jwtDecode } from "jwt-decode";
   import { getAuthConfig, getAuthConfig2 } from '../auth/authToken';
   import FormSpan from '../ui/formSpan.vue';
   import axios from 'axios';
@@ -69,6 +76,7 @@
     },
     data() {
       return {
+        userId: null,
         numero: '',
         popup: false,
         disableBtn: false,
@@ -85,6 +93,31 @@
       };
     },
     methods: {
+        async marcar(filial, doc, box, marcado, e){
+          try {
+            if(marcado == 1){
+              e.preventDefault();
+              alert('Campo já marcado');
+            }else if (this.userId != 441){
+              e.preventDefault();
+              alert('Somente a Bruna Sthefanny pode marcar os campos.');
+            }else{
+              axios.post(`${import.meta.env.VITE_BACKEND_IP}/financeiro/marcar-box`, {'filial': filial, 'doc': doc, 'box': box},config);
+              const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/guia-nf`, config);
+              this.apis = response.data;
+              this.resultados = response.data.length;
+              this.popup = true;
+              setTimeout(()=>{
+                  this.popup = false;
+              }, 2000);
+            }
+          } catch (error) {
+              this.carregando = false;
+              e.preventDefault();
+              alert('Erro ao executar ação. Favor tentar novamente mais tarde.');
+              console.log(error);
+          }
+        },
         async refresh(){
             try {
                 this.carregando = true;
@@ -100,11 +133,9 @@
         },
         async pesquisa(numero){
           try {
-                this.carregando = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/guia-nf?numero=${numero}`, config);
                 this.apis = response.data;
                 this.resultados = response.data.length;
-                this.carregando = false;
           } catch (error) {
                 console.log(error)
                 alert('Falha ao executar ação. Tente novamente mais tarde.');
@@ -114,8 +145,15 @@
     },
     async created() {
       try {
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
         const config = getAuthConfig();
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/guia-nf`, config);
+        const decoded = jwtDecode(getCookie('jwt'));
+        this.userId = decoded.id
         this.apis = response.data;
         this.resultados = response.data.length;
         this.carregando = false;
