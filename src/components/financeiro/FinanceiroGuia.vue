@@ -20,6 +20,7 @@
                 <th>Pasta</th>
                 <th>Subs. Tributaria</th>
                 <th>Pedido</th>
+                <th>CFOP</th>
             </tr>
           </thead>
           <tbody>
@@ -36,6 +37,7 @@
                 </td>
                 <td>{{ api.D2_CLASFIS }}</td>
                 <td>{{ api.D2_PEDIDO }}</td>
+                <td>{{ api.D2_CF }}</td>
             </tr>
           </tbody>
         </table>
