@@ -18,20 +18,24 @@
                 <th>Número</th>
                 <th>Guia</th>
                 <th>Pasta</th>
+                <th>Subs. Tributaria</th>
+                <th>Pedido</th>
             </tr>
           </thead>
           <tbody>
             <tr :style="{ backgroundColor: api.frete_cte > api.frete_nf ? '#fffacd' : 'initial' }" v-for="api in apis" :key="api.R_E_C_N_O_">
-                <td>{{ api.F2_FILIAL }}</td>
-                <td>{{ api.F2_DOC }}</td>
+                <td>{{ api.D2_FILIAL }}</td>
+                <td>{{ api.D2_DOC }}</td>
                 <td>
-                  <input type="checkbox" @click="marcar(api.F2_FILIAL, api.F2_DOC, 'GUIA', api.GUIA, $event)"  :checked="api.GUIA   ? true : false">
+                  <input type="checkbox" @click="marcar(api.D2_FILIAL, api.D2_DOC, 'GUIA', api.GUIA, $event)"  :checked="api.GUIA   ? true : false">
                   <p>{{api.GUIA_DATA}}</p>
                 </td>
                 <td>
-                  <input type="checkbox" @click="marcar(api.F2_FILIAL, api.F2_DOC, 'PASTA', api.PASTA, $event)" :checked="api.PASTA  ? true : false">
+                  <input type="checkbox" @click="marcar(api.D2_FILIAL, api.D2_DOC, 'PASTA', api.PASTA, $event)" :checked="api.PASTA  ? true : false">
                   <p>{{api.PASTA_DATA}}</p>
                 </td>
+                <td>{{ api.D2_CLASFIS }}</td>
+                <td>{{ api.D2_PEDIDO }}</td>
             </tr>
           </tbody>
         </table>
