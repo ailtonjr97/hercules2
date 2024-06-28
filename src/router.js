@@ -168,7 +168,7 @@ router.beforeEach(async (to, from, next) => {
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         const financeiro = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Financeiro`, config);
         const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
-        const allowedIds = [431, 157, 185, 385, 298, 494, 1]; //Ailton, Everson, Jefferson, Juliana, Rafael, Wesley, Carlos
+        const allowedIds = [431, 157, 185, 385, 298, 494, 1, 680]; //Ailton, Everson, Jefferson, Juliana, Rafael, Wesley, Carlos, Mathias Summer
         
         vendedores.data.forEach(element => {
           allowedIds.push(element.intranet_id)
