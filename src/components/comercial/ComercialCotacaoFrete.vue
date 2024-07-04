@@ -267,7 +267,7 @@
         </div>
     </div>
     </template>
-    <template v-slot:buttons v-if="!carregandoinfo">
+    <template v-slot:buttons>
         <button class="button-8 mt-2" @click="fecharClienteModal()">Fechar</button>
     </template>
 </modal>
@@ -535,7 +535,7 @@ export default{
                 this.carregandoinfo = true;
                 this.clienteModal = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${numped}/${loja}`, config);
-                this.cliente = response.data.objects[0]
+                this.cliente = response.data
                 this.carregandoinfo = false;
             } catch (error) {
                 this.carregandoinfo = false;
