@@ -52,7 +52,7 @@
                     <button class="button-8" @click="verDocumento(documento.ID)">Visualizar</button>
                     <button class="button-8" @click="openModalEdp(documento.ID)" v-if="documento.EDP_PREENCHIDO == 0 && userSetor == 'Engenharia de Processos'">Preencher EDP</button>
                     <button class="button-8" @click="openModalPcp(documento.ID)" v-if="documento.EDP_PREENCHIDO == 1 && documento.PCP_PREENCHIDO == 0 && userSetor == 'PCP'">Preencher PCP</button>
-                    <button class="button-8" @click="openModalProducao(documento.ID)" v-if="documento.PCP_PREENCHIDO == 1 && documento.PRODUCAO_PREENCHIDO == 0 && userSetor == 'Produção'">Preencher Produção</button>
+                    <button class="button-8" @click="openModalProducao(documento.ID)" v-if="documento.PCP_PREENCHIDO == 1 && documento.PRODUCAO_PREENCHIDO == 0 && userSetor == 'Producao'">Preencher Produção</button>
                     <button class="button-8" @click="openModalQualidade(documento.ID)" v-if="documento.PRODUCAO_PREENCHIDO == 1 && documento.QUALIDADE_PREENCHIDO == 0 && userSetor == 'Qualidade'">Preencher Qualidade</button>
                     <button class="button-8" @click="openModalNc(documento.ID)" v-if="documento.MOTIVO_NC_PREENCHIDO == 0">Motivo NC</button>
                     <button class="button-8" @click="inactivateDocument(documento.ID)" v-if="documento.EDP_PREENCHIDO == 1 && documento.PCP_PREENCHIDO == 1 && documento.PRODUCAO_PREENCHIDO == 1 && documento.QUALIDADE_PREENCHIDO == 1 && documento.MOTIVO_NC_PREENCHIDO == 1">Arquivar</button>
@@ -506,7 +506,7 @@
                         'Authorization': document.cookie,
                         }
                     }
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/inspetores/${'Qualidade'}`, config);
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/inspetores?setor=Qualidade`, config);
                     response.data.forEach(element => {
                         this.qualidade_responsaveis.push({descri: element.name, valor: element.name})
                     });
@@ -572,7 +572,7 @@
                 this.whereId = id;
                 this.carregandoinfo = true;
                 this.modalProducao = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/inspetores/${'Producao'}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/inspetores?setor=Producao`, config);
                 response.data.forEach(element => {
                     this.producao_responsaveis.push({descri: element.name, valor: element.name})
                 });
@@ -690,3 +690,18 @@
         }
     }
     </script>
+
+<style scoped>
+    table {
+         table-layout: auto;
+    }
+     table th {
+        z-index: 1;
+        resize: none;
+        overflow: hidden;
+    }
+    
+    table td{
+        overflow: hidden;
+    }
+</style>
