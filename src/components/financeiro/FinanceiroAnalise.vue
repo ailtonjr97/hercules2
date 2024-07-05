@@ -929,7 +929,7 @@ export default{
                 this.carregandoinfo = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${id}`, config);
                 const cliente = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${cod}/${loja}`, config);
-                const cgc = cliente.data.objects[0].A1_CGC;
+                const cgc = cliente.data.A1_CGC;
                 const data = new Date(response.data[0].DT_SOLICIT_DOCUMENTO);
                 const data2 = new Date(response.data[0].DATA_DOC_OK);
                 const options = {
@@ -997,6 +997,7 @@ export default{
                 this.parcelas = this.parcelas.data
                 this.carregandoInfoTabela = false;
             } catch (error) {
+                console.log(error);
                 if(error.response.status == 404){
                     this.carregandoInfoTabelaErro = true;
                 }else{
