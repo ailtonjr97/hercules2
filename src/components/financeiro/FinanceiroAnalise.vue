@@ -910,9 +910,10 @@ export default{
                 this.carregandoinfo = true;
                 this.clienteModal = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/clientes/${numped}/${loja}`, config);
-                this.cliente = response.data.objects[0]
+                this.cliente = response.data
                 this.carregandoinfo = false;
             } catch (error) {
+                console.log(error)
                 this.carregandoinfo = false;
                 alert('Falha ao buscar informações. Favor tentar novamente mais tarde.')
             }
