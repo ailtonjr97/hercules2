@@ -521,9 +521,9 @@ methods: {
     },
     async marcaSepC6(filial, num, item, produto, event, vendedor, cliente, marcado){
         try {
-            if(this.libcom == true){
+            if(this.libcom == true || this.setor != "Logística"){
                 this.itensModal = false;
-                this.mostraModal("Não é permitido desmarcar itens se a opção 'Liberado Comercial' estiver marcada")
+                this.mostraModal("Não é permitido desmarcar itens se a opção 'Liberado Comercial' estiver marcada ou se o usuário não for da Logística.")
                 event.preventDefault();
             }else{
                 if(!marcado){
