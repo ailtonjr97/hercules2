@@ -23,6 +23,7 @@
             <th>ID</th>
             <th>Filial</th>
             <th>Orçamento</th>
+            <th>Revisão</th>
             <th>Responsável</th>
             <th>Dt. Solicitação</th>
             <th>Solicit. Cli.</th>
@@ -54,6 +55,9 @@
             </td>
             <td>
                 <p>{{ resposta.NUMERO_PEDIDO }}</p>
+            </td>
+            <td>
+                <p>{{ resposta.REVISAO }}</p>
             </td>
             <td>
                 <p>{{ resposta.RESPONSAVEL_APROV }}</p>
