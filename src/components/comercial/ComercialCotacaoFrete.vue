@@ -45,7 +45,7 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-start">
-                        <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
+                        <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id, resposta.pedido)"><i style="font-size: 14px;" class="fa-solid fa-pen"></i></button></div>
                         <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-check"></i></button></div>
                         <div><button title="Arquivar" class="button-8" v-if="resposta.arquivar != 0" @click="arquivaFreteCot(resposta.id)"><i style="font-size: 14px;" class="fa-solid fa-box-archive"></i></button></div>
                         <div><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido, resposta.revisao)"><i style="font-size: 14px;" class="fa-solid fa-list"></i></button></div>
@@ -361,6 +361,7 @@ export default{
     },
     data(){
         return{
+            orcNum: null,
             abreModalCif: false,
             nomeLogado: '',
             abreModalFob: false,
@@ -630,7 +631,7 @@ export default{
                     const decoded = jwtDecode(getCookie('jwt'));
                     this.editar.cotador_id_2 = decoded.id
                     this.erroBuscaTransp = false;
-                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/${id}`, [this.editar, this.proposta.filial], config);
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/${id}`, [this.editar, this.proposta.filial, this.orcNum], config);
                     this.refresh();
                     this.editar = {};
                 };
@@ -638,12 +639,13 @@ export default{
                 alert("Falha ao salvar informações. Tente novamente mais tarde.")
             }
         },
-        async openEditarModal(id){
+        async openEditarModal(id, orc){
             try {
                 this.modalInfo = true;
                 this.carregandoinfo = true;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/${id}`, config);
                 this.proposta = response.data[0];
+                this.orcNum = orc;
                 const transp = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transportadoras`, config);
                 this.transportadoras = transp.data;
                 this.carregandoinfo = false;

@@ -9,12 +9,16 @@
 </table-top>
 <div class="row mb-2">
     <form-floating :placeholder="'Número da NF:'" :id="nf" :type="'number'" v-model="nf" v-on:keyup.enter="pesquisa()"></form-floating>
+    <form-floating :placeholder="'Orcamento:'" :id="orcamento" :type="'number'" v-model="orcamento" v-on:keyup.enter="pesquisa()"></form-floating>
 </div>
 <div class="table-wrapper table-responsive table-striped mb-5">
     <table class="fl-table" id="myTable">
     <thead>
         <tr style="height: 25px;">
+        <th>Filial</th>
         <th>NF Número</th>
+        <th>Orçamento</th>
+        <th>Frete Original</th>
         <th>Pedido</th>
         <th>Frete Pedido</th>
         <th>NF Frete</th>
@@ -23,7 +27,10 @@
     </thead>
     <tbody>
         <tr v-for="(item, index) in items" :key="item.R_E_C_N_O_">
+            <td>{{item.F2_FILIAL}}</td>
             <td>{{item.F2_DOC}}</td>
+            <td>{{item.CJ_NUM}}</td>
+            <td>{{item.CJ_FRTORI}}</td>
             <td>{{item.C5_NUM}}</td>
             <td>{{item.C5_FRETE}}</td>
             <td>{{item.F2_FRETE}}</td>
@@ -92,6 +99,7 @@ export default{
     },
     data(){
         return{
+            orcamento: '',
             nf: '',
             items: [],
             popup: false,
@@ -129,7 +137,7 @@ export default{
         async pesquisa(){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte?numero=${this.nf}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/nfcte?numero=${this.nf}&orcamento=${this.orcamento}`, config);
                 this.items = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
