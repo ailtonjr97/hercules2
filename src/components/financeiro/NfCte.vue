@@ -19,6 +19,7 @@
         <th>NF Número</th>
         <th>Orçamento</th>
         <th>Frete Original</th>
+        <th>Frete Sem Imposto</th>
         <th>Pedido</th>
         <th>Frete Pedido</th>
         <th>NF Frete</th>
@@ -31,6 +32,9 @@
             <td>{{item.F2_DOC}}</td>
             <td>{{item.CJ_NUM}}</td>
             <td>{{item.CJ_FRTORI}}</td>
+
+            <td>{{item.FRETESEMIMPOSTO}}</td>
+
             <td>{{item.C5_NUM}}</td>
             <td>{{item.C5_FRETE}}</td>
             <td>{{item.F2_FRETE}}</td>
