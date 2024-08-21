@@ -362,7 +362,7 @@ export default{
     },
     data(){
         return{
-            filialPesquisa: null,
+            filialPesquisa: '',
             orcNum: null,
             abreModalCif: false,
             nomeLogado: '',
