@@ -13,11 +13,12 @@
         </template>
     </table-top>
     <div class="row mb-2">
-        <form-floating :placeholder="'ID:'" :id="'id'" :type="'text'" v-model="identificador" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
-        <form-floating :placeholder="'Orçamento:'" :id="'pedido'" :type="'text'" v-model="pedido" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
-        <form-floating :placeholder="'Vendedor:'" :id="'vendedor'" :type="'text'" v-model="vendedor" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
+        <form-floating :placeholder="'ID:'"     :id="'id'" :type="'text'" v-model="identificador" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador, filialPesquisa)"></form-floating>
+        <form-floating :placeholder="'Filial:'" :id="'filial'" :type="'number'" v-model="filialPesquisa" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador, filialPesquisa)"></form-floating>
+        <form-floating :placeholder="'Orçamento:'" :id="'pedido'" :type="'text'" v-model="pedido" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador, filialPesquisa)"></form-floating>
+        <form-floating :placeholder="'Vendedor:'" :id="'vendedor'" :type="'text'" v-model="vendedor" v-if="!pedidoAllRev" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador, filialPesquisa)"></form-floating>
         <form-floating :placeholder="'Orçamento todas revisões:'" :id="'pedido'" :type="'text'" v-if="pedidoAllRev" v-model="pedido" v-on:keyup.enter="pesquisaAllRev(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
-        <form-floating :placeholder="'Resultados:'" :id="'resultado'" :type="'number'" v-model="results" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador)"></form-floating>
+        <form-floating :placeholder="'Resultados:'" :id="'resultado'" :type="'number'" v-model="results" v-on:keyup.enter="pesquisa(pedido, cotador_id, results, vendedor, identificador, filialPesquisa)"></form-floating>
     </div>
     <div class="table-wrapper table-responsive table-striped mb-5">
         <table class="fl-table" id="myTable">
@@ -361,6 +362,7 @@ export default{
     },
     data(){
         return{
+            filialPesquisa: null,
             orcNum: null,
             abreModalCif: false,
             nomeLogado: '',
@@ -796,10 +798,10 @@ export default{
                 this.carregando = false;
             }
         },
-        async pesquisa(pedido, cotador_id, results, vendedor, identificador){
+        async pesquisa(pedido, cotador_id, results, vendedor, identificador, filialPesquisa){
             try {
                 this.carregando = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}&identificador=${identificador}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete/pesquisa?pedido=${pedido}&resultados=${results}&cotador_id=${cotador_id}&vendedor=${vendedor}&identificador=${identificador}&filial=${filialPesquisa}`, config);
                 this.respostas = response.data;
                 this.resultados = response.data.length;
                 this.carregando = false;
