@@ -108,7 +108,7 @@
                     {{ api.C5_XHNOTIM }}<br>
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI ? true : false" :disabled="!api.C5_XLIBEXP"><br>
+                    <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI ? true : false" :disabled="!api.C5_XNOTIMP"><br>
                     {{ api.C5_XNEXPED  }}<br>
                     {{ api.C5_XHEXPED }}
                 </td>
