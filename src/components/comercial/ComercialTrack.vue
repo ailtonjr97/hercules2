@@ -61,8 +61,12 @@
                 <!-- <td>{{ api.R_E_C_N_O_ }}</td> -->
                 <td>{{ api.C5_FILIAL}}</td>
                 <td>{{ api.C5_NUM}}</td>
-                <td>{{ api.C5_XPEDTR}}</td>    
-                <td>{{ api.C5_VEND1}}</td>              
+                <td>{{ api.C5_XPEDTR}}</td>
+                <td>
+                    {{ api.C5_VEND1}} <br>
+                    <button v-if="setor == 'Comercial'" @click="atualizaObsVend(api.C5_FILIAL, api.C5_NUM, api.C5_XOBSV)" title="Itens" class="button-8" style="bottom: 10px;"><i class="fa-solid fa-check"></i></button>
+                    <textarea v-model="api.C5_XOBSV" cols="8" rows="1" style="resize: both; overflow: auto;" maxlength="200"></textarea>
+                </td>              
                 <td>
                     <button title="Ver cliente" class="button-8" @click="openClienteModal(api.C5_CLIENTE, api.C5_LOJACLI)">{{ api.C5_CLIENTE }}</button>
                 </td>
@@ -273,6 +277,21 @@ data(){
     }
 },
 methods: {
+    async atualizaObsVend(filial, numero, texto){
+        try {
+            this.carregando = true;
+            await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/atualiza-obs-vend?filial=${filial}&numero=${numero}`, {'texto': texto}, config);
+            this.carregando = false;
+            this.popup = true;
+            setTimeout(()=>{
+                this.popup = false;
+            }, 2000);
+        } catch (error) {
+            console.log(error)
+            alert('Falha ao executar ação. Tente novamente mais tarde');
+            this.carregando = false;
+        }
+    },
     async openItensModal(filial, numero, vendedor, cliente, libcom){
         try {
             this.libcom = libcom
