@@ -57,7 +57,10 @@
         </thead>
         <tbody>
             <tr v-for="api in apis">
-                <td><button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button></td>
+                <td>
+                    <button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button>
+                    <button v-if="userId == 441 || userId == 259 || userId == 431" @click="openValFreteModal(api.C5_FILIAL, api.C5_NUM)" title="Alterar valor frete" class="button-8"><i class="fa-solid fa-truck"></i></button>
+                </td>
                 <!-- <td>{{ api.R_E_C_N_O_ }}</td> -->
                 <td>{{ api.C5_FILIAL}}</td>
                 <td>{{ api.C5_NUM}}</td>
@@ -121,6 +124,23 @@
         </table>
     </div>
 </div>
+
+<modal v-if="abreAltValorFrete" :title="`Alterar valor de frete do pedido ${freteNum} filial ${freteFilial}:`">
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="row">
+            <div class="col">
+                <form-floating :placeholder="'Valor:'" :id="'valFrete'" :type="'number'" v-model="freteVal"></form-floating><br>
+            </div>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8 mt-2" @click="closeValFreteModal()">Fechar</button>
+        <button class="button-8 mt-2" @click="alterarValFrete(freteFilial, freteNum)">Salvar</button>
+    </template>
+</modal>
 
 <modal v-if="mostraErro" :title="`Erro:`" :textoPadrao="textoPad">
     <template v-slot:body>
@@ -245,6 +265,10 @@ components: {
 },
 data(){
     return{
+        freteVal: null,
+        freteNum: null,
+        freteFilial: null,
+        abreAltValorFrete: false,
         userId: null,
         clienteFiltro: '',
         libcom: null,
@@ -277,6 +301,44 @@ data(){
     }
 },
 methods: {
+    async alterarValFrete(filial, num){
+        try {
+            this.carregandoinfo = true;
+            await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/atualiza-val-frete?filial=${filial}&numero=${num}`, {'texto': this.freteVal}, config);
+            this.carregandoinfo = false;
+            this.popup = true;
+            setTimeout(()=>{
+                this.popup = false;
+            }, 2000);
+        } catch (error) {
+            console.log(error)
+            alert('Falha ao executar ação. Tente novamente mais tarde');
+            this.carregando = false;
+            this.carregandoinfo = false;
+        }
+    },
+    async closeValFreteModal(){
+        try {
+            this.freteFilial = null;
+            this.freteNum = null;
+            this.abreAltValorFrete = false;
+        } catch (error) {
+            console.log(error)
+            alert('Falha ao executar ação. Tente novamente mais tarde');
+            this.carregando = false;
+        }
+    },
+    async openValFreteModal(filial, num){
+        try {
+            this.freteFilial = filial;
+            this.freteNum = num;
+            this.abreAltValorFrete = true;
+        } catch (error) {
+            console.log(error)
+            alert('Falha ao executar ação. Tente novamente mais tarde');
+            this.carregando = false;
+        }
+    },
     async atualizaObsVend(filial, numero, texto){
         try {
             this.carregando = true;
