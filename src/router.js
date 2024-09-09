@@ -35,6 +35,7 @@ import ComercialOrcamentos from './components/comercial/ComercialOrcamentos.vue'
 import FinanceiroAnalise from './components/financeiro/FinanceiroAnalise.vue';
 import NfCte from './components/financeiro/NfCte.vue';
 import NfCteEntrada from './components/financeiro/NfCteEntrada.vue';
+import TabelasSql from './components/sql/Tabelas.vue';
 
 import FinanceiroCte from './components/financeiro/FinanceiroCte.vue';
 import FinanceiroPdfNf from './components/financeiro/FinanceiroPdfNf.vue';
@@ -80,6 +81,7 @@ const routes = [
     { path: '/financeiro/pdf-nf', component: FinanceiroPdfNf },
     { path: '/financeiro/guia-nf', component: FinanceiroGuia },
     { path: '/logistica/produtos', component: LogisticaProdutos },
+    { path: '/tabelas', component: TabelasSql },
     { path: '/:notFound(.*)', redirect: '/home' }
 ];
 
@@ -133,7 +135,7 @@ router.beforeEach(async (to, from, next) => {
         return next('/login');
     }
 
-    if (['/usuarios', '/totvs'].includes(to.path)) {
+    if (['/usuarios', '/totvs', '/tabelas'].includes(to.path)) {
         const token = getCookie('jwt');
         const decoded = jwtDecode(token);
         const isAdmin = await checkAdmin(decoded.id);
