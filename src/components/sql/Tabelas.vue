@@ -16,8 +16,28 @@
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scj-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
             <tr>
-                <td>SCJ010</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scj-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td>SCK010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scK-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>SD2010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sd2-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>SA1010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>SB1010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>SB5010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb5-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>SA3010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa3-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
           </tbody>
         </table>

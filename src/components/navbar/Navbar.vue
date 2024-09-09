@@ -53,9 +53,9 @@
             </div>
 
             <div class="dropdown" style="margin-left: 20%;">
-                <i class="fa-solid fa-database" style="color: white; font-size: 21px; margin-top: 50%; cursor: pointer;" data-bs-toggle="dropdown"></i>
+                <i class="fa-solid fa-database" style="color: white; font-size: 21px; margin-top: 55%; cursor: pointer;" data-bs-toggle="dropdown"></i>
                 <div class="dropdown-menu">
-                    <h6 class="dropdown-header">SQL</h6>
+                    <h6 class="dropdown-header">Banco de dados</h6>
                     <router-link to="/tabelas" class="nav-link" style="padding: 0 8px;">Tabelas</router-link>
                 </div>
             </div>

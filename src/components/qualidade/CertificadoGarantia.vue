@@ -101,8 +101,10 @@
             <br>
             <br>
             <center class="logos_padrao">
-             <img data-v-c4be3a62="" src="/images/iso certificado.png" alt="" style="height: 120px; width: 280px;">
-             <img data-v-c4be3a62="" src="/images/qr anatel.png" alt=""  style="height: 120px; width: 110px;">
+
+             <img data-v-c4be3a62="" src="/images/iso certificado.png" alt="" style="height: 121px; width: 281px;">
+             <img data-v-c4be3a62="" src="/images/qr anatel.png" alt=""  style="height: 121px; width: 111px;">
+
             </center>
       </div>
     </div>
