@@ -39,6 +39,22 @@
                 <td>SA3010</td>
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa3-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
+            <tr>
+                <td>SC5010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc5-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>DA0010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da0-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>DA1010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
+            <tr>
+                <td>SC1010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
           </tbody>
         </table>
       </div>
