@@ -7,6 +7,7 @@
           <thead>
             <tr style="height: 25px">
                 <th>Tabela</th>
+                <th>Atualizar STAMP</th>
                 <th>Atualizar em Massa</th>
             </tr>
           </thead>
@@ -41,6 +42,7 @@
             </tr>
             <tr>
                 <td>SC5010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc5')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc5-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
             <tr>
