@@ -61,7 +61,7 @@
             </div>
 
             <div class="dropdown" style="margin-left: 20%;">
-                <i class="fa-solid fa-user" style="color: white; font-size: 20px; margin-top: 50%; cursor: pointer;" data-bs-toggle="dropdown"></i>
+                <i class="fa-solid fa-user" style="color: white; font-size: 20px; margin-top: 60%; cursor: pointer;" data-bs-toggle="dropdown"></i>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">{{ name }}</h6>
                     <router-link to="/usuarios" class="nav-link" style="padding: 0 8px;" :style="[isAdmin != 0 ? {'display': 'block'} : {'display': 'none'}]">Usuários</router-link>
