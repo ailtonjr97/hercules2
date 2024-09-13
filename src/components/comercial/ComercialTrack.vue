@@ -133,6 +133,9 @@
             <div class="col">
                 <form-floating :placeholder="'Valor:'" :id="'valFrete'" :type="'number'" v-model="freteVal"></form-floating><br>
             </div>
+            <div class="col">
+                <select-floating :placeholder="'Tipo Frete:'" :id="'tiposFrete'" :options="tiposFrete" v-model="freteTipo"></select-floating>
+            </div>
         </div>
     </div>
     </template>
@@ -265,6 +268,7 @@ components: {
 },
 data(){
     return{
+        freteTipo: "C",
         freteVal: null,
         freteNum: null,
         freteFilial: null,
@@ -300,11 +304,19 @@ data(){
         cliente: [],     
     }
 },
+computed:{
+    tiposFrete(){
+            return [
+                {valor: "C", descri: 'C - CIF'},
+                {valor: "F", descri: 'F - FOB'},
+        ];
+    },
+},
 methods: {
     async alterarValFrete(filial, num){
         try {
             this.carregandoinfo = true;
-            await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/atualiza-val-frete?filial=${filial}&numero=${num}`, {'texto': this.freteVal}, config);
+            await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/atualiza-val-frete?filial=${filial}&numero=${num}`, {'texto': this.freteVal, 'tipo': this.freteTipo}, config);
             this.carregandoinfo = false;
             this.popup = true;
             setTimeout(()=>{
