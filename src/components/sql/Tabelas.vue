@@ -72,6 +72,11 @@
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc1')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
+            <tr>
+                <td>SBZ010</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sbz')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sbz-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
           </tbody>
         </table>
       </div>

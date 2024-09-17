@@ -36,11 +36,13 @@ import FinanceiroAnalise from './components/financeiro/FinanceiroAnalise.vue';
 import NfCte from './components/financeiro/NfCte.vue';
 import NfCteEntrada from './components/financeiro/NfCteEntrada.vue';
 import TabelasSql from './components/sql/Tabelas.vue';
+import GraficosOrcamentos from './components/graficos/Orcamentos.vue';
 
 import FinanceiroCte from './components/financeiro/FinanceiroCte.vue';
 import FinanceiroPdfNf from './components/financeiro/FinanceiroPdfNf.vue';
 import FinanceiroGuia from './components/financeiro/FinanceiroGuia.vue';
 import LogisticaProdutos from './components/logistica/LogisticaProdutos.vue';
+import DashboardsRelatorios from './components/relatorios/Dashboard.vue';
 
 const routes = [
     { path: '/', redirect: '/home' },
@@ -81,7 +83,9 @@ const routes = [
     { path: '/financeiro/pdf-nf', component: FinanceiroPdfNf },
     { path: '/financeiro/guia-nf', component: FinanceiroGuia },
     { path: '/logistica/produtos', component: LogisticaProdutos },
+    { path: '/relatorios/Dashboard', component: DashboardsRelatorios },    
     { path: '/tabelas', component: TabelasSql },
+    { path: '/graficos-orcamentos', component: GraficosOrcamentos },
     { path: '/:notFound(.*)', redirect: '/home' }
 ];
 
