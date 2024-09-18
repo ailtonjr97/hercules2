@@ -94,7 +94,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes`,
+          `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes-vend`,
           {
             headers: {
               Authorization: `jwt=${this.getCookie('jwt')}`,
@@ -102,8 +102,20 @@ export default {
           }
         );
 
-        const meses = response.data.map((element) => element.ano_mes);
-        const valores = response.data.map((element) => element.total_registros);
+        const vends = [];
+        response.data.forEach(element => {
+          // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
+          const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
+
+          vends.push({
+            name: element.NOME,
+            type: 'bar',
+            stack: 'total',
+            label: { show: true },
+            emphasis: { focus: 'series' },
+            data: orcamentos // Coloca os números dos orçamentos no campo 'data'
+          });
+        });
 
         const option = {
           tooltip: {
@@ -114,6 +126,7 @@ export default {
           },
           legend: {},
           grid: {
+            top: '10%',
             left: '3%',
             right: '4%',
             bottom: '3%',
@@ -124,70 +137,9 @@ export default {
           },
           yAxis: {
             type: 'category',
-            data: ['Dezembro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Maio', 'Abril', 'Março', 'Fevereiro', 'Janeiro'],
+            data: ['Setembro', 'Agosto', 'Julho', 'Junho', 'Maio', 'Abril'],
           },
-          series: [
-            {
-              name: 'Fabio',
-              type: 'bar',
-              stack: 'total',
-              label: {
-                show: true,
-              },
-              emphasis: {
-                focus: 'series',
-              },
-              data: [320, 302, 301, 334, 390, 330, 320],
-            },
-            {
-              name: 'Mail Ad',
-              type: 'bar',
-              stack: 'total',
-              label: {
-                show: true,
-              },
-              emphasis: {
-                focus: 'series',
-              },
-              data: [120, 132, 101, 134, 90, 230, 210],
-            },
-            {
-              name: 'Affiliate Ad',
-              type: 'bar',
-              stack: 'total',
-              label: {
-                show: true,
-              },
-              emphasis: {
-                focus: 'series',
-              },
-              data: [220, 182, 191, 234, 290, 330, 310],
-            },
-            {
-              name: 'Video Ad',
-              type: 'bar',
-              stack: 'total',
-              label: {
-                show: true,
-              },
-              emphasis: {
-                focus: 'series',
-              },
-              data: [150, 212, 201, 154, 190, 330, 410],
-            },
-            {
-              name: 'Search Engine',
-              type: 'bar',
-              stack: 'total',
-              label: {
-                show: true,
-              },
-              emphasis: {
-                focus: 'series',
-              },
-              data: [820, 832, 901, 934, 1290, 1330, 1320],
-            },
-          ],
+          series: vends,
         };
 
         myChart.setOption(option);
