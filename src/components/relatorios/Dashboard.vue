@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- Barra lateral esquerda -->
-    <div class="sidebar">
+    <div class="sidebar sidebar-left">
       <ul class="sidebar-menu">
         <li>
           <a href="#">
@@ -10,48 +10,7 @@
             <p>This Is A Sub Title</p>
           </a>
         </li>
-        <li>
-          <a href="#">
-            <i class="icon wifi-icon"></i>
-            <span>Wifi</span>
-            <p>This Is A Sub Title</p>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="icon settings-icon"></i>
-            <span>Settings</span>
-            <p>This Is A Sub Title</p>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="icon options-icon"></i>
-            <span>Options</span>
-            <p>This Is A Sub Title</p>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="icon search-icon"></i>
-            <span>Search</span>
-            <p>This Is A Sub Title</p>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="icon cloud-icon"></i>
-            <span>Cloud</span>
-            <p>This Is A Sub Title</p>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="icon stopwatch-icon"></i>
-            <span>Stopwatch</span>
-            <p>This Is A Sub Title</p>
-          </a>
-        </li>
+        <!-- Outros itens... -->
       </ul>
     </div>
 
@@ -73,26 +32,68 @@
         </div>
       </div>
     </div>
+
+    <!-- Barra lateral direita -->
+    <div class="sidebar sidebar-right">
+      <ul class="sidebar-menu">
+        <li>
+          <a href="#">
+            <i class="icon home-icon"></i>
+            <span>Right Menu</span>
+            <p>This Is A Right Menu Sub Title</p>
+          </a>
+        </li>
+        <!-- Outros itens para a barra direita -->
+      </ul>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .app-container {
   display: flex;
+  justify-content: space-between;
 }
 
-.sidebar {
-  width: 250px;
-  background-color: #ffffff;
-  height: 100vh;
-  padding: 20px;
+/* Barra lateral esquerda */
+.sidebar-left {
   position: fixed;
   left: 0;
-  top: 0;
-  overflow-y: auto;
-  border-right: 1px solid #ddd;
 }
 
+/* Barra lateral direita */
+.sidebar-right {
+  position: fixed;
+  right: 0;
+}
+
+/* Estilo aprimorado para ambas as barras laterais */
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4; /* Cor de fundo suave */
+  height: 100vh;
+  padding: 20px;
+  overflow-y: auto;
+  border-radius: 10px; /* Bordas arredondadas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombras para um efeito moderno */
+  border: none; /* Remover borda */
+  transition: background-color 0.3s ease; /* Transição suave ao passar o mouse */
+}
+
+.sidebar:hover {
+  background-color: #eaeaea; /* Mudar cor ao passar o mouse */
+}
+
+.main-content {
+  margin-left: 250px;
+  margin-right: 250px; /* Ajustar para o espaço da barra direita */
+  padding: 20px;
+  width: calc(100% - 500px); /* 250px para cada barra */
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Estilo para o menu */
 .sidebar-menu {
   list-style-type: none;
   padding: 0;
@@ -108,6 +109,13 @@
   color: #333;
   display: flex;
   align-items: center;
+  padding: 10px;
+  border-radius: 8px; /* Bordas arredondadas nos links */
+  transition: background-color 0.3s ease; /* Transição suave */
+}
+
+.sidebar-menu a:hover {
+  background-color: #ddd; /* Efeito de hover nos links */
 }
 
 .sidebar-menu a i {
@@ -125,14 +133,7 @@
   color: #999;
 }
 
-.main-content {
-  margin-left: 250px; /* Tamanho da barra lateral */
-  padding: 20px;
-  width: calc(100% - 250px);
-  height: 100vh;
-  overflow-y: auto;
-}
-
+/* Estilos adicionais para ícones */
 .icon {
   display: inline-block;
   width: 24px;
@@ -145,115 +146,5 @@
   background-image: url('/path/to/home-icon.png');
 }
 
-.wifi-icon {
-  background-image: url('/path/to/wifi-icon.png');
-}
-
-.settings-icon {
-  background-image: url('/path/to/settings-icon.png');
-}
-
-.options-icon {
-  background-image: url('/path/to/options-icon.png');
-}
-
-.search-icon {
-  background-image: url('/path/to/search-icon.png');
-}
-
-.cloud-icon {
-  background-image: url('/path/to/cloud-icon.png');
-}
-
-.stopwatch-icon {
-  background-image: url('/path/to/stopwatch-icon.png');
-}
-
-.button-8 {
-  /* Estilos do botão */
-}
-
-/* Outros estilos adicionais */
+/* Definir outros ícones... */
 </style>
-
-<script>
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-const config = {
-  headers: {
-  'Authorization': `jwt=${getCookie('jwt')}`,
-  }
-}
-
-import axios from 'axios';
-
-import TableTop from '../ui/TableTop.vue';
-import TableSearch from '../ui/TableSearch.vue';
-import Modal from '../ui/Modal.vue';
-import Loading from '../ui/Loading.vue';
-import FormFloating from '../ui/FormFloating.vue';
-import TextareaFloating from '../ui/TextareaFloating.vue';
-import SelectFloating from '../ui/SelectFloating.vue';
-import Popup from '../ui/Popup.vue';
-
-export default {
-  components: {
-    Popup,
-    TableTop,
-    TableSearch,
-    Modal,
-    Loading,
-    FormFloating,
-    TextareaFloating,
-    SelectFloating
-  },
-  data(){
-    return{
-      popup: false,
-      token: '',
-    }
-  },
-  methods: {
-    copyToClipboard() {
-      try {
-        const el = document.createElement('textarea');
-        el.value = this.token;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        this.popup = true;
-        setTimeout(()=>{
-          this.popup = false;
-        }, 2000);   
-      } catch (error) {
-        alert("Falha ao executar")
-        console.log(error)
-      }
-    },
-  },
-  async created(){
-    try {
-      function getCookieValue(name) {
-        const cookies = document.cookie.split('; ');
-        for (let cookie of cookies) {
-          const [cookieName, cookieValue] = cookie.split('=');
-          if (cookieName === name) {
-            return cookieValue;
-          }
-        }
-        return null;
-      }
-      this.token = getCookieValue('jwt');
-    } catch (error) {
-      console.log(error)
-      alert("Erro ao carregar página. Favor tentar mais tarde.");
-      this.carregando = false;
-    }
-  }
-}
-</script>

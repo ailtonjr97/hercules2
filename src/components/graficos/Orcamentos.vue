@@ -6,8 +6,18 @@
     </div>
   </div>
 
-  <div v-if="mesVer" ref="chart" style="width: 100%; height: 600px;"></div>
-  <div v-if="vendVer" ref="orcVend" style="width: 100%; height: 600px;"></div>
+  <div class="row" style="margin-left: 0.1%; width: 98.5%;">
+    <div class="col" v-if="mesVer">
+      <div ref="chart" style="width: 100%; height: 600px;"></div>
+    </div>
+    <div class="col-lg-11" v-if="vendVer" style="padding-right: 0;">
+      <div ref="orcVend" style="width: 100%; height: 600px;"></div>
+    </div>
+    <div class="col-lg-1" v-if="vendVer" style="padding-left: 0; padding-right: 0;">
+      <button class="button-8 mb-2" @click="alteraVendsB2b()">B2B</button>
+      <button class="button-8 mb-2" @click="alteraVendsB2c()">B2C</button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -18,6 +28,7 @@ export default {
   name: 'EChartsComponent',
   data() {
     return {
+      vends: null,
       dados: null,
       mesVer: true,
       vendVer: false,
@@ -27,6 +38,72 @@ export default {
     this.mostraMes(); // Chama a função para exibir o gráfico 'mesVer' ao montar o componente
   },
   methods: {
+    async alteraVendsB2b() {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes-vend?setor=B2B`,
+          {
+            headers: {
+              Authorization: `jwt=${this.getCookie('jwt')}`,
+            },
+          }
+        );
+
+        this.vends = [];
+        response.data.forEach(element => {
+          // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
+          const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
+
+          this.vends.push({
+            name: element.NOME,
+            type: 'bar',
+            stack: 'total',
+            label: { show: true },
+            emphasis: { focus: 'series' },
+            data: orcamentos // Coloca os números dos orçamentos no campo 'data'
+          });
+        });
+
+        // Recria o gráfico com os novos dados
+        this.$nextTick(() => this.orcVend()); // Renderiza o gráfico após a atualização de dados
+
+      } catch (error) {
+        alert('Falha ao buscar informações. Favor tentar novamente mais tarde.');
+      }
+    },
+    async alteraVendsB2c() {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes-vend?setor=B2C`,
+          {
+            headers: {
+              Authorization: `jwt=${this.getCookie('jwt')}`,
+            },
+          }
+        );
+
+        this.vends = [];
+        response.data.forEach(element => {
+          // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
+          const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
+
+          this.vends.push({
+            name: element.NOME,
+            type: 'bar',
+            stack: 'total',
+            label: { show: true },
+            emphasis: { focus: 'series' },
+            data: orcamentos // Coloca os números dos orçamentos no campo 'data'
+          });
+        });
+
+        // Recria o gráfico com os novos dados
+        this.$nextTick(() => this.orcVend()); // Renderiza o gráfico após a atualização de dados
+
+      } catch (error) {
+        alert('Falha ao buscar informações. Favor tentar novamente mais tarde.');
+      }
+    },
     async mostraMes() {
       try {
         this.mesVer = true;
@@ -93,30 +170,6 @@ export default {
       const myChart = echarts.init(chartDom);
 
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes-vend`,
-          {
-            headers: {
-              Authorization: `jwt=${this.getCookie('jwt')}`,
-            },
-          }
-        );
-
-        const vends = [];
-        response.data.forEach(element => {
-          // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
-          const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
-
-          vends.push({
-            name: element.NOME,
-            type: 'bar',
-            stack: 'total',
-            label: { show: true },
-            emphasis: { focus: 'series' },
-            data: orcamentos // Coloca os números dos orçamentos no campo 'data'
-          });
-        });
-
         const option = {
           tooltip: {
             trigger: 'axis',
@@ -139,10 +192,10 @@ export default {
             type: 'category',
             data: ['Setembro', 'Agosto', 'Julho', 'Junho', 'Maio', 'Abril'],
           },
-          series: vends,
+          series: this.vends, // Usa o array atualizado de vends
         };
 
-        myChart.setOption(option);
+        myChart.setOption(option); // Renderiza o gráfico com as novas opções
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
       }
