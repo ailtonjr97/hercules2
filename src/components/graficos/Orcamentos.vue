@@ -51,7 +51,6 @@ export default {
         );
 
         response.data.forEach(element => {
-          // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
           const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
 
           this.vends.push({
@@ -60,20 +59,21 @@ export default {
             stack: 'total',
             label: { show: true },
             emphasis: { focus: 'series' },
-            data: orcamentos // Coloca os números dos orçamentos no campo 'data'
+            data: orcamentos
           });
         });
 
         // Recria o gráfico com os novos dados
-        this.$nextTick(() => this.orcVend()); // Renderiza o gráfico após a atualização de dados
+        this.$nextTick(() => this.orcVend()); 
 
       } catch (error) {
         alert('Falha ao buscar informações. Favor tentar novamente mais tarde.');
       }
     },
+
     async alteraVendsB2c() {
+      this.vends = [];
       try {
-        this.vends = [];
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes-vend?setor=B2C`,
           {
@@ -84,7 +84,6 @@ export default {
         );
 
         response.data.forEach(element => {
-          // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
           const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
 
           this.vends.push({
@@ -93,12 +92,12 @@ export default {
             stack: 'total',
             label: { show: true },
             emphasis: { focus: 'series' },
-            data: orcamentos // Coloca os números dos orçamentos no campo 'data'
+            data: orcamentos
           });
         });
 
         // Recria o gráfico com os novos dados
-        this.$nextTick(() => this.orcVend()); // Renderiza o gráfico após a atualização de dados
+        this.$nextTick(() => this.orcVend());
 
       } catch (error) {
         alert('Falha ao buscar informações. Favor tentar novamente mais tarde.');
@@ -165,9 +164,12 @@ export default {
     },
     async orcVend() {
       const chartDom = this.$refs.orcVend;
-      if (!chartDom) return; // Verifica se o elemento existe
+      if (!chartDom) return;
 
       const myChart = echarts.init(chartDom);
+
+      // Limpa o gráfico antes de renderizar novos dados
+      myChart.clear();
 
       try {
         const option = {
@@ -192,10 +194,10 @@ export default {
             type: 'category',
             data: ['Setembro', 'Agosto', 'Julho', 'Junho', 'Maio', 'Abril'],
           },
-          series: this.vends, // Usa o array atualizado de vends
+          series: this.vends,
         };
 
-        myChart.setOption(option); // Renderiza o gráfico com as novas opções
+        myChart.setOption(option); // Renderiza o gráfico com os novos dados
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
       }
