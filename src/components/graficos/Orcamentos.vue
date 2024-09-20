@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     async alteraVendsB2b() {
+      this.vends = [];
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes-vend?setor=B2B`,
@@ -49,7 +50,6 @@ export default {
           }
         );
 
-        this.vends = [];
         response.data.forEach(element => {
           // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
           const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
@@ -73,6 +73,7 @@ export default {
     },
     async alteraVendsB2c() {
       try {
+        this.vends = [];
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_IP}/graficos/orcamentos-quantidade-mes-vend?setor=B2C`,
           {
@@ -82,7 +83,6 @@ export default {
           }
         );
 
-        this.vends = [];
         response.data.forEach(element => {
           // Extrai os valores de ORCAMENTOS (que é um JSON array de números)
           const orcamentos = JSON.parse(element.ORCAMENTOS).map(item => item.total_orcamentos);
