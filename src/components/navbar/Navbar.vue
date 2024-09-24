@@ -65,6 +65,7 @@
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Gráficos</h6>
                     <router-link to="/graficos-orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</router-link>
+                    <router-link to="/graficos-pedidos" class="nav-link" style="padding: 0 8px;">Pedidos</router-link>
                 </div>
             </div>
 

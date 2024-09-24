@@ -37,6 +37,7 @@ import NfCte from './components/financeiro/NfCte.vue';
 import NfCteEntrada from './components/financeiro/NfCteEntrada.vue';
 import TabelasSql from './components/sql/Tabelas.vue';
 import GraficosOrcamentos from './components/graficos/Orcamentos.vue';
+import GraficosPedidos from './components/graficos/Pedidos.vue';
 
 import FinanceiroCte from './components/financeiro/FinanceiroCte.vue';
 import FinanceiroPdfNf from './components/financeiro/FinanceiroPdfNf.vue';
@@ -86,6 +87,7 @@ const routes = [
     { path: '/relatorios/Dashboard', component: DashboardsRelatorios },    
     { path: '/tabelas', component: TabelasSql },
     { path: '/graficos-orcamentos', component: GraficosOrcamentos },
+    { path: '/graficos-pedidos', component: GraficosPedidos },
     { path: '/:notFound(.*)', redirect: '/home' }
 ];
 
