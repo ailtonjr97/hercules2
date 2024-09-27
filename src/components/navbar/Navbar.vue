@@ -87,7 +87,7 @@
 
         </div>
     </div>
-    <h6 style="width: 5%; color: #fff; text-align: center; margin-left: 200px;" v-if="mostraStatus">SISTEMA INDISPONÍVEL</h6>
+    <h6 style="width: 5%; color: #fff; text-align: center; margin-left: 30%;" v-if="mostraStatus">SISTEMA INDISPONÍVEL</h6>
   </div>
 </nav>
 
