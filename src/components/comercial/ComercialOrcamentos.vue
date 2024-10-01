@@ -26,6 +26,7 @@
         <thead>
           <tr style="height: 25px">
             <th>Filial</th>
+            <th>Dt. Emissao Orc.</th>
             <th>Orçamento</th>
             <th>Pedido</th>
             <th>Cliente</th>
@@ -36,6 +37,7 @@
         <tbody>
           <tr v-for="api in apis" :key="api.R_E_C_N_O_">
             <td>{{ api.CJ_FILIAL }}</td>
+            <td>{{ api.CJ_EMISSAO }}</td>
             <td>{{ api.CJ_NUM }}</td>
             <td>{{ api.CK_NUMPV }}</td>
             <td style="width: 50px;">{{ api.A1_NOME }}</td>
