@@ -192,7 +192,7 @@ export default {
           },
           yAxis: {
             type: 'category',
-            data: ['Setembro', 'Agosto', 'Julho', 'Junho', 'Maio', 'Abril'],
+            data: ['Outubro', 'Setembro', 'Agosto', 'Julho', 'Junho', 'Maio', 'Abril'],
           },
           series: this.vends,
         };

@@ -66,7 +66,7 @@
                 <td>{{ api.C5_NUM}}</td>
                 <td>{{ api.C5_XPEDTR}}</td>
                 <td>
-                    {{ api.C5_VEND1}} <br>
+                    {{ api.A3_NREDUZ}}  <br>
                     <button v-if="setor == 'Comercial'" @click="atualizaObsVend(api.C5_FILIAL, api.C5_NUM, api.C5_XOBSV)" title="Itens" class="button-8" style="bottom: 10px;"><i class="fa-solid fa-check"></i></button>
                     <textarea v-model="api.C5_XOBSV" cols="8" rows="1" style="resize: both; overflow: auto;" maxlength="200"></textarea>
                 </td>              
