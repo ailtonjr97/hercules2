@@ -297,9 +297,15 @@
     import TextareaFloating from '../ui/TextareaFloating.vue';
     import AnexFloating from '../ui/AnexFloating.vue';
     
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
     const config = {
         headers: {
-        'Authorization': document.cookie,
+        'Authorization': `jwt=${getCookie('jwt')}`,
         }
     }
     
@@ -670,9 +676,14 @@
         },
         async created(){
             try {
+                function getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                }
                 const config = {
                     headers: {
-                    'Authorization': document.cookie,
+                    'Authorization': `jwt=${getCookie('jwt')}`,
                     }
                 }
                 const loggedIn = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/auth/logado`, config);
