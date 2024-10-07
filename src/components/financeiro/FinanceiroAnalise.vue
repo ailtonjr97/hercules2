@@ -191,7 +191,7 @@
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-evenly">
                                 <span-select :span="'Responsável pela Aprovação'" :options="optionsRespAprov" v-model="infoDocumento.RESPONSAVEL_APROV"></span-select>
-                                <div style="margin-left: 0.5%;" v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 823)"><button title="Trocar Responsável" class="button-8" @click="trocaResp(infoDocumento.ID, infoDocumento.RESPONSAVEL_APROV)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                                <div style="margin-left: 0.5%;" v-if="!mostraArquivadas && infoDocumento.ARQUIVA == 0 && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 823)"><button title="Trocar Responsável" class="button-8" @click="trocaResp(infoDocumento.ID, infoDocumento.RESPONSAVEL_APROV)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
                             </div>
                         </div>
 <!--                         <div class="row mt-2">
