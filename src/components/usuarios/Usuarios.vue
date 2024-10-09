@@ -182,7 +182,7 @@ const config = {
               {valor: "Controladoria", descri: 'Controladoria'},
               {valor: "Qualidade", descri: 'Qualidade'},
               {valor: "PCP", descri: 'PCP'},
-              {valor: "Produção", descri: 'Producao'},
+              {valor: "Producao", descri: 'Producao'},
               {valor: "Financeiro", descri: 'Financeiro'},
               {valor: "Comercial", descri: 'Comercial'},
               {valor: "Logística", descri: 'Logística'},

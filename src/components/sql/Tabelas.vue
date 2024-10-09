@@ -87,6 +87,11 @@
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se1')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
+            <tr>
+                <td>SEA - Títulos Enviados ao Banco</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
           </tbody>
         </table>
       </div>
