@@ -721,7 +721,7 @@ export default{
                         ], config);
                         const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.infoDocumento.ID}`, config);
                         this.resultAnal = campo.data[0].RESULTADO_ANALISE;
-                        this.infoDocumento.NOVO_LIMITE = this.formattedValor(campo.data[0].NOVO_LIMITE * 1);
+                        this.infoDocumento.NOVO_LIMITE = campo.data[0].NOVO_LIMITE * 1;
                         this.infoDocumento.VALOR_ADIANT = this.formattedValor(campo.data[0].VALOR_ADIANT * 1);
                         this.infoDocumento.PERCENTUAL_ADIANT = campo.data[0].PERCENTUAL_ADIANT * 1;
                         this.infoDocumento.RESPOSTA_ANALISE = campo.data[0].RESPOSTA_ANALISE;
@@ -969,7 +969,7 @@ export default{
                     RESPONSAVEL_APROV: response.data[0].RESPONSAVEL_APROV,
                     FALTA_LIMITE_NUM: response.data[0].LIMITE_ATUAL - response.data[0].VALOR_PEDIDO,
                     LIMITE_ATUAL_NUM: response.data[0].LIMITE_ATUAL * 1,
-                    NOVO_LIMITE: this.formattedValor(response.data[0].NOVO_LIMITE * 1) || null,
+                    NOVO_LIMITE: response.data[0].NOVO_LIMITE * 1 || null,
                     RESULTADO_ANALISE: response.data[0].RESULTADO_ANALISE,
                     VALOR_PEDIDO_NUM: response.data[0].VALOR_PEDIDO || null,
                     PERCENTUAL_ADIANT: response.data[0].PERCENTUAL_ADIANT * 1 || null,

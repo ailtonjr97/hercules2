@@ -69,6 +69,9 @@
               <form-span :span="'Número'" :type="'text'" v-model="info.C5_NUM" readonly></form-span>
             </div>
           </div>
+          <div class="row mt-2">
+            <loading v-if="carregandoItemsPed && optionsPedidos"></loading>
+          </div>
           <div v-if="!carregandoItemsPed && optionsPedidos" class="table-wrapper table-responsive table-striped mt-4">
             <table class="fl-table" id="myTable">
               <thead>
