@@ -273,7 +273,7 @@
             <div class="row mt-2" v-if="!carregandoinfo">
                 <div class="col">
                     <div v-for="anexo in listaArquivos" :key="anexo.id" class="col">
-                        <a href="#" @click.prevent="mostraimagem(anexo.FILENAME)">{{ anexo.ORIGINAL_NAME }}</a>
+                        <a :href="`${ip}/files/${anexo.FILENAME}`" target="_blank">{{ anexo.ORIGINAL_NAME }}</a>
                     </div>
                 </div>
             </div>
@@ -392,26 +392,6 @@
             }
         },
         methods: {
-            async mostraimagem(filename) {
-                try {
-                    const response = await axios.get(`${this.ip}/files/${filename}`, {
-                    ...config2,
-                    responseType: 'blob',
-                    });
-
-                    const blob = new Blob([response.data], { type: response.headers['content-type'] });
-                    const fileURL = URL.createObjectURL(blob);
-                    window.open(fileURL);
-
-                    // Opcional: liberar a URL do Blob após um tempo
-                    setTimeout(() => {
-                    URL.revokeObjectURL(fileURL);
-                    }, 100);
-                } catch (error) {
-                    console.log(error);
-                    alert('Falha ao executar ação. Tente novamente mais tarde.');
-                }
-            },
             async uploadFile() {
                 this.images = this.$refs.file.files
             },

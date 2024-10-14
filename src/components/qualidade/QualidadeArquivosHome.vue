@@ -27,7 +27,7 @@
                     <p>{{ documento.HOME_ID }}</p>
                 </td>
                 <td>
-                    <a href="#" @click.prevent="mostraimagem(documento.FILENAME)">{{ documento.ORIGINAL_NAME }}</a>
+                    <a :href="`${ip}/files/${documento.FILENAME}`" target="_blank">{{ documento.ORIGINAL_NAME }}</a>
                 </td>
                 <td>
                     <button class="button-8" title="Inativar" @click="abreExcluirArquivoModal(documento.HOME_ID)"><i style="font-size: 14px;" class="fas fa-trash"></i></button>
@@ -124,26 +124,6 @@
             }
         },
         methods: {
-            async mostraimagem(filename) {
-                try {
-                    const response = await axios.get(`${this.ip}/files/${filename}`, {
-                    ...config,
-                    responseType: 'blob',
-                    });
-
-                    const blob = new Blob([response.data], { type: response.headers['content-type'] });
-                    const fileURL = URL.createObjectURL(blob);
-                    window.open(fileURL);
-
-                    // Opcional: liberar a URL do Blob após um tempo
-                    setTimeout(() => {
-                    URL.revokeObjectURL(fileURL);
-                    }, 100);
-                } catch (error) {
-                    console.log(error);
-                    alert('Falha ao executar ação. Tente novamente mais tarde.');
-                }
-            },
             async confirmaExcluirArquivo(){
                 try {
                     this.carregandoinfo = true;
