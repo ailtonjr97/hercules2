@@ -10,6 +10,9 @@ import Controladoria from './components/controladoria/Controladoria.vue';
 import Qualidade from './components/qualidade/Qualidade.vue';
 import QualidadeCertificadoGarantia from './components/qualidade/CertificadoGarantia.vue';
 import QualidadeDocumentos from './components/qualidade/QualidadeDocumentos.vue';
+
+import QualidadeArquivosHome from './components/qualidade/QualidadeArquivosHome.vue';
+
 import AnexPage from './components/ui/AnexPage.vue';
 import DocumentosArquivados from './components/qualidade/DocumentosArquivados.vue';
 import Totvs from './components/totvs/Totvs.vue';
@@ -57,6 +60,7 @@ const routes = [
     { path: '/qualidade/certificado-garantia', component: QualidadeCertificadoGarantia, meta: { carregando: true } },
     { path: '/qualidade/for-edp-25', component: QualidadeDocumentos, meta: { carregando: true } },
     { path: '/qualidade/for-edp-25/arquivados', component: DocumentosArquivados, meta: { carregando: true } },
+    { path: '/qualidade/arquivos-home', component: QualidadeArquivosHome, meta: { carregando: true } },
     { path: '/rh', component: Rh },
     { path: '/rh/documentos', component: RhDocumentos },
     { path: '/chamados', component: ChamadosTi },
@@ -147,10 +151,6 @@ router.beforeEach(async (to, from, next) => {
     const decoded = jwtDecode(token);
     const isAdmin = await checkAdmin(decoded.id);
 
-    if (isAdmin) {
-        next();
-    }
-
     if (['/usuarios', '/totvs', '/tabelas'].includes(to.path)) {
         const token = getCookie('jwt');
         const decoded = jwtDecode(token);
@@ -218,7 +218,7 @@ router.beforeEach(async (to, from, next) => {
         const isAdmin = await checkAdmin(decoded.id);
         const financeiro = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Financeiro`, config);
         const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
-        const allowedIds = []; //Ailton, Everson, Carlos
+        const allowedIds = [431, 157, 1]; //Ailton, Everson, Carlos
         
         vendedores.data.forEach(element => {
           allowedIds.push(element.intranet_id)

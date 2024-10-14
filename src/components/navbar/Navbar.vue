@@ -45,6 +45,7 @@
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Qualidade</h6>
                     <router-link to="/qualidade/for-edp-25" class="nav-link" style="padding: 0 8px;">FOR-EDP-25</router-link>
+                    <router-link to="/qualidade/arquivos-home" class="nav-link" style="padding: 0 8px;">Arquivos Home</router-link>
                 </div>
             </div>
 
