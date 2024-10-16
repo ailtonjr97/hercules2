@@ -18,6 +18,7 @@
                 <tr style="height: 25px">
                     <th>ID</th>
                     <th>Nome</th>
+                    <th>Categoria</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -28,6 +29,9 @@
                 </td>
                 <td>
                     <a :href="`${ip}/files/${documento.FILENAME}`" target="_blank">{{ documento.ORIGINAL_NAME }}</a>
+                </td>
+                <td>
+                    <p>{{ documento.HOME_CATEGORIA }}</p>
                 </td>
                 <td>
                     <button class="button-8" title="Inativar" @click="abreExcluirArquivoModal(documento.HOME_ID)"><i style="font-size: 14px;" class="fas fa-trash"></i></button>
@@ -60,6 +64,9 @@
             <div class="row mt-2">
                 <input type="file" @change="uploadFile" ref="file">
             </div>
+            <div class="row mt-2">
+                <span-select :span="'Categoria:'" :options="categoriaOptions" v-model="categoria"></span-select>
+            </div>
         </div>
         </template>
         <template v-slot:buttons v-if="!carregandoinfo">
@@ -80,11 +87,12 @@
     import FormFloating from '../ui/FormFloating.vue';
     import SelectFloating from '../ui/SelectFloating.vue';
     import TextareaFloating from '../ui/TextareaFloating.vue';
+    import Popup from '../ui/Popup.vue';
     import AnexFloating from '../ui/AnexFloating.vue';
     import SpanTextarea from '../ui/spanTextarea.vue';
-    import Popup from '../ui/Popup.vue';
     import FormSpan from '../ui/formSpan.vue';
-    
+    import SpanSelect from '../ui/spanSelect.vue';
+
     const config = getAuthConfig();
     
     export default {
@@ -99,10 +107,19 @@
             TextareaFloating,
             AnexFloating,
             SpanTextarea,
-            FormSpan
+            FormSpan,
+            SpanSelect,
+            SpanSelect
+            
         },
         data(){
             return{
+                categoria: 'Políticas',
+                categoriaOptions: [
+                    { valor: "Políticas", descri: 'Políticas' },
+                    { valor: "Documentos Padrão", descri: 'Documentos Padrão' },
+                    { valor: "Formulários", descri: 'Formulários' }
+                ],
                 excluirId: null,
                 nomeArquivoExcluir: '',
                 excluirArquivoModal: false,
@@ -169,6 +186,7 @@
                 for(let i = 0; i < this.images.length; i++){
                     const formData = new FormData();
                     formData.append('file', this.images[i]);
+                    formData.append('categoria', this.categoria);
                     const headers = { 'Content-Type': 'multipart/form-data', 'Authorization': document.cookie };
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/anexos-home-arquivo`, formData, { headers });
                 }
@@ -193,6 +211,7 @@
                     this.arquivoModal = false;
                     this.descri = '';
                     this.obs = '';
+                    this.categoria = 'Políticas'
                 } catch (error) {
                     console.log(error);
                     this.descri = '';

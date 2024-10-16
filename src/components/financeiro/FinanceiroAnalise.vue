@@ -6,7 +6,7 @@
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
     <table-top :resultados="resultados">
         <template v-slot:tableButtons>
-            <button v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189)" class="button-8 mb-2" @click="refresh()">Atualizar</button>
+            <button v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 823)" class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button v-if="!mostraArquivadas" class="button-8 mb-2" @click="arquivadas()">Arquivadas</button>
             <button v-if="mostraArquivadas" class="button-8 mb-2" @click="abertas()">Abertas</button>
         </template>
@@ -42,7 +42,7 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-center">
-                        <button v-if="idLogado == 705 || idLogado == 193 || idLogado == 189" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
+                        <button v-if="idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 823" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
                         <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID, resposta.COD_CLIENTE, resposta.LOJA)"><i style="font-size: 14px;" class="fas fa-eye"></i></button></div>
                     </div>
                 </div>
