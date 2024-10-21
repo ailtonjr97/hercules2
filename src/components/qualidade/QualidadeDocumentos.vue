@@ -4,7 +4,7 @@
         <table-top :resultados="resultados">
             <template v-slot:tableButtons>
                 <button class="button-8 mb-2" @click="abrirModalNovoDocumento">Novo Documento</button>
-                <router-link to="/qualidade/for-edp-25/arquivados" class="button-8">Arquivados</router-link>
+                <router-link to="/qualidade/minuta-retrabalho/arquivados" class="button-8">Arquivados</router-link>
                 <button class="button-8 mb-2" @click="pageRefresh">Atualizar</button>
             </template>
         </table-top>
