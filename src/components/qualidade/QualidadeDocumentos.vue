@@ -22,6 +22,8 @@
                 <th>Tipo</th>
                 <th>Data</th>
                 <th>Inspetor</th>
+                <th>Produto</th>
+                <th>Linha Produtiva</th>
                 <th>Status</th>
                 <th>Ações</th>
                 </tr>
@@ -39,6 +41,12 @@
                 </td>
                 <td>
                     <p>{{ documento.INSPETOR }}</p>
+                </td>
+                <td>
+                    <p>{{ documento.COD_PROD }}</p>
+                </td>
+                <td>
+                    <p>{{ documento.LINHA_PRODUTIVA }}</p>
                 </td>
                 <td>
                     <p v-if="documento.EDP_PREENCHIDO == 0">Aguardando EDP</p>
@@ -169,6 +177,7 @@
                 <select-floating :placeholder="'Responsável:'" :id="'edp_responsavel'" :options="edp_responsaveis" v-model="modalEdpBody.edp_responsavel"></select-floating>
                 <form-floating :placeholder="'Data:'" :id="'edp_data'" :type="'date'" v-model="modalEdpBody.edp_data"></form-floating>
                 <form-floating :placeholder="'Tempo Previsto:'" :id="'tempo_previsto'" :type="'text'" v-model="modalEdpBody.tempo_previsto"></form-floating>
+                <form-floating :placeholder="'Linha Produtiva:'" :id="'linha_produtiva'" :type="'text'" v-model="modalEdpBody.linha_produtiva"></form-floating>
             </div>
             <div class="row mt-2" v-if="!carregandoinfo">
                 <textarea-floating :placeholder="'Instrução de Reprocesso:'" :id="'instrucao_reprocesso'" v-model="modalEdpBody.instrucao_reprocesso"></textarea-floating>
@@ -364,6 +373,7 @@
                     instrucao_reprocesso: '',
                     edp_responsavel: '',
                     edp_data: '',
+                    linha_produtiva: ''
                 },
                 modalPcpBody: {
                     pcp_odf_retrabalho: '',
@@ -476,6 +486,7 @@
                     }
                     this.closeModalEdp();
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/editarEdp/${this.whereId}`, this.modalEdpBody, config);
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/email-setor/PCP/${this.whereId}`, config);
                     this.submitFile();
                 } catch (error) {
                     console.log(error)
@@ -555,6 +566,7 @@
                 try {
                     this.closeModalPcp();
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/editarPcp/${this.whereId}`, this.modalPcpBody, config);
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/email-setor/Producao/${this.whereId}`, config);
                     this.submitFile();
                 } catch (error) {
                     console.log(error)
@@ -570,6 +582,7 @@
                 try {
                     this.closeModalProducao();
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/editarProducao/${this.whereId}`, this.modalProducaoBody, config);
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/email-setor/Qualidade/${this.whereId}`, config);
                     this.submitFile();
                 } catch (error) {
                     console.log(error)
@@ -638,6 +651,9 @@
                     const response = await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/create`, this.criar, config);
                     if(response.status == 200){
                         const id = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/ultimo-documento`, config);
+                        if(id.status == 200){
+                            await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/email-setor/Engenharia de Processos/${id.data.ID}`, config);
+                        }
                         this.submitFileCriar(id.data.ID);
                     }else{
                         console.log(error)

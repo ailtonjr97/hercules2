@@ -42,9 +42,9 @@
             <div class="dropdown" style="margin-left: 20%;">
                 <i class="fa-solid fa-circle-check" style="color: white; font-size: 21px; margin-top: 48%; cursor: pointer;" data-bs-toggle="dropdown"></i>
                 <!-- <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Qualidade</p> -->
-                <div class="dropdown-menu">
+                <div class="dropdown-menu" style="width: 200px">
                     <h6 class="dropdown-header">Qualidade</h6>
-                    <router-link to="/qualidade/for-edp-25" class="nav-link" style="padding: 0 8px;">FOR-EDP-25</router-link>
+                    <router-link to="/qualidade/for-edp-25" class="nav-link" style="padding: 0 8px;">Minuta de Retrabalho</router-link>
                     <router-link to="/qualidade/arquivos-home" class="nav-link" style="padding: 0 8px;">Arquivos Home</router-link>
                 </div>
             </div>
