@@ -64,6 +64,7 @@
                     <button class="button-8" @click="openModalQualidade(documento.ID)" v-if="documento.PRODUCAO_PREENCHIDO == 1 && documento.QUALIDADE_PREENCHIDO == 0 && userSetor == 'Qualidade'">Preencher Qualidade</button>
                     <button class="button-8" @click="openModalNc(documento.ID)" v-if="documento.MOTIVO_NC_PREENCHIDO == 0">Motivo NC</button>
                     <button class="button-8" @click="inactivateDocument(documento.ID)" v-if="documento.EDP_PREENCHIDO == 1 && documento.PCP_PREENCHIDO == 1 && documento.PRODUCAO_PREENCHIDO == 1 && documento.QUALIDADE_PREENCHIDO == 1 && documento.MOTIVO_NC_PREENCHIDO == 1">Arquivar</button>
+                    <button class="button-8" @click="inactivateDocument(documento.ID)" v-if="intranetId == 1 || intranetId == 326">Arquivar Agora</button>
                     <button class="button-8" v-if="documento.ANEXO != 0" @click="openAnexoModal(documento.ID)">Anexos</button>
                 </td>
                 </tr>
@@ -334,6 +335,7 @@
         },
         data(){
             return{
+                intranetId: null,
                 listaArquivos: [],
                 images: [],
                 ip: import.meta.env.VITE_BACKEND_IP,
@@ -707,6 +709,7 @@
                 }
                 const loggedIn = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/auth/logado`, config);
                 this.userSetor = loggedIn.data[0].setor;
+                this.intranetId = loggedIn.data[0].intranet_id;
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/documentos/get_all`, config);
                 this.documentos = response.data;
                 this.resultados = response.data.length;
