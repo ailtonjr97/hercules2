@@ -92,6 +92,11 @@
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
+            <tr>
+                <td>SA4 - Transportadoras</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
           </tbody>
         </table>
       </div>
