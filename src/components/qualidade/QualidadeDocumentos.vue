@@ -58,7 +58,7 @@
                 </td>
                 <td>
                     <button class="button-8" @click="verDocumento(documento.ID)">Visualizar</button>
-                    <button class="button-8" @click="openModalEdp(documento.ID)" v-if="documento.EDP_PREENCHIDO == 0 && userSetor == 'Engenharia de Processos'">Preencher EDP</button>
+                    <button class="button-8" @click="openModalEdp(documento.ID)" v-if="(documento.EDP_PREENCHIDO == 0 && userSetor == 'Engenharia de Processos') || intranetId == 843 || intranetId == 765">Preencher EDP</button>
                     <button class="button-8" @click="openModalPcp(documento.ID)" v-if="documento.EDP_PREENCHIDO == 1 && documento.PCP_PREENCHIDO == 0 && userSetor == 'PCP'">Preencher PCP</button>
                     <button class="button-8" @click="openModalProducao(documento.ID)" v-if="documento.PCP_PREENCHIDO == 1 && documento.PRODUCAO_PREENCHIDO == 0 && userSetor == 'Producao'">Preencher Produção</button>
                     <button class="button-8" @click="openModalQualidade(documento.ID)" v-if="documento.PRODUCAO_PREENCHIDO == 1 && documento.QUALIDADE_PREENCHIDO == 0 && userSetor == 'Qualidade'">Preencher Qualidade</button>
