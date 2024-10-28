@@ -97,6 +97,10 @@
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
                 <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
             </tr>
+            <tr>
+                <td>SYS_USR - Usuários</td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sysusr')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+            </tr>
           </tbody>
         </table>
       </div>
