@@ -59,7 +59,7 @@
             <tr v-for="api in apis">
                 <td>
                     <button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8"><i class="fa-solid fa-bars"></i></button>
-                    <button v-if="userId == 441 || userId == 259 || userId == 431" @click="openValFreteModal(api.C5_FILIAL, api.C5_NUM)" title="Alterar valor frete" class="button-8"><i class="fa-solid fa-truck"></i></button>
+                    <button v-if="userId == 441 || userId == 849 || userId == 431  || userId == 654 || userId == 294" @click="openValFreteModal(api.C5_FILIAL, api.C5_NUM)" title="Alterar valor frete" class="button-8"><i class="fa-solid fa-truck"></i></button>
                 </td>
                 <!-- <td>{{ api.R_E_C_N_O_ }}</td> -->
                 <td>{{ api.C5_FILIAL}}</td>
@@ -533,7 +533,7 @@ methods: {
             if(faturd){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Faturado' estiver preenchido.");
                 e.preventDefault();
-            }else if(this.setor != "Logística" && this.userId != 441){
+            }else if(this.setor != "Logística" && (this.userId != 441 || this.userId != 849 || this.userId != 654 || this.userId != 294)){ //Bruna, João Prestes, Mayara e Alex Lemes
                 this.mostraModal("Somente usuários do setor Logística podem editar esse campo.");
                 e.preventDefault();
             }else{
