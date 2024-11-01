@@ -16,7 +16,7 @@
 
             <div class="dropdown" style="margin-left: 15%;">
                 <i class="fa-solid fa-comments-dollar" style="color: white; font-size: 20px; margin-top: 40%; cursor: pointer;" data-bs-toggle="dropdown"></i>
-                <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Comercial</p>
+                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Comercial</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Comercial</h6>
                     <router-link to="/comercial/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete</router-link>
@@ -28,7 +28,7 @@
 
             <div class="dropdown" style="margin-left: 20%;">
                 <i class="fa-solid fa-dollar" style="color: white; font-size: 20px; margin-top: 80%; cursor: pointer;" data-bs-toggle="dropdown"></i>
-                <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Financeiro</p>
+                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Financeiro</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Financeiro</h6>
                     <router-link to="/financeiro/analise-de-credito" class="nav-link" style="padding: 0 8px;">Análise de Crédito</router-link>
@@ -41,7 +41,7 @@
 
             <div class="dropdown" style="margin-left: 20%;">
                 <i class="fa-solid fa-circle-check" style="color: white; font-size: 21px; margin-top: 48%; cursor: pointer;" data-bs-toggle="dropdown"></i>
-                <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Qualidade</p>
+                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Qualidade</p>
                 <div class="dropdown-menu" style="width: 200px">
                     <h6 class="dropdown-header">Qualidade</h6>
                     <router-link to="/qualidade/minuta-retrabalho" class="nav-link" style="padding: 0 8px;">Minuta de Retrabalho</router-link>
@@ -51,7 +51,7 @@
 
             <div class="dropdown" style="margin-left: 20%;">
                 <i class="fa-solid fa-truck" style="color: white; font-size: 21px; margin-top: 38%; cursor: pointer;" data-bs-toggle="dropdown"></i>
-                <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Logística</p>
+                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Logística</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Logística</h6>
                     <router-link to="/logistica/produtos" class="nav-link" style="padding: 0 8px;">Produtos</router-link>
@@ -60,7 +60,7 @@
 
             <div class="dropdown" style="margin-left: 20%;">
                 <i class="fa-solid fa-database" style="color: white; font-size: 21px; margin-top: 55%; cursor: pointer;" data-bs-toggle="dropdown"></i>
-                <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Tabelas</p>
+                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Tabelas</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Banco de dados</h6>
                     <router-link to="/tabelas" class="nav-link" style="padding: 0 8px;">Tabelas</router-link>
@@ -69,7 +69,7 @@
 
             <div class="dropdown" style="margin-left: 20%;">
                 <i class="fa-solid fa-chart-pie" style="color: white; font-size: 21px; margin-top: 45%; cursor: pointer;" data-bs-toggle="dropdown"></i>
-                <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Gráficos</p>
+                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Gráficos</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Gráficos</h6>
                     <router-link to="/graficos-orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</router-link>
@@ -79,7 +79,7 @@
 
             <div class="dropdown" style="margin-left: 20%;">
                 <i class="fa-solid fa-user" style="color: white; font-size: 20px; margin-top: 60%; cursor: pointer;" data-bs-toggle="dropdown"></i>
-                <p data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Usuários</p>
+                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Usuários</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">{{ name }}</h6>
                     <router-link to="/usuarios" class="nav-link" style="padding: 0 8px;" :style="[isAdmin != 0 ? {'display': 'block'} : {'display': 'none'}]">Usuários</router-link>
@@ -95,6 +95,12 @@
 
 <slot name="content"></slot>
 </template>
+
+<style>
+    .falta_icone{
+        display: none;
+    }
+</style>
 
 <script>
 import axios from 'axios';

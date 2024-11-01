@@ -28,7 +28,6 @@
             <th>Filial</th>
             <th>Dt. Emissao Orc.</th>
             <th>Orçamento</th>
-            <th>Pedido</th>
             <th>Cliente</th>
             <th>Vendedor</th>
             <th>Ações</th>
@@ -39,7 +38,6 @@
             <td>{{ api.CJ_FILIAL }}</td>
             <td>{{ api.CJ_EMISSAO }}</td>
             <td>{{ api.CJ_NUM }}</td>
-            <td>{{ api.CK_NUMPV }}</td>
             <td style="width: 50px;">{{ api.A1_NOME }}</td>
             <td style="width: 50px;">{{ api.A3_NREDUZ }}</td>
             <td>
