@@ -87,6 +87,7 @@
     <div class="row mt-2">
       <form-floating :placeholder="'Senha:'" :id="'password'" :type="'password'" v-model="form.password"></form-floating>
       <select-floating :placeholder="'Setor:'" :id="'setor'" :options="optionsSetores" v-model="form.setor"></select-floating>
+      <form-floating :placeholder="'Intranet ID:'" :id="'intranet_id'" :type="'number'" v-model="form.intranetId"></form-floating>
     </div>
   </template>
   <template v-slot:buttons>
@@ -148,7 +149,8 @@ const config = {
           email: '',
           admin: '',
           password: '',
-          setor: ''
+          setor: '',
+          intranetId: ''
       },
       editar: {
         name: '',

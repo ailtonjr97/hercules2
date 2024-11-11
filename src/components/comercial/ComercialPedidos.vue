@@ -68,6 +68,21 @@
             <div class="col">
               <form-span :span="'Número'" :type="'text'" v-model="info.C5_NUM" readonly></form-span>
             </div>
+            <div class="col">
+              <form-span :span="'Ped. Transf.'" :type="'text'" v-model="info.C5_XPEDTR" readonly></form-span>
+            </div>
+            <div class="col">
+              <form-span :span="'Num. Orc.'" :type="'text'" v-model="info.C5_XNUMORC" readonly></form-span>
+            </div>
+            <div class="col d-flex justify-content-evenly">
+              <form-span :span="'Cliente'" :type="'text'" v-model="info.C5_CLIENTE" readonly></form-span>
+              <button style="margin-left: 1%;" class="button-8" @click="openModalPadrao('Clientes', `/consulta/cliente?filial=${info.C5_FILIAL}&cliente=${info.C5_CLIENTE}&loja=${info.C5_LOJACLI}`, ['Código', 'Loja', 'Nome'])">
+                <i style="font-size: 16px;" class="fas fa-search"></i>
+              </button>
+            </div>
+            <div class="col">
+              <form-span :span="'Loja'" :type="'text'" v-model="info.C5_LOJACLI" readonly></form-span>
+            </div>
           </div>
           <div class="row mt-2">
             <loading v-if="carregandoItemsPed && optionsPedidos"></loading>
