@@ -10,6 +10,7 @@
             <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivadas</router-link>
             <button class="button-8 mb-2" @click="abrirModalFob">Liberar FOB</button>
             <button class="button-8 mb-2" v-if="setor == 'Controladoria'" @click="abrirModalCif">Liberar CIF</button>
+            <button class="button-8 mb-2" @click="abrirModalTransp">(FOB) Escolher transportadora</button>
         </template>
     </table-top>
     <div class="row mb-2">
@@ -309,6 +310,72 @@
     </template>
 </modal>
 
+<modal v-if="modalTransp" :title="`(Somente FOB) Alterar transportadora:`">
+    <template v-slot:close><button class="button-8" @click="fecharModalTransp()">Fechar</button></template>
+    <template v-slot:body>
+    <loading v-if="carregandoinfo"></loading>
+    <div v-if="!carregandoinfo">
+        <div class="row">
+            <div class="col">
+                <select-floating :placeholder="'Filial'" :id="'filial-transp'" :options="optionsFiliais" v-model="filialTransp"></select-floating>
+            </div>
+            <div class="col d-flex justify-content-evenly">
+                <form-floating :placeholder="'Número do Orçamento:'" :id="'num-orc'" :type="'number'" v-model="numOrc" style="width: 200px;"></form-floating>
+                <button style="margin-left: 1%;" title="Ver cliente" class="button-8" @click="mostraCliente(filialTransp, numOrc)"><i style="font-size: 20px;" class="fa-solid fa-eye"></i></button>
+            </div>
+            <div class="col">
+                <form-floating :placeholder="'Cliente:'" :id="'cliente-nome'" :type="'text'" v-model="clienteNome"></form-floating>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <form-floating :placeholder="'Cód. Transportadora:'" :id="'cod_transp'" :type="'text'" v-model="transpCod" readonly></form-floating>
+            </div>
+            <div class="col">
+                <form-floating :placeholder="'Nome Transportadora:'" :id="'nome_transp'" :type="'text'" v-model="transpNome" readonly></form-floating>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="row mb-2">
+                <form-floating :placeholder="'Pesquisar Nome:'" :id="'nome_transp'" :type="'text'" v-model="transpNomeProc" v-on:keyup.enter="pesquisaTranspCom()"></form-floating>
+                <p style="color: red;" v-if="erroBuscaTranspCom">Transportadora não encontrada</p>
+            </div>
+            <loading v-if="carregandoInfoTranspCom"></loading>
+            <div class="table-wrapper table-responsive table-striped mb-5" v-if="!carregandoInfoTranspCom">
+                <table class="fl-table" id="myTable">
+                <thead>
+                    <tr style="height: 25px">
+                    <th>Código:</th>
+                    <th>Nome</th>
+                    <th>Endereço</th>
+                    <th>Bairro</th>
+                    <th>Estado</th>
+                    <th>CNPJ</th>
+                    <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="transportadora in transportadoras" :key="transportadora.cod">
+                    <td><p>{{ transportadora.cod }}</p></td>
+                    <td><p>{{ transportadora.nome }}</p></td>
+                    <td><p>{{ transportadora.end }}</p></td>
+                    <td><p>{{ transportadora.bairro }}</p></td>
+                    <td><p>{{ transportadora.est }}</p></td>
+                    <td><p>{{ transportadora.cgc }}</p></td>
+                    <td><button title="Escolher" class="button-8" @click="selecionarTransCom(transportadora.cod, transportadora.nome)"><i class="fa-solid fa-check" style="font-size: 14px;"></i></button></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </template>
+    <template v-slot:buttons>
+        <button class="button-8" @click="fecharModalTransp()">Fechar</button>
+        <button class="button-8" v-if="mostraSalvarTransp" @click="salvarModalTransp(transpCod, filialTransp, numOrc)">Salvar</button>
+    </template>
+</modal>
+
 </template>
 
 <style scoped>
@@ -362,6 +429,15 @@ export default{
     },
     data(){
         return{
+            clienteNome: '',
+            filialTransp: '',
+            numOrc: '',
+            mostraSalvarTransp: false,
+            transpNomeProc: '',
+            erroBuscaTranspCom: false,
+            carregandoInfoTranspCom: false,
+            transpNome: '',
+            transpCod:'',
             filialPesquisa: '',
             orcNum: null,
             abreModalCif: false,
@@ -401,7 +477,8 @@ export default{
                 valor: '',
                 prazo: '',
                 cotador_id_2: null
-            }
+            },
+            modalTransp: false,
         }
     },
     computed: {
@@ -417,6 +494,98 @@ export default{
         },
     },
     methods: {
+        async mostraCliente(filial, orc){
+            try {
+                if(orc == '' || filial == ''){
+                    alert('Favor escolher a filial e o orçamento.')
+                }else{
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/verifica-tpfrete?filial=${filial}&numero=${orc}`, config);
+                    const cliente = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/busca-cliente?id=${response.data[0].CJ_CLIENTE}&loja=${response.data[0].CJ_LOJA}`, config);
+                    this.clienteNome = cliente.data[0].A1_NOME;
+                }
+            } catch (error) {
+                console.log(error)
+                if(error.response?.status == 404){
+                    alert('Cliente não encontrado.');
+                }else{
+                    alert("Falha ao salvar informações. Tente novamente mais tarde.");
+                }
+                this.carregandoinfo = false;
+            }
+        },
+        async salvarModalTransp(cod, filial, orc){
+            try {
+                if(cod == '' || filial == '' || orc == ''){
+                    alert('Favor escolher a transportadora, filial e orçamento.');
+                }else{
+                    this.carregandoinfo = true;
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/verifica-tpfrete?filial=${filial}&numero=${orc}`, config);
+                    if(response.data[0].CJ_TPFRETE != 'F'){
+                        alert('Orçamento que não seja FOB não pode ter a transportadora alterada.');
+                        this.carregandoinfo = false;
+                    }else{
+                        await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/muda-transportadora`, [{'filial': filial, 'numero': orc, 'transp': cod}], config);
+                        this.carregandoinfo = false;
+                        this.popup = true;
+                        setTimeout(()=>{
+                            this.popup = false;
+                        }, 2000);
+                        this.fecharModalTransp();
+                    }
+                };
+            } catch (error) {
+                console.log(error)
+                if(error.response?.status == 404){
+                    alert('Orçamento não encontrado.');
+                }else{
+                    alert("Falha ao salvar informações. Tente novamente mais tarde.");
+                }
+                this.carregandoinfo = false;
+            };
+        },
+        async selecionarTransCom(cod, nome){
+            this.transpCod = cod;
+            this.transpNome = nome;
+            this.mostraSalvarTransp = true;
+        },
+        async pesquisaTranspCom(){
+            try {
+                this.erroBuscaTranspCom = false;
+                this.carregandoInfoTranspCom = true;
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transportadoras/${this.transpNomeProc}`, config);
+                this.transportadoras = response.data
+                this.carregandoInfoTranspCom = false;
+            } catch (error) {
+                this.carregandoInfoTranspCom = false;
+                this.erroBuscaTranspCom = true;
+                this.transportadoras = [];
+            }
+        },
+        async abrirModalTransp(){
+            try {
+                this.carregandoinfo = true;
+                this.modalTransp = true;
+                const transp = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transportadoras`, config);
+                this.transportadoras = transp.data;
+                this.carregandoinfo = false;
+            } catch (error) {
+                alert("Falha ao executar ação, favor tentar novamente mais tarde.");
+                this.carregandoinfo = false;
+            }
+        },
+        async fecharModalTransp(){
+            this.transpCod = '';
+            this.transpNome = '';
+            this.erroBuscaTranspCom = false;
+            this.transportadoras = [];
+            this.modalTransp = false;
+            this.carregandoinfo = false;
+            this.transpNomeProc = '';
+            this.mostraSalvarTransp = false;
+            this.numOrc = '';
+            this.filialTransp = '';
+            this.clienteNome = '';
+        },
         async salvarModalCif(numped, filial){
             try {
                 this.carregandoinfo = true;
