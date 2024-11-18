@@ -97,9 +97,9 @@
 </template>
 
 <style>
-    .falta_icone{
+    /* .falta_icone{
         display: none;
-    }
+    } */
 </style>
 
 <script>

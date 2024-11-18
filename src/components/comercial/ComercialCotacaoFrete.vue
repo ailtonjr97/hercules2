@@ -563,8 +563,7 @@ export default{
             try {
                 this.erroBuscaTranspCom = false;
                 this.carregandoInfoTranspCom = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transportadoras/${this.transp_nome}`, config);
-                //const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transps?cnpj=${this.transpCnpjProc}&nome=${this.transpNomeProc}&cod=${this.transpCodProc}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transps?cnpj=${this.transpCnpjProc}&nome=${this.transpNomeProc}&cod=${this.transpCodProc}`, config);
                 this.transportadoras = response.data
                 this.carregandoInfoTranspCom = false;
             } catch (error) {
