@@ -337,8 +337,16 @@
         </div>
         <div class="row mt-2">
             <div class="row mb-2">
-                <form-floating :placeholder="'Pesquisar Nome:'" :id="'nome_transp'" :type="'text'" v-model="transpNomeProc" v-on:keyup.enter="pesquisaTranspCom()"></form-floating>
-                <p style="color: red;" v-if="erroBuscaTranspCom">Transportadora não encontrada</p>
+                <div class="col">
+                    <form-floating :placeholder="'Pesquisar Código:'" :id="'codigo_transp'" :type="'text'" v-model="transpCodProc" v-on:keyup.enter="pesquisaTranspCom()"></form-floating>
+                    <p style="color: red;" v-if="erroBuscaTranspCom">Transportadora não encontrada</p>
+                </div>
+                <div class="col">
+                    <form-floating :placeholder="'Pesquisar Nome:'" :id="'nome_transp'" :type="'text'" v-model="transpNomeProc" v-on:keyup.enter="pesquisaTranspCom()"></form-floating>
+                </div>
+                <div class="col">
+                    <form-floating :placeholder="'Pesquisar CNPJ:'" :id="'cnpj_transp'" :type="'text'" v-model="transpCnpjProc" v-on:keyup.enter="pesquisaTranspCom()"></form-floating>
+                </div>
             </div>
             <loading v-if="carregandoInfoTranspCom"></loading>
             <div class="table-wrapper table-responsive table-striped mb-5" v-if="!carregandoInfoTranspCom">
@@ -379,6 +387,7 @@
 </template>
 
 <style scoped>
+
 table {
 	 table-layout: fixed;
 }
@@ -429,6 +438,8 @@ export default{
     },
     data(){
         return{
+            transpCodProc: '',
+            transpCnpjProc: '',
             clienteNome: '',
             filialTransp: '',
             numOrc: '',
@@ -552,7 +563,8 @@ export default{
             try {
                 this.erroBuscaTranspCom = false;
                 this.carregandoInfoTranspCom = true;
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transportadoras/${this.transpNomeProc}`, config);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transportadoras/${this.transp_nome}`, config);
+                //const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/transps?cnpj=${this.transpCnpjProc}&nome=${this.transpNomeProc}&cod=${this.transpCodProc}`, config);
                 this.transportadoras = response.data
                 this.carregandoInfoTranspCom = false;
             } catch (error) {
