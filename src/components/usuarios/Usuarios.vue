@@ -190,6 +190,7 @@ const config = {
               {valor: "Logística", descri: 'Logística'},
               {valor: "Diretoria", descri: 'Diretoria'},
               {valor: "Controladoria", descri: 'Controladoria'},
+              {valor: "Marketing", descri: 'Marketing'}
           ];
       },
   },
