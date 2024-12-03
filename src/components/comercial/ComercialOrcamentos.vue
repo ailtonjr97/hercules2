@@ -42,7 +42,7 @@
             <td style="width: 50px;">{{ api.A3_NREDUZ }}</td>
             <td>
               <button title="Detalhes" class="button-8" @click="abrirOrcamentoModal(api.CJ_FILIAL, api.CJ_NUM, api.CJ_CLIENTE, api.CJ_LOJA, api.A1_NOME)">
-                <i style="font-size: 14px;" class="fa-solid fa-eye"></i>
+                Detalhes
               </button>
             </td>
           </tr>

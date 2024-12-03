@@ -23,7 +23,7 @@
             <tr v-for="api in apis" :key="api.R_E_C_N_O_">
                 <td>{{ api.B1_COD }}</td>
                 <td>{{ api.B1_DESC }}</td>
-                <td><button title="Ver mais" class="button-8" @click="abrirProdutoModal(api.B1_FILIAL, api.B1_COD)"><i style="font-size: 16px;" class="fa-solid fa-eye"></i></button></td>
+                <td><button title="Ver mais" class="button-8" @click="abrirProdutoModal(api.B1_FILIAL, api.B1_COD)">Ver mais </button></td>
             </tr>
           </tbody>
         </table>

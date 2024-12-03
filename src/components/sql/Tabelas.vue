@@ -14,92 +14,92 @@
           <tbody>
             <tr>
                 <td>SCJ - Orcamentos</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scj')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scj-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scj')">Atualizar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scj-massa')">Atualizar</button></td>
             </tr>
             <tr>
                 <td>SCK - Itens de Orcamento</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scK')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scK-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scK')">Atualizar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-scK-massa')">Atualizar</button></td>
             </tr>
             <tr>
                 <td>SD2 - Itens de Venda da NF</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sd2')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sd2-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sd2')">Atualizar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sd2-massa')">Atualizar</button></td>
             </tr>
             <tr>
                 <td>SF2 - Cabecalho das NF de Saida</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sf2')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sf2-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sf2')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sf2-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SA1 - Clientes</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa1')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa1')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa1-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SB1 - Descricao Generica do Produto</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb1')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb1')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb1-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SB5 - Dados Adicionais do Produto</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb5')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb5-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb5')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sb5-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SA3 - Vendedores</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa3')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa3-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa3')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa3-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SC5 - Pedidos de Venda</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc5')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc5-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc5')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc5-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>DA0 - Tabela de Precos</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da0')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da0-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da0')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da0-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>DA1 - Itens da Tabela de Precos</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da1')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da1')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-da1-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SC1 - Solicitacoes de Compra</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc1')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc1')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sc1-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SPZ - Acessos Visitantes</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sbz')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sbz-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sbz')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sbz-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SE4 - Condicoes de Pagamento</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se4')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se4-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se4')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se4-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SE1 - Contas a Receber</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se1')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se1-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se1')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-se1-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SEA - Títulos Enviados ao Banco</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sea-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SA4 - Transportadoras</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4-massa')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4')">Arquivar</button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sa4-massa')">Arquivar</button></td>
             </tr>
             <tr>
                 <td>SYS_USR - Usuários</td>
-                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sysusr')"><i style="font-size: 16px;" class="fa-solid fa-refresh"></i></button></td>
+                <td><button title="Atualizar" class="button-8" @click="atualizarTabela('/local/atualizar-sysusr')">Arquivar</button></td>
             </tr>
           </tbody>
         </table>

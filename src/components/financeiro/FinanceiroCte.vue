@@ -35,7 +35,7 @@
             <td>{{ api.numero_cte }}</td>
             <td>{{ api.frete_nf }}</td>
             <td>{{ api.frete_cte }}</td>
-            <td v-if="arquivada == 0"><button title="Arquivar" class="button-8" @click="arquivar(api.id)"><i style="font-size: 14px;" class="fa-solid fa-archive"></i></button></td>
+            <td v-if="arquivada == 0"><button title="Arquivar" class="button-8" @click="arquivar(api.id)">Arquivar</button></td>
           </tr>
         </tbody>
       </table>
