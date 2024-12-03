@@ -169,7 +169,7 @@ router.beforeEach(async (to, from, next) => {
       const decoded = jwtDecode(token);
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
       const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
-      const allowedIds = [705, 193, 189, 431, 157, 823]; //Paloma, Ailton, Natali, Everson, Sthefany, e Kesley.
+      const allowedIds = [705, 193, 189, 431, 157, 823, 545]; //Paloma, Ailton, Natali, Everson, Sthefany, Kesley e Elaine.
       vendedores.data.forEach(element => {
         allowedIds.push(element.intranet_id)
       });
@@ -218,7 +218,7 @@ router.beforeEach(async (to, from, next) => {
         const isAdmin = await checkAdmin(decoded.id);
         const financeiro = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Financeiro`, config);
         const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
-        const allowedIds = [431, 157, 1, 839]; //Ailton, Everson, Carlos, Jefferson Santos
+        const allowedIds = [431, 157, 1, 839, 545]; //Ailton, Everson, Carlos, Jefferson Santos e Elaine
         
         vendedores.data.forEach(element => {
           allowedIds.push(element.intranet_id)
