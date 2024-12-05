@@ -42,7 +42,7 @@
               <td>{{ api.A3_NREDUZ }}</td>
               <td>
                 <button title="Detalhes" class="button-8" @click="abrirPedidoModal(api.C5_FILIAL, api.C5_NUM)">
-                  <i style="font-size: 14px;" class="fa-solid fa-eye"></i>
+                  Detalhes
                 </button>
               </td>
             </tr>
