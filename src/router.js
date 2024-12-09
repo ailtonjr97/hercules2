@@ -169,7 +169,7 @@ router.beforeEach(async (to, from, next) => {
       const decoded = jwtDecode(token);
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
       const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
-      const allowedIds = [705, 193, 189, 431, 157, 823, 545]; //Paloma, Ailton, Natali, Everson, Sthefany, Kesley e Elaine.
+      const allowedIds = [705, 193, 189, 431, 157, 823, 545, 1]; //Paloma, Ailton, Natali, Everson, Sthefany, Kesley e Elaine.
       vendedores.data.forEach(element => {
         allowedIds.push(element.intranet_id)
       });
