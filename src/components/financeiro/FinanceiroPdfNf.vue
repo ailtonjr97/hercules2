@@ -23,7 +23,7 @@
             <tr :style="{ backgroundColor: api.frete_cte > api.frete_nf ? '#fffacd' : 'initial' }" v-for="api in apis" :key="api.R_E_C_N_O_">
               <td>{{ api.F2_DOC }}</td>
               <td>{{ api.F2_CHVNFE }}</td>
-              <td><button title="Robô" class="button-8" @click="buscar(api.F2_CHVNFE)">Robô</button></td>
+              <td><button title="Robô" class="button-8" @click="buscar(api.F2_CHVNFE)">Buscar</button></td>
             </tr>
           </tbody>
         </table>

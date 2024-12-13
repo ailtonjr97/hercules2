@@ -118,7 +118,15 @@
                 categoriaOptions: [
                     { valor: "Políticas", descri: 'Políticas' },
                     { valor: "Documentos Padrão", descri: 'Documentos Padrão' },
-                    { valor: "Formulários", descri: 'Formulários' }
+                    { valor: "Formulários", descri: 'Formulários' },
+                    { valor: "FORs", descri: 'FORs' },
+                    { valor: "Fluxogramas", descri: 'Fluxogramas' },
+                    { valor: "Guias", descri: 'Guias' },
+                    { valor: "Instrução de Trabalho", descri: 'Instrução de Trabalho' },
+                    { valor: "PIP", descri: 'PIP' },
+                    { valor: "PIR", descri: 'PIR' },
+                    { valor: "Procedimentos", descri: 'Procedimentos' },
+                    { valor: "Treinamentos", descri: 'Treinamentos' }
                 ],
                 excluirId: null,
                 nomeArquivoExcluir: '',
