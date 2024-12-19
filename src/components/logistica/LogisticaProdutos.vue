@@ -36,44 +36,44 @@
       <div v-if="!carregandoinfo">
         <div class="row">
           <div class="col-sm-2">
-            <form-span :span="'Filial'" :type="'text'" v-model="produtoInfo[0].B1_FILIAL" readonly></form-span>
+            <form-span :span="'Filial'" :type="'text'" v-model="produtoInfo.B1_FILIAL" readonly></form-span>
           </div>
           <div class="col-sm-2">
-            <form-span :span="'Código'" :type="'text'" v-model="produtoInfo[0].B1_COD" readonly></form-span>
+            <form-span :span="'Código'" :type="'text'" v-model="produtoInfo.B1_COD" readonly></form-span>
           </div>
           <div class="col">
-            <form-span :span="'Descrição'" :type="'text'" v-model="produtoInfo[0].B1_DESC" readonly></form-span>
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col">
-            <form-span :span="'Tipo'" :type="'text'" v-model="produtoInfo[0].B1_TIPO" readonly></form-span>
-          </div>
-          <div class="col">
-            <form-span :span="'Unidade'" :type="'text'" v-model="produtoInfo[0].B1_UM" readonly></form-span>
-          </div>
-          <div class="col">
-            <form-span :span="'Peso'" :type="'text'" v-model="produtoInfo[0].B1_PESO" readonly></form-span>
-          </div>
-          <div class="col">
-            <form-span :span="'Peso Bruto'" :type="'text'" v-model="produtoInfo[0].B1_PESBRU" readonly></form-span>
-          </div>
-          <div class="col">
-            <form-span :span="'Cód. Barras'" :type="'text'" v-model="produtoInfo[0].B1_CODBAR" readonly></form-span>
+            <form-span :span="'Descrição'" :type="'text'" v-model="produtoInfo.B1_DESC" readonly></form-span>
           </div>
         </div>
         <div class="row mt-2">
           <div class="col">
-            <form-span :span="'GTIN'" :type="'text'" v-model="produtoInfo[0].B1_CODGTIN" readonly></form-span>
+            <form-span :span="'Tipo'" :type="'text'" v-model="produtoInfo.B1_TIPO" readonly></form-span>
           </div>
           <div class="col">
-            <form-span :span="'Prod. Import'" :type="'text'" v-model="produtoInfo[0].B1_IMPORT" readonly></form-span>
+            <form-span :span="'Unidade'" :type="'text'" v-model="produtoInfo.B1_UM" readonly></form-span>
           </div>
           <div class="col">
-            <form-span :span="'Aliq. IPI'" :type="'text'" v-model="produtoInfo[0].B1_IPI" readonly></form-span>
+            <form-span :span="'Peso'" :type="'text'" v-model="produtoInfo.B1_PESO" readonly></form-span>
           </div>
           <div class="col">
-            <form-span :span="'Origem'" :type="'text'" v-model="produtoInfo[0].B1_ORIGEM" readonly></form-span>
+            <form-span :span="'Peso Bruto'" :type="'text'" v-model="produtoInfo.B1_PESBRU" readonly></form-span>
+          </div>
+          <div class="col">
+            <form-span :span="'Cód. Barras'" :type="'text'" v-model="produtoInfo.B1_CODBAR" readonly></form-span>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col">
+            <form-span :span="'GTIN'" :type="'text'" v-model="produtoInfo.B1_CODGTIN" readonly></form-span>
+          </div>
+          <div class="col">
+            <form-span :span="'Prod. Import'" :type="'text'" v-model="produtoInfo.B1_IMPORT" readonly></form-span>
+          </div>
+          <div class="col">
+            <form-span :span="'Aliq. IPI'" :type="'text'" v-model="produtoInfo.B1_IPI" readonly></form-span>
+          </div>
+          <div class="col">
+            <form-span :span="'Origem'" :type="'text'" v-model="produtoInfo.B1_ORIGEM" readonly></form-span>
           </div>
         </div>
       </div>
