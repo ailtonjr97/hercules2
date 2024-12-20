@@ -119,7 +119,6 @@
                     { valor: "Políticas", descri: 'Políticas' },
                     { valor: "Documentos Padrão", descri: 'Documentos Padrão' },
                     { valor: "Formulários", descri: 'Formulários' },
-                    { valor: "FORs", descri: 'FORs' },
                     { valor: "Fluxogramas", descri: 'Fluxogramas' },
                     { valor: "Guias", descri: 'Guias' },
                     { valor: "Instrução de Trabalho", descri: 'Instrução de Trabalho' },
