@@ -56,7 +56,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="api in apis">
+            <tr v-for="api in apis" :style="{ backgroundColor: api.C5_XRECLAM === '1' ? 'red' : '' }">
                 <td>
                     <button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8">Itens</button>
                     <button v-if="userId == 441 || userId == 849 || userId == 431  || userId == 654 || userId == 294" @click="openValFreteModal(api.C5_FILIAL, api.C5_NUM)" title="Alterar valor frete" class="button-8"><i class="fa-solid fa-truck"></i></button>
