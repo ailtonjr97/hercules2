@@ -13,6 +13,7 @@
         <div class="col-12 text-center">
           <h2>Bem-vindo ao sistema integrador entre a Fibracem e o TOTVS.</h2>
           <button class="button-8 mt-2" @click="copyToClipboard()">Clique aqui para copiar seu Token de acesso.</button>
+          <a href="http://integrador.fibracem.com/home"><button class="button-8 mt-2" @click="copyToClipboard()">Clique aqui para acessar a nova versão do integrador</button></a>
         </div>
       </div>
     </div>
