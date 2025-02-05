@@ -10,9 +10,8 @@ import Controladoria from './components/controladoria/Controladoria.vue';
 import Qualidade from './components/qualidade/Qualidade.vue';
 import QualidadeCertificadoGarantia from './components/qualidade/CertificadoGarantia.vue';
 import QualidadeDocumentos from './components/qualidade/QualidadeDocumentos.vue';
-
 import QualidadeArquivosHome from './components/qualidade/QualidadeArquivosHome.vue';
-
+import QualidadePropriedade from './components/qualidade/QualidadePropriedade.vue';
 import AnexPage from './components/ui/AnexPage.vue';
 import DocumentosArquivados from './components/qualidade/DocumentosArquivados.vue';
 import Totvs from './components/totvs/Totvs.vue';
@@ -61,6 +60,7 @@ const routes = [
     { path: '/qualidade/minuta-retrabalho', component: QualidadeDocumentos, meta: { carregando: true } },
     { path: '/qualidade/minuta-retrabalho/arquivados', component: DocumentosArquivados, meta: { carregando: true } },
     { path: '/qualidade/arquivos-home', component: QualidadeArquivosHome, meta: { carregando: true } },
+    { path: '/qualidade/propriedade-do-cliente', component: QualidadePropriedade, meta: { carregando: true } },
     { path: '/rh', component: Rh },
     { path: '/rh/documentos', component: RhDocumentos },
     { path: '/chamados', component: ChamadosTi },
