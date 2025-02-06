@@ -108,7 +108,10 @@
         <!-- Botões para alternar entre seções -->
         <div class="row" v-if="!carregandoinfo">
           <div class="col">
-            <button class="button-8" @click="mudaChave('chaveGeral')">Geral</button> <button class="button-8" @click="mudaChave('chaveMercadorias')">Mercadorias</button> <button class="button-8" @click="mudaChave('chaveAnexo')">Anexos</button>
+            <button class="button-8" @click="mudaChave('chaveGeral')">Geral</button>
+            <button class="button-8" @click="mudaChave('chaveMercadorias')">Mercadorias</button>
+            <button class="button-8" @click="mudaChave('chaveCheckList')" v-if="visu.status == 1">Check List</button>
+            <button class="button-8" @click="mudaChave('chaveAnexo')">Anexos</button>
           </div>
         </div>
         <!-- Seção Geral -->
@@ -155,6 +158,28 @@
               <tbody>
                 <tr v-for="anexo in listaAnexos" :key="anexo.ID">
                   <td><a :href="`${ip}/files/${anexo.FILENAME}`" target="_blank">{{ anexo.ORIGINAL_NAME }}</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Seção Check List -->
+        <div class="row mt-2" v-if="!carregandoinfo && chaveCheckList">
+          <div class="table-wrapper table-responsive">
+            <table class="fl-table">
+              <thead>
+                <tr style="height: 25px">
+                  <th>Check List</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    
+                  </td>
+                </tr>
+                <tr>
+
                 </tr>
               </tbody>
             </table>
@@ -263,6 +288,7 @@
                 chaveAnexo: false,
                 chaveGeral: true,
                 chaveMercadorias: false,
+                chaveCheckList: false,
                 userSetor: null,
                 intranetId: null,
                 resultados: null,
@@ -397,6 +423,7 @@
                     this.chaveModalVisu = false;
                     this.chaveAnexo = false;
                     this.chaveGeral = true;
+                    this.chaveCheckList = false;
                     this.selectedFiles = [];
                 } catch (error) {
                     console.log(error)
