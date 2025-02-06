@@ -108,9 +108,7 @@
             AnexFloating,
             SpanTextarea,
             FormSpan,
-            SpanSelect,
-            SpanSelect
-            
+            SpanSelect            
         },
         data(){
             return{

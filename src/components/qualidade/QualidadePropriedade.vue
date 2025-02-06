@@ -5,7 +5,8 @@
       <table-top :resultados="resultados">
         <template v-slot:tableButtons>
           <button class="button-8 mb-2" @click="abrirModalNovo">Novo</button>
-          <button class="button-8 mb-2" @click="pageRefresh">Atualizar</button>
+          <button class="button-8 mb-2" @click="pageRefresh">Vigentes</button>
+          <button class="button-8 mb-2" @click="mostraArquivados">Arquivadas</button>
         </template>
       </table-top>
       <div class="row mb-2">
@@ -20,80 +21,164 @@
               <th>ID</th>
               <th>Nome Solicit.</th>
               <th>Código Cliente</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="itens in list" :key="itens.id" @dblclick="abrirModalVisu(itens.id)">
+              <td><p>{{ itens.id }}</p></td>
+              <td><p>{{ itens.nome }}</p></td>
+              <td><p>{{ itens.cliente_cod }}</p></td>
+
               <td>
-                <p>{{ itens.id }}</p>
+                <p v-if="itens.status == 0">Em andamento</p>
+                <p v-if="itens.status == 1">Aprovado</p>
+                <p v-if="itens.status == 2">Reprovado</p>
               </td>
-              <td>
-                <p>{{ itens.nome }}</p>
-              </td>
-              <td>
-                <p>{{ itens.cliente_cod }}</p>
-              </td>
+
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-
+  
     <modal v-if="chaveModalNovo" :title="'Nova Propriedade do Cliente:'">
-        <template v-slot:body>
-            <loading v-if="carregandoinfo"></loading>
-            <div class="row" v-if="!carregandoinfo">
-                <form-floating :placeholder="'Nome do solicitante:'" :id="'nome'" :type="'text'" v-model="novo.nome"></form-floating>
-                <form-floating :placeholder="'Código do Cliente:'" :id="'cliente_cod'" :type="'text'" v-model="novo.cliente_cod"></form-floating>
-                <form-floating :placeholder="'Nome do Cliente:'" :id="'cliente_nome'" :type="'text'" v-model="novo.cliente_nome"></form-floating>
+      <template v-slot:body>
+        <loading v-if="carregandoinfo"></loading>
+        <!-- Botões para alternar entre Campos e Mercadorias -->
+        <div class="row mb-2" v-if="!carregandoinfo">
+          <div class="col">
+            <button class="button-8" @click="mudarNovoVisao('novoCampos')">Geral</button> <button class="button-8" @click="mudarNovoVisao('novoMercadorias')">Mercadorias</button>
+          </div>
+        </div>
+        <!-- Se a visualização de Campos estiver ativa -->
+        <div v-if="!carregandoinfo && novoCampos">
+          <div class="row">
+            <form-floating :placeholder="'Nome do solicitante:'" :id="'nome'" :type="'text'" v-model="novo.nome"></form-floating> <form-floating :placeholder="'Código do Cliente:'" :id="'cliente_cod'" :type="'text'" v-model="novo.cliente_cod"></form-floating> <form-floating :placeholder="'Nome do Cliente:'" :id="'cliente_nome'" :type="'text'" v-model="novo.cliente_nome"></form-floating>
+          </div>
+          <div class="row mt-2">
+            <form-floating :placeholder="'Número da Nota Fiscal:'" :id="'numero_nf'" :type="'number'" v-model="novo.numero_nf"></form-floating> <form-floating :placeholder="'Transportadora:'" :id="'transportadora'" :type="'text'" v-model="novo.transportadora"></form-floating> <form-floating :placeholder="'Número RRC:'" :id="'rrc'" :type="'text'" v-model="novo.rrc"></form-floating>
+          </div>
+          <div class="row mt-2">
+            <select-floating :placeholder="'Frete'" :id="'frete'" :options="optionsFrete" v-model="novo.frete"></select-floating> <select-floating :placeholder="'Motivo da Devolução'" :id="'mot_dev'" :options="optionsMotDev" v-model="novo.mot_dev"></select-floating>
+          </div>
+          <div class="row mt-2">
+            <textarea-floating :placeholder="'Observações:'" :id="'obs'" v-model="novo.obs"></textarea-floating>
+          </div>
+          <div class="row mt-2">
+            <input type="file" name="anexo-inicio" id="anexo-inicio" multiple @change="handleFileUpload">
+          </div>
+        </div>
+        <!-- Se a visualização de Mercadorias estiver ativa -->
+        <div v-if="!carregandoinfo && novoMercadorias">
+          <div class="row mt-2">
+            <div class="table-wrapper table-responsive">
+              <table class="fl-table" id="produtosTable">
+                <thead>
+                  <tr style="height: 25px">
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(produto, index) in novo.produtos" :key="index">
+                    <td><form-floating :placeholder="'Código:'" :id="'cod_prod_' + index" type="text" v-model="produto.cod_prod"></form-floating></td>
+                    <td><form-floating :placeholder="'Descrição:'" :id="'nome_' + index" type="text" v-model="produto.nome"></form-floating></td>
+                    <td><form-floating :placeholder="'Quantidade:'" :id="'quantidade_' + index" type="text" v-model="produto.quantidade"></form-floating></td>
+                    <td><button class="button-8" @click="removerProduto(index)">Remover</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- Botão de Adicionar -->
+              <button class="button-8 mt-2 mb-2" @click="adicionarProduto">Adicionar</button>
             </div>
-            <div class="row mt-2" v-if="!carregandoinfo">
-                <form-floating :placeholder="'Número da Nota Fiscal:'" :id="'numero_nf'" :type="'number'" v-model="novo.numero_nf"></form-floating>
-                <form-floating :placeholder="'Transportadora:'" :id="'transportadora'" :type="'text'" v-model="novo.transportadora"></form-floating>
-                <form-floating :placeholder="'Número RRC:'" :id="'rrc'" :type="'text'" v-model="novo.rrc"></form-floating>
-            </div>
-            <div class="row mt-2">
-                <input type="file" name="anexo-inicio" id="anexo-inicio" multiple @change="handleFileUpload">
-            </div>
-        </template>
-        <template v-slot:buttons v-if="!carregandoinfo">
-            <button class="button-8" @click="fecharModalNovo">Fechar</button>
-            <button class="button-8" @click="enviarNovo">Salvar</button>
-        </template>
+          </div>
+        </div>
+      </template>
+      <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8" @click="fecharModalNovo">Fechar</button> <button class="button-8" @click="enviarNovo">Salvar</button>
+      </template>
     </modal>
-
+  
     <modal v-if="chaveModalVisu" :title="'Propriedade do Cliente:'">
-        <template v-slot:body>
-            <loading v-if="carregandoinfo"></loading>
-            <div class="row">
-                <div class="col">
-                    <button class="button-8" @click="mudaChave('chaveGeral')">Geral</button>
-                    <button class="button-8" @click="mudaChave('chaveAnexo')">Anexos</button>
-                </div>
-            </div>
-            <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
-                <form-floating :placeholder="'Nome do solicitante:'" :id="'nome'" :type="'text'" v-model="visu.nome"></form-floating>
-                <form-floating :placeholder="'Código do Cliente:'" :id="'cliente_cod'" :type="'text'" v-model="visu.cliente_cod"></form-floating>
-                <form-floating :placeholder="'Nome do Cliente:'" :id="'cliente_nome'" :type="'text'" v-model="visu.cliente_nome"></form-floating>
-            </div>
-            <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
-                <form-floating :placeholder="'Número da Nota Fiscal:'" :id="'numero_nf'" :type="'number'" v-model="visu.numero_nf"></form-floating>
-                <form-floating :placeholder="'Transportadora:'" :id="'transportadora'" :type="'text'" v-model="visu.transportadora"></form-floating>
-                <form-floating :placeholder="'Número RRC:'" :id="'rrc'" :type="'text'" v-model="visu.rrc"></form-floating>
-            </div>
-            <div class="row mt-4" v-if="!carregandoinfo && chaveAnexo">
-                <tr v-for="anexos in listaAnexos" :key="anexos.ID">
-                    <td>
-                        <a :href="`${ip}/files/${anexos.FILENAME}`" target="_blank">{{ anexos.ORIGINAL_NAME }}</a>
-                    </td>
+      <template v-slot:body>
+        <loading v-if="carregandoinfo"></loading>
+        <!-- Botões para alternar entre seções -->
+        <div class="row" v-if="!carregandoinfo">
+          <div class="col">
+            <button class="button-8" @click="mudaChave('chaveGeral')">Geral</button> <button class="button-8" @click="mudaChave('chaveMercadorias')">Mercadorias</button> <button class="button-8" @click="mudaChave('chaveAnexo')">Anexos</button>
+          </div>
+        </div>
+        <!-- Seção Geral -->
+        <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
+          <form-floating :placeholder="'Nome do solicitante:'" :id="'nome'" :type="'text'" v-model="visu.nome"></form-floating> <form-floating :placeholder="'Código do Cliente:'" :id="'cliente_cod'" :type="'text'" v-model="visu.cliente_cod"></form-floating> <form-floating :placeholder="'Nome do Cliente:'" :id="'cliente_nome'" :type="'text'" v-model="visu.cliente_nome"></form-floating>
+        </div>
+        <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
+          <form-floating :placeholder="'Número da Nota Fiscal:'" :id="'numero_nf'" :type="'number'" v-model="visu.numero_nf"></form-floating> <form-floating :placeholder="'Transportadora:'" :id="'transportadora'" :type="'text'" v-model="visu.transportadora"></form-floating> <form-floating :placeholder="'Número RRC:'" :id="'rrc'" :type="'text'" v-model="visu.rrc"></form-floating>
+        </div>
+        <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
+          <select-floating :placeholder="'Frete'" :id="'frete'" :options="optionsFrete" v-model="visu.frete"></select-floating> <select-floating :placeholder="'Motivo da Devolução'" :id="'mot_dev'" :options="optionsMotDev" v-model="visu.motivo_devolucao"></select-floating>
+        </div>
+        <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
+            <textarea-floating :placeholder="'Observações:'" :id="'obs'" v-model="visu.obs"></textarea-floating>
+        </div>
+        <!-- Seção Mercadorias -->
+        <div class="row mt-2" v-if="!carregandoinfo && chaveMercadorias">
+          <div class="table-wrapper table-responsive">
+            <table class="fl-table" id="produtosTable">
+              <thead>
+                <tr style="height: 25px">
+                  <th>Código</th>
+                  <th>Descrição</th>
+                  <th>Quantidade</th>
                 </tr>
-            </div>
-        </template>
-        <template v-slot:buttons v-if="!carregandoinfo">
-            <button class="button-8" @click="fecharModalVisu">Fechar</button>
-        </template>
+              </thead>
+              <tbody>
+                <tr v-for="(produto, index) in visu.produtos" :key="index">
+                  <td>{{ produto.codigo }}</td>
+                  <td>{{ produto.descricao }}</td>
+                  <td>{{ produto.quantidade }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Seção Anexos -->
+        <div class="row mt-2" v-if="!carregandoinfo && chaveAnexo">
+          <div class="table-wrapper table-responsive">
+            <table class="fl-table">
+              <thead>
+                <tr style="height: 25px"><th>Arquivo</th></tr>
+              </thead>
+              <tbody>
+                <tr v-for="anexo in listaAnexos" :key="anexo.ID">
+                  <td><a :href="`${ip}/files/${anexo.FILENAME}`" target="_blank">{{ anexo.ORIGINAL_NAME }}</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </template>
+      <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8" @click="fecharModalVisu">Fechar</button>
+        <button class="button-8" @click="arquivarPropriedade()" v-if="visu.arquiva == 1 && visu.arquivado == 0">Arquivar</button>
+        <button class="button-8" @click="abrirModalConfirmaStatus('reprovar')" v-if="visu.status == 0 && (intranetId == 1 || intranetId == 545 || intranetId == 199 || intranetId == 439)">Reprovar</button>
+        <button class="button-8" @click="abrirModalConfirmaStatus('aprovar')" v-if="visu.status == 0 && (intranetId == 1 || intranetId == 545 || intranetId == 199 || intranetId == 439)">Aprovar</button>
+      </template>
     </modal>
 
+    <modal v-if="chaveModalConfirmaStatus" :title="'Propriedade do Cliente:'">
+      <template v-slot:body>
+        <loading v-if="carregandoinfo"></loading>
+        <h4>Deseja {{ textoConfirmaStatus }} essa propriedade do cliente?</h4>
+      </template>
+      <template v-slot:buttons v-if="!carregandoinfo">
+        <button class="button-8" @click="fecharModalConfirmaStatus">Fechar</button>
+        <button class="button-8" @click="confirmaStatus">Sim</button>
+      </template>
+    </modal>
   </template>
   
 
@@ -110,6 +195,7 @@
     import AnexFloating from '../ui/AnexFloating.vue';
     import { getAuthConfig } from '../auth/authToken';
     import Popup from '../ui/Popup.vue';
+    import SpanSelect from '../ui/spanSelect.vue';
     
     function getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -135,10 +221,15 @@
             SelectFloating,
             TextareaFloating,
             AnexFloating,
-            Loading
+            Loading,
+            SpanSelect
         },
         data(){
             return{
+                chaveModalConfirmaStatus: false,
+                textoConfirmaStatus: '',
+                novoCampos: true,
+                novoMercadorias: false,
                 ip: import.meta.env.VITE_BACKEND_IP,
                 listaAnexos: null,
                 selectedFile: null,
@@ -149,7 +240,11 @@
                     cliente_nome: null,
                     numero_nf: null,
                     transportadora: null,
-                    rrc: null
+                    rrc: null,
+                    frete: null,
+                    motivo_devolucao: null,
+                    produtos: [],
+                    status: null,
                 },
                 novo: {
                     nome: null,
@@ -157,12 +252,17 @@
                     cliente_nome: null,
                     numero_nf: null,
                     transportadora: null,
-                    rrc: null
+                    rrc: null,
+                    frete: null,
+                    mot_dev: null,
+                    produtos: [],
+                    visu: null
                 },
                 chaveModalNovo: false,
                 chaveModalVisu: false,
                 chaveAnexo: false,
                 chaveGeral: true,
+                chaveMercadorias: false,
                 userSetor: null,
                 intranetId: null,
                 resultados: null,
@@ -173,13 +273,111 @@
                 popup: false
             }
         },
+        computed: {
+            optionsFrete(){
+                return [
+                    {valor: "Fibracem", descri: 'Fibracem'},
+                    {valor: "Cliente", descri: 'Cliente'}
+                ];
+            },
+            optionsMotDev(){
+                return [
+                    {valor: "CLIENTE COMPROU ERRADO", descri: 'CLIENTE COMPROU ERRADO'},
+                    {valor: "DEVOLUÇÃO", descri: 'DEVOLUÇÃO'},
+                    {valor: "MATERIAL FALTANTE / ACERTO FISCAL", descri: 'MATERIAL FALTANTE / ACERTO FISCAL'},
+                    {valor: "REMESSA PARA CONSERTO", descri: 'REMESSA PARA CONSERTO'},
+                    {valor: "REMESSA PARA INDUSTRIALIZAÇÃO", descri: 'REMESSA PARA INDUSTRIALIZAÇÃO'},
+                    {valor: "TROCA DE MATERIAL EM GARANTIA", descri: 'TROCA DE MATERIAL EM GARANTIA'},
+                    {valor: "DEVOLUÇÃO DE RECLAMAÇÃO", descri: 'DEVOLUÇÃO DE RECLAMAÇÃO'},
+                    {valor: "OUTRO", descri: 'OUTRO'}
+                ];
+            },
+        },
         methods: {
+            async mostraArquivados(){
+              try {
+                    this.carregando = true;
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedades/arquivados`, config);
+                    this.list = response.data;
+                    this.resultados = response.data.length;
+                    this.fullLoad = true;
+                    this.carregando = false;
+                } catch (error) {
+                   console.log(error)
+                   alert("Falha ao carregar página.");
+                   this.carregando = false;
+                }
+            },
+            async arquivarPropriedade(){
+              try {
+                  await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedade/arquivar`, {'id': this.visu.id}, config);
+                  this.fecharModalVisu();
+                  this.pageRefresh();
+                  this.popup = true;
+                  setTimeout(() => {
+                    this.popup = false; 
+                  }, 2000);
+                } catch (error) {
+                  console.log(error);
+                  alert("Falha ao executar. Favor tente novamente mais tarde.");
+                  this.carregando = false;
+                }
+            },
+            async confirmaStatus(){
+                try {
+                  if(this.textoConfirmaStatus == 'aprovar'){
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedade/status`, {'id': this.visu.id, 'status': 1, 'arquiva': 0}, config);
+                  }else{
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedade/status`, {'id': this.visu.id, 'status': 2, 'arquiva': 1}, config);
+                  };
+                  this.fecharModalConfirmaStatus();
+                  this.fecharModalVisu();
+                  this.pageRefresh();
+                  this.popup = true;
+                  setTimeout(() => {
+                    this.popup = false; 
+                  }, 2000);
+                } catch (error) {
+                  console.log(error);
+                  alert("Falha ao executar. Favor tente novamente mais tarde.");
+                  this.carregando = false;
+                }
+            },
+            fecharModalConfirmaStatus(){
+              this.textoConfirmaStatus = '';
+              this.chaveModalConfirmaStatus = false;
+            },
+            abrirModalConfirmaStatus(status){
+              try {
+                this.textoConfirmaStatus = status;
+                this.chaveModalConfirmaStatus = true;
+              } catch (error) {
+                console.log(error);
+                alert("Falha ao executar. Favor tente novamente mais tarde.");
+                this.carregando = false;
+              }
+            },
+            mudarNovoVisao(chave) {
+                // Reseta ambas as visões e ativa apenas a selecionada
+                this.novoCampos = false;
+                this.novoMercadorias = false;
+                this[chave] = true;
+            },
+            adicionarProduto() {
+                // Adiciona um novo objeto de produto com os campos vazios
+                this.novo.produtos.push({ cod_prod: '', nome: '', quantidade: '' });
+            },
+            removerProduto(index) {
+                // Remove o produto no índice especificado
+                this.novo.produtos.splice(index, 1);
+            },
             mudaChave(chave) {
                 try {
-                    // Define todas as chaves que podem ser exibidas como false
+                    // Reseta todas as seções
                     this.chaveGeral = false;
+                    this.chaveMercadorias = false;
                     this.chaveAnexo = false;
-                    // Agora ativa a chave especificada pelo parâmetro
+                    // Ativa a seção selecionada
                     this[chave] = true;
                 } catch (error) {
                     console.log(error);
@@ -212,8 +410,10 @@
                     this.carregandoinfo = true;
                     const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedade/${id}`, config);
                     const anexos = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedades-arquivo/${id}`, config);
+                    const produtos = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedades-produtos/${id}`, config);
                     this.listaAnexos = anexos.data;
                     this.visu = response.data[0];
+                    this.visu.produtos = produtos.data;
                     this.carregandoinfo = false;   
                 } catch (error) {
                     console.log(error)
@@ -270,14 +470,23 @@
                     this.carregando = false;
                 }
             },
-            async fecharModalNovo(){
+            async fecharModalNovo() {
                 try {
-                    Object.keys(this.novo).forEach(key => {
-                        this.novo[key] = null;
-                    });
+                    // Reconfigura o objeto novo com os valores padrão, garantindo que produtos seja um array vazio
+                    this.novo = {
+                    nome: null,
+                    cliente_cod: null,
+                    cliente_nome: null,
+                    numero_nf: null,
+                    transportadora: null,
+                    rrc: null,
+                    frete: null,
+                    mot_dev: null,
+                    produtos: []
+                    };
                     this.chaveModalNovo = false;
                 } catch (error) {
-                    console.log(error)
+                    console.log(error);
                     alert("Erro ao carregar página. Favor tentar mais tarde.");
                     this.carregando = false;
                 }
