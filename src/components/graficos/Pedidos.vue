@@ -196,7 +196,11 @@
             },
             yAxis: {
               type: 'category',
-              data: ['Dezembro', 'Novembro', 'Outubro', 'Setembro', 'Agosto', 'Julho', 'Junho', 'Maio', 'Abril', 'Março', 'Fevereiro', 'Janeiro'],
+              data: [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril',
+                'Maio', 'Junho', 'Julho', 'Agosto',
+                'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+              ],
             },
             series: this.vends,
           };
