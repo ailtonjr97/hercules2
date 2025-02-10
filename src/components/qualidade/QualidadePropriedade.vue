@@ -48,7 +48,8 @@
         <!-- Botões para alternar entre Campos e Mercadorias -->
         <div class="row mb-2" v-if="!carregandoinfo">
           <div class="col">
-            <button class="button-8" @click="mudarNovoVisao('novoCampos')">Geral</button> <button class="button-8" @click="mudarNovoVisao('novoMercadorias')">Mercadorias</button>
+            <button class="button-8" @click="mudarNovoVisao('novoCampos')">Geral</button>
+            <button class="button-8" @click="mudarNovoVisao('novoMercadorias')">Mercadorias</button>
           </div>
         </div>
         <!-- Se a visualização de Campos estiver ativa -->
@@ -116,7 +117,9 @@
         </div>
         <!-- Seção Geral -->
         <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
-          <form-floating :placeholder="'Nome do solicitante:'" :id="'nome'" :type="'text'" v-model="visu.nome"></form-floating> <form-floating :placeholder="'Código do Cliente:'" :id="'cliente_cod'" :type="'text'" v-model="visu.cliente_cod"></form-floating> <form-floating :placeholder="'Nome do Cliente:'" :id="'cliente_nome'" :type="'text'" v-model="visu.cliente_nome"></form-floating>
+          <form-floating :placeholder="'Nome do solicitante:'" :id="'nome'" :type="'text'" v-model="visu.nome"></form-floating> 
+          <form-floating :placeholder="'Código do Cliente:'" :id="'cliente_cod'" :type="'text'" v-model="visu.cliente_cod"></form-floating> 
+          <form-floating :placeholder="'Nome do Cliente:'" :id="'cliente_nome'" :type="'text'" v-model="visu.cliente_nome"></form-floating>
         </div>
         <div class="row mt-2" v-if="!carregandoinfo && chaveGeral">
           <form-floating :placeholder="'Número da Nota Fiscal:'" :id="'numero_nf'" :type="'number'" v-model="visu.numero_nf"></form-floating> <form-floating :placeholder="'Transportadora:'" :id="'transportadora'" :type="'text'" v-model="visu.transportadora"></form-floating> <form-floating :placeholder="'Número RRC:'" :id="'rrc'" :type="'text'" v-model="visu.rrc"></form-floating>
@@ -164,22 +167,64 @@
           </div>
         </div>
         <!-- Seção Check List -->
-        <div class="row mt-2" v-if="!carregandoinfo && chaveCheckList">
+        <div class="row mt-2" v-if="!carregandoinfo && chaveCheckList && visu.status == 1">
+          <form-floating :placeholder="'Setor que o produto foi entregue:'" :id="'cliente_nome'" :type="'text'" v-model="visu.entregue_setor"></form-floating>
+          <form-floating :placeholder="'Dia da entrega:'" :id="'dia_entrega'" :type="'date'" v-model="visu.no_dia"></form-floating>
+          <form-floating :placeholder="'Data da chegada:'" :id="'cliente_nome'" :type="'date'" v-model="visu.data_chegada"></form-floating>
+        </div>
+        <div class="row mt-2" v-if="!carregandoinfo && chaveCheckList && visu.status == 1">
+          <textarea-floating :placeholder="'Análise da mercadoria e descrião dos problemas:'" :id="'anali_mer'" v-model="visu.anali_mer"></textarea-floating>
+          <textarea-floating :placeholder="'Material necessário para conserto:'" :id="'mat_nece'" v-model="visu.mat_nece"></textarea-floating>
+        </div>
+        <div class="row mt-2" v-if="!carregandoinfo && chaveCheckList && visu.status == 1">
+          <form-floating :placeholder="'Data de saída:'" :id="'data_saida'" :type="'date'" v-model="visu.data_saida"></form-floating>
+          <form-floating :placeholder="'Inspeção final'" :id="'insp_final'" :type="'text'" v-model="visu.insp_final"></form-floating>
+        </div>
+        <div class="row mt-2" v-if="!carregandoinfo && chaveCheckList && visu.status == 1">
           <div class="table-wrapper table-responsive">
             <table class="fl-table">
               <thead>
                 <tr style="height: 25px">
-                  <th>Check List</th>
+                  <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>
-                    
+                    <label for="pergunta_1">As informações da nota fiscal e material recebido estão corretas?</label>
+                  </td>
+                  <td>
+                    <input type="radio" id="pergunta_1" name="pergunta_1" value="Sim" v-model="visu.pergunta_1"><span>Sim</span>
+                    <input type="radio" id="pergunta_1" name="pergunta_1" value="Não" v-model="visu.pergunta_1" style="margin-left: 2%;"><span>Não</span>
                   </td>
                 </tr>
                 <tr>
-
+                  <td>
+                    <label for="pergunta_2">As informações do cliente, contidas na nota fiscal, estão corretas?</label>
+                  </td>
+                  <td>
+                    <input type="radio" id="pergunta_2" name="pergunta_2" value="Sim" v-model="visu.pergunta_2"><span>Sim</span>
+                    <input type="radio" id="pergunta_2" name="pergunta_2" value="Não" v-model="visu.pergunta_2" style="margin-left: 2%;"><span>Não</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="pergunta_3">O modelo dos produtos está correto?</label>
+                  </td>
+                  <td>
+                    <input type="radio" id="pergunta_3" name="pergunta_3" value="Sim" v-model="visu.pergunta_3"><span>Sim</span>
+                    <input type="radio" id="pergunta_3" name="pergunta_3" value="Não" v-model="visu.pergunta_3" style="margin-left: 2%;"><span>Não</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="pergunta_4">A embalagem e o produto estão sem avarias ou sinais de utilização?</label>
+                  </td>
+                  <td>
+                    <input type="radio" id="pergunta_4" name="pergunta_4" value="Sim" v-model="visu.pergunta_4"><span>Sim</span>
+                    <input type="radio" id="pergunta_4" name="pergunta_4" value="Não" v-model="visu.pergunta_4" style="margin-left: 2%;"><span>Não</span>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -188,6 +233,7 @@
       </template>
       <template v-slot:buttons v-if="!carregandoinfo">
         <button class="button-8" @click="fecharModalVisu">Fechar</button>
+        <button class="button-8" @click="enviarCheckList" v-if="chaveCheckList && visu.arquiva == 0">Salvar Check List</button>
         <button class="button-8" @click="arquivarPropriedade()" v-if="visu.arquiva == 1 && visu.arquivado == 0">Arquivar</button>
         <button class="button-8" @click="abrirModalConfirmaStatus('reprovar')" v-if="visu.status == 0 && (intranetId == 1 || intranetId == 545 || intranetId == 199 || intranetId == 439)">Reprovar</button>
         <button class="button-8" @click="abrirModalConfirmaStatus('aprovar')" v-if="visu.status == 0 && (intranetId == 1 || intranetId == 545 || intranetId == 199 || intranetId == 439)">Aprovar</button>
@@ -270,6 +316,17 @@
                     motivo_devolucao: null,
                     produtos: [],
                     status: null,
+                    pergunta_1: null,
+                    pergunta_2: null,
+                    pergunta_3: null,
+                    pergunta_4: null,
+                    entregue_setor: null,
+                    no_dia: null,
+                    data_chegada: null,
+                    anali_mer: null,
+                    mat_nece: null,
+                    data_saida: null,
+                    insp_final: null
                 },
                 novo: {
                     nome: null,
@@ -320,6 +377,20 @@
             },
         },
         methods: {
+            async enviarCheckList(){
+              try {
+                await axios.post(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedades/checklist/${this.visu.id}`, this.visu, config);
+                this.popup = true;
+                setTimeout(() => {
+                  this.popup = false; 
+                }, 2000);
+                this.fecharModalVisu();
+              } catch (error) {
+                  console.log(error)
+                  alert("Falha ao carregar página.");
+                  this.carregando = false;
+              }
+            },
             async mostraArquivados(){
               try {
                     this.carregando = true;
@@ -403,6 +474,7 @@
                     this.chaveGeral = false;
                     this.chaveMercadorias = false;
                     this.chaveAnexo = false;
+                    this.chaveCheckList = false;
                     // Ativa a seção selecionada
                     this[chave] = true;
                 } catch (error) {
@@ -424,6 +496,7 @@
                     this.chaveAnexo = false;
                     this.chaveGeral = true;
                     this.chaveCheckList = false;
+                    this.chaveMercadorias = false;
                     this.selectedFiles = [];
                 } catch (error) {
                     console.log(error)
@@ -438,12 +511,27 @@
                     const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedade/${id}`, config);
                     const anexos = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedades-arquivo/${id}`, config);
                     const produtos = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/qualidade/propriedades-produtos/${id}`, config);
+                    
                     this.listaAnexos = anexos.data;
                     this.visu = response.data[0];
-                    this.visu.produtos = produtos.data;
+                    this.visu.produtos = produtos.data || [];
+
+                    // Formatar as datas para o input date
+                    if (this.visu.no_dia) {
+                        this.visu.no_dia = this.visu.no_dia.split("T")[0]; // "YYYY-MM-DD"
+                    }
+
+                    if (this.visu.data_chegada) {
+                        this.visu.data_chegada = this.visu.data_chegada.split("T")[0]; // "YYYY-MM-DD"
+                    }
+
+                    if (this.visu.data_saida) {
+                        this.visu.data_saida = this.visu.data_saida.split("T")[0]; // "YYYY-MM-DD"
+                    }
+
                     this.carregandoinfo = false;   
                 } catch (error) {
-                    console.log(error)
+                    console.log(error);
                     alert("Falha ao carregar página.");
                     this.carregando = false;
                 }
@@ -511,7 +599,9 @@
                     mot_dev: null,
                     produtos: []
                     };
+                    this.chave
                     this.chaveModalNovo = false;
+                    this.mudarNovoVisao('novoCampos')
                 } catch (error) {
                     console.log(error);
                     alert("Erro ao carregar página. Favor tentar mais tarde.");

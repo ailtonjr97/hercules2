@@ -151,7 +151,7 @@ router.beforeEach(async (to, from, next) => {
     const decoded = jwtDecode(token);
     const isAdmin = await checkAdmin(decoded.id);
 
-    if (['/usuarios', '/totvs', '/tabelas', '/qualidade/propriedade-do-cliente'].includes(to.path)) {
+    if (['/usuarios', '/totvs', '/tabelas'].includes(to.path)) {
         const token = getCookie('jwt');
         const decoded = jwtDecode(token);
         const isAdmin = await checkAdmin(decoded.id);
@@ -159,6 +159,30 @@ router.beforeEach(async (to, from, next) => {
         if (!isAdmin) {
             return next('/home');
         }
+    }
+
+    if (['/qualidade/propriedade-do-cliente'].includes(to.path)) {
+      const config = {
+        headers: { 'Authorization': `jwt=${getCookie('jwt')}` }
+      };
+      const token = getCookie('jwt');
+      const decoded = jwtDecode(token);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
+      const qualidade = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Qualidade`, config);
+      const comercial = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
+      const allowedIds = [1, 157]; //Ailton, Everson
+      
+      qualidade.data.forEach(element => {
+        allowedIds.push(element.intranet_id)
+      });
+
+      comercial.data.forEach(element => {
+        allowedIds.push(element.intranet_id)
+      });
+
+      if (!allowedIds.includes(response.data[0].intranet_id)) {
+        return next('/home');
+      }
     }
 
     if (['/financeiro/analise-de-credito'].includes(to.path)) {
