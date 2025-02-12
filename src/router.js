@@ -213,7 +213,7 @@ router.beforeEach(async (to, from, next) => {
         const financeiro = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Financeiro`, config);
         const vendedores = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Comercial`, config);
         const qualidade = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/buscar-por-setor/Qualidade`, config);
-        const allowedIds = [431, 157, 839, 385, 400, 298, 494, 1, 680]; //Ailton, Everson, Jefferson, Juliana, Juliana, Rafael, Wesley, Carlos, Mathias Summer
+        const allowedIds = [431, 157, 839, 385, 400, 298, 494, 1, 680, 894]; //Ailton, Everson, Jefferson, Juliana, Juliana, Rafael, Wesley, Carlos, Mathias Summer, Jean Koxne
         
         vendedores.data.forEach(element => {
           allowedIds.push(element.intranet_id)
