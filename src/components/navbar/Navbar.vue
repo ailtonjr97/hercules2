@@ -52,7 +52,7 @@
                 <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Logística</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Logística</h6>
-                    <router-link to="http://integrador.fibracem.com/produtos" class="nav-link" style="padding: 0 8px;">Produtos</router-link>
+                    <a href="http://integrador.fibracem.com/produtos" class="nav-link" style="padding: 0 8px;">Produtos</a>
                 </div>
             </div>
 
