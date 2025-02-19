@@ -533,7 +533,7 @@ methods: {
             if(faturd){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Faturado' estiver preenchido.");
                 e.preventDefault();
-            }else if(this.setor != "Logística" && this.userId != 441 && this.userId != 849 && this.userId != 654 && this.userId != 294){ //Bruna, João Prestes, Mayara e Alex Lemes
+            }else if(this.setor != "Logística" && this.userId != 441 && this.userId != 849 && this.userId != 654 && this.userId != 294 && this.userId != 259){ //Bruna, João Prestes, Mayara e Alex Lemes
                 this.mostraModal("Somente usuários do setor Logística podem editar esse campo.");
                 e.preventDefault();
             }else{
