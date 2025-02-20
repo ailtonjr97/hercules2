@@ -477,7 +477,7 @@ methods: {
             if(expedi){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Nota Impressa' estiver preenchido.");
                 e.preventDefault();
-            }else if(this.setor != "Financeiro"){
+            }else if(this.setor != "Financeiro" && this.userId != 259){
                 this.mostraModal("Somente usuários do setor Financeiro podem editar esse campo.");
                 e.preventDefault();
             }else{
@@ -505,7 +505,7 @@ methods: {
             if(lebxp){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Liberado Expedicao' estiver preenchido.");
                 e.preventDefault();
-            }else if(this.setor != "Financeiro"){
+            }else if(this.setor != "Financeiro" && this.userId != 259){
                 this.mostraModal("Somente usuários do setor Financeiro podem editar esse campo.");
                 e.preventDefault();
             }else{
