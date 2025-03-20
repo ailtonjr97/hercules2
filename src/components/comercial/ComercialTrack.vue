@@ -614,7 +614,7 @@ methods: {
     },
     async marcaSepC6(filial, num, item, produto, event, vendedor, cliente, marcado){
         try {
-            if(this.libcom == true || this.setor != "Logística"){
+            if(this.libcom == true || (this.setor != "Logística" && this.userId != 132)){
                 this.itensModal = false;
                 this.mostraModal("Não é permitido desmarcar itens se a opção 'Liberado Comercial' estiver marcada ou se o usuário não for da Logística.")
                 event.preventDefault();
@@ -630,7 +630,7 @@ methods: {
                     }, 2000);
                     this.openItensModal(filial, num, vendedor, cliente)
                     this.carregandoinfo = false;
-                }else if (this.setor != "Logística"){
+                }else if (this.setor != "Logística" && this.userId != 132){
                     this.mostraModal("Somente usuários do setor da Logística podem editar esse campo.")
                     event.preventDefault()
                 }else{

@@ -6,7 +6,7 @@
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
     <table-top :resultados="resultados">
         <template v-slot:tableButtons>
-            <button v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 823 || idLogado == 894)" class="button-8 mb-2" @click="refresh()">Atualizar</button>
+            <button v-if="!mostraArquivadas && (idLogado == 452 || idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 823 || idLogado == 894)" class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button v-if="!mostraArquivadas" class="button-8 mb-2" @click="arquivadas()">Arquivadas</button>
             <button v-if="mostraArquivadas" class="button-8 mb-2" @click="abertas()">Abertas</button>
         </template>
@@ -42,8 +42,8 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-center">
-                        <button v-if="idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 823 || idLogado == 894" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)"><i style="font-size: 14px;" class="fas fa-archive"></i></button>
-                        <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID, resposta.COD_CLIENTE, resposta.LOJA)"><i style="font-size: 14px;" class="fas fa-eye"></i></button></div>
+                        <button v-if="idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 823 || idLogado == 894" title="Arquivar" class="button-8" @click="confirmaArquivar(resposta.ID)">Arquivar</button>
+                        <div><button title="Solicitação de Crédito" class="button-8" @click="abreSolicitarDocumento(resposta.ID, resposta.COD_CLIENTE, resposta.LOJA)">Visualizar</button></div>
                     </div>
                 </div>
             </td>
@@ -172,13 +172,13 @@
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Solicit Cli.'" v-model="infoDocumento.DT_SOLICIT_DOCUMENTO"></form-span>
-                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 894)" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)"><i style="font-size: 22px;" class="fas fa-envelope"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 452 || idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 894)" style="margin-left: 2%;"><button title="Solicitar Documentos ao Cliente." class="button-8" @click="perguntarDispararEmailCliente(infoDocumento.COD_CLIENTE, infoDocumento.LOJA, infoDocumento.ID, infoDocumento.EMAIL, infoDocumento.NOME_CLIENTE)">E-mail</button></div>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-start">
                                 <form-span :readonly="true" :span="'Doc. OK'" v-model="infoDocumento.DATA_DOC_OK"></form-span>
-                                <div v-if="!mostraArquivadas && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 894)"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                                <div v-if="!mostraArquivadas && (idLogado == 452 || idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 894)"><button title="Documentos OK." class="button-8" @click="perguntaDocOk(infoDocumento.ID, infoDocumento.VALOR_PEDIDO_INALTERADO)">Escolher</button></div>
                             </div>
                         </div>
                     </div>
@@ -191,7 +191,7 @@
                         <div class="row mt-2">
                             <div class="col d-flex justify-content-evenly">
                                 <span-select :span="'Responsável pela Aprovação'" :options="optionsRespAprov" v-model="infoDocumento.RESPONSAVEL_APROV"></span-select>
-                                <div style="margin-left: 0.5%;" v-if="!mostraArquivadas && infoDocumento.ARQUIVA == 0 && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 823 || idLogado == 894)"><button title="Trocar Responsável" class="button-8" @click="trocaResp(infoDocumento.ID, infoDocumento.RESPONSAVEL_APROV)"><i style="font-size: 22px;" class="fas fa-check"></i></button></div>
+                                <div style="margin-left: 0.5%;" v-if="!mostraArquivadas && infoDocumento.ARQUIVA == 0 && (idLogado == 705 || idLogado == 193 || idLogado == 189 || idLogado == 431 || idLogado == 823 || idLogado == 894)"><button title="Trocar Responsável" class="button-8" @click="trocaResp(infoDocumento.ID, infoDocumento.RESPONSAVEL_APROV)">Escolher</button></div>
                             </div>
                         </div>
 <!--                         <div class="row mt-2">
@@ -302,7 +302,7 @@
             <div class="col">
                 <form-span :readonly="true" :span="'CNPJ:'" v-model="cliente.A1_CGC"></form-span><br>
             </div>
-        </div>
+        </div> 
         <div class="row">
             <div class="col">
                 <form-span :readonly="true" :span="'Endereço:'" v-model="cliente.A1_END"></form-span><br>
