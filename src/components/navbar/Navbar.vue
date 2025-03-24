@@ -21,7 +21,7 @@
                     <router-link to="/comercial/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete</router-link>
                     <router-link to="/comercial/track-order" class="nav-link" style="padding: 0 8px;">Track Order</router-link>
                     <a href="http://integrador.fibracem.com/orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</a>
-                    <router-link to="/comercial/pedidos" class="nav-link" style="padding: 0 8px;">Pedidos</router-link>
+                    <a href="http://integrador.fibracem.com/pedidos" class="nav-link" style="padding: 0 8px;">Pedidos</a>
                     <a href="http://integrador.fibracem.com/clientes" class="nav-link" style="padding: 0 8px;">Clientes</a>
                 </div>
             </div>
