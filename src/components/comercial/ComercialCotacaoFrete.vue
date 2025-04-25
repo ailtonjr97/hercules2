@@ -43,14 +43,20 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="resposta in respostas" :key="resposta.id">
+            <tr v-for="resposta in respostas" :key="resposta.id" :class="{ 'fundo-azul': resposta.aniversario_status?.trim().toUpperCase() === 'P' }">
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-start">
                         <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id, resposta.pedido)">Cotar</button></div>
-                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial'" @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)">Escolher</button></div>
+                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial' && resposta.aniversario_status != 'P' " @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)">Escolher</button></div>
                         <div><button title="Arquivar" class="button-8" v-if="resposta.arquivar != 0" @click="arquivaFreteCot(resposta.id)">Arquivar</button></div>
                         <div><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido, resposta.revisao)">Itens</button></div>
+
+                        <!-- Somente Christiansen e Carlos Augusto podem aprovar ou reprovar uma promoção de aniversário -->
+                        <div v-if="logadoIntranetId == 199 || logadoIntranetId == 439">
+                            <div><button title="Aprovar"  class="button-8" v-if=" resposta.aniversario_status == 'P' && resposta.valor " @click="statusAniversario('A', resposta.id)">Aprovar</button></div>
+                            <div><button title="Reprovar" class="button-8" v-if=" resposta.aniversario_status == 'P' && resposta.valor " @click="statusAniversario('R', resposta.id)">Reprovar</button></div>
+                        </div>
                     </div>
                 </div>
             </td>
@@ -82,7 +88,7 @@
                 <p>{{ resposta.revisao }}</p>
             </td>
             <td>
-                <p>{{ resposta.valor }}</p>
+                <p>{{ resposta.valor }} <span v-if="resposta.aniversario_valor && resposta.aniversario_status == 'P'">({{ resposta.aniversario_valor }})</span></p>
             </td>
             <td>
                 <p>{{ resposta.nome_transportadora }}</p>
@@ -194,11 +200,17 @@
             <form-floating :placeholder="'Número do Orçamento:'" :id="'numped'" :type="'number'" v-model="numped" ></form-floating><br>
             <p style="color: red;" v-if="alertaPedido">Orçamento não encontrado no Protheus. Verificar se esse orçamento pertence a filial.</p>
         </div>
+        <div class="row mt-4">
+            <div class="col">
+                <input style="margin-right: 0.5%;" type="checkbox" name="check-aniversario" id="check-aniversario" v-model="checkAniversario">
+                <label for="check-aniversario">Essa cotação faz parte da campanha de aniversário.</label>
+            </div>
+        </div>
     </div>
     </template>
     <template v-slot:buttons v-if="!carregandoinfo">
         <button class="button-8 mt-2" @click="fecharNovaCotacaoModal()">Fechar</button>
-        <button class="button-8 mt-2" @click="salvarModalCotacao(numped, filial)">Salvar</button>
+        <button class="button-8 mt-2" @click="salvarModalCotacao(numped, filial, checkAniversario)">Salvar</button>
     </template>
 </modal>
 
@@ -438,6 +450,8 @@ export default{
     },
     data(){
         return{
+            logadoIntranetId: null,
+            checkAniversario: false,
             transpCodProc: '',
             transpCnpjProc: '',
             clienteNome: '',
@@ -505,6 +519,21 @@ export default{
         },
     },
     methods: {
+        async statusAniversario(status, id) {
+            try {
+                const resposta = confirm("Tem certeza que deseja alterar o status dessa cotação?");
+
+                if (resposta) {
+                    await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/status-aniversario/${id}`, {'status': status}, config);
+                    alert('Status alterado com sucesso.')
+                    this.refresh();
+                }
+
+            } catch (error) {
+                console.log(error);
+                alert("Erro ao confirmar ação.");
+            }
+        },
         async mostraCliente(filial, orc){
             try {
                 if(orc == '' || filial == ''){
@@ -757,7 +786,7 @@ export default{
                 alert("Falha ao buscar informações. Tente novamente mais tarde.")
             }
         },
-        async salvarModalCotacao(numped, filial){
+        async salvarModalCotacao(numped, filial, checkAniversario){
             try {
                 this.carregandoinfo = true;
                 if(numped && filial){
@@ -769,7 +798,7 @@ export default{
                         });
                         const token = document.cookie.replace('jwt=', '');
                         const decoded = jwtDecode(getCookie('jwt'));
-                        const respostaScj = await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/nova-proposta-de-frete/${numped}/${decoded.id}/${filial}`, itens, config);
+                        const respostaScj = await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/nova-proposta-de-frete/${numped}/${decoded.id}/${filial}/${checkAniversario}`, itens, config);
                         this.fecharNovaCotacaoModal();
                         this.carregando = true;
                         this.refresh();
@@ -789,6 +818,7 @@ export default{
             this.carregandoinfo = false;
             this.numped = '';
             this.alertaPedido = false;
+            this.checkAniversario = false;
         },
         async novaCotacao(){
             try {
@@ -1034,6 +1064,7 @@ export default{
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/proposta-de-frete`, config);
                 this.respostas = response.data;
                 const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
+                this.logadoIntranetId = logado.data[0].intranet_id
                 this.setor = logado.data[0].setor;
                 this.nomeLogado = logado.data[0].name;
                 this.resultados = response.data.length;
@@ -1047,3 +1078,11 @@ export default{
     }
 }
 </script>
+
+<style scoped>
+
+.fundo-azul {
+  background-color: #fff457 !important; /* ou qualquer azul que preferir */
+}
+
+</style>
