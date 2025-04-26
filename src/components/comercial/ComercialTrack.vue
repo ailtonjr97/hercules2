@@ -12,8 +12,7 @@
         <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"        :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
         <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"      :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
         <form-floating  v-on:keyup.enter="pesquisa()" v-model="clienteFiltro" :id="'procuraBtn5'" :num="5" :placeholder="'Cliente:'"         :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="dataEnt"       :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="limit"         :id="'procuraBtn1'" :num="1" :placeholder="'Limite:'"          :type="'number'"></form-floating >
+        <form-floating  @change="pesquisa()" v-model="dataEnt"       :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
     </div>
     <div class="row mb-2">
         <div class="col">
@@ -76,46 +75,46 @@
                 <td>{{ api.A1_NOME}}</td>             
                 <td>{{ api.C5_FECENT}}</td>
                 <td>
-                    <input class="mt-4" @click="$event.preventDefault()" type="checkbox" name="separado_cd" id="separado_cd" :checked="api.C5_XSEPCD ? true : false"><br>
+                    <input class="mt-4" @click="$event.preventDefault()" type="checkbox" name="separado_cd" id="separado_cd" :checked="api.C5_XSEPCD === 'T'"><br>
                     {{ api.C5_XNSEPCD  }}<br>
                     {{ api.C5_XHSEPCD }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaLibCom(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBFAT, $event)" type="checkbox" name="liberado_comercial" id="liberado_comercial" :checked="api.C5_XLIBCOM ? true : false" :disabled="!api.C5_XSEPCD"><br>
+                    <input class="mt-4" @click="marcaLibCom(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBFAT, $event)" type="checkbox" name="liberado_comercial" id="liberado_comercial" :checked="api.C5_XLIBCOM === 'T'" :disabled="api.C5_XSEPCD === 'F'"><br>
                     {{ api.C5_XNLIBCO  }}<br>
                     {{ api.C5_XHLIBCO }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XRETFIS, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT ? true : false" :disabled="!api.C5_XLIBCOM"><br>
+                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XRETFIS, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT === 'T'" :disabled="api.C5_XLIBCOM === 'F'"><br>
                     {{ api.C5_XNLIBFA  }}<br>
                     {{ api.C5_XHLIBFA }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaRetFis(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="retorno_fiscal" id="retorno_fiscal" :checked="api.C5_XRETFIS ? true : false" :disabled="!api.C5_XLIBFAT"><br>
+                    <input class="mt-4" @click="marcaRetFis(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="retorno_fiscal" id="retorno_fiscal" :checked="api.C5_XRETFIS === 'T'" :disabled="api.C5_XLIBFAT === 'F'"><br>
                     {{ api.C5_XNRETFI }}<br>
                     {{ api.C5_XHRETFI }}<br>
                     <span v-if="api.C5_XRETFIS">Nota: {{ api.NOTA_RET }}</span>
                     
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaFaturd(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBEXP, $event)" type="checkbox" name="faturado" id="faturado" :checked="api.C5_XFATURD ? true : false" :disabled="!api.C5_XRETFIS"><br>
+                    <input class="mt-4" @click="marcaFaturd(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBEXP, $event)" type="checkbox" name="faturado" id="faturado" :checked="api.C5_XFATURD === 'T'" :disabled="api.C5_XRETFIS === 'F'"><br>
                     {{ api.C5_XNFATUR  }}<br>
                     {{ api.C5_XHFATUR  }}
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaLibexp(api.C5_FILIAL, api.C5_NUM, api.C5_XNOTIMP, $event)" type="checkbox" name="liberado_expedicao" id="liberado_expedicao" :checked="api.C5_XLIBEXP ? true : false" :disabled="!api.C5_XFATURD"><br>
+                    <input class="mt-4" @click="marcaLibexp(api.C5_FILIAL, api.C5_NUM, api.C5_XNOTIMP, $event)" type="checkbox" name="liberado_expedicao" id="liberado_expedicao" :checked="api.C5_XLIBEXP === 'T'" :disabled="api.C5_XFATURD === 'F'"><br>
                     {{ api.C5_XNLIBEX  }}<br>
                     {{ api.C5_XHLIBEX }}<br>
                     <span v-if="api.C5_XLIBEXP">Nota: {{ api.C5_NOTA }}</span><br>
                     <a v-if="api.C5_XLIBEXP" :href="`http://aplicacao.fibracem.com:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaNotaImp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="nota_impressa" id="nota_impressa" :checked="api.C5_XNOTIMP ? true : false" :disabled="!api.C5_XLIBEXP"><br>
+                    <input class="mt-4" @click="marcaNotaImp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="nota_impressa" id="nota_impressa" :checked="api.C5_XNOTIMP === 'T'" :disabled="api.C5_XLIBEXP === 'F'"><br>
                     {{ api.C5_XNNOTIM  }}<br>
                     {{ api.C5_XHNOTIM }}<br>
                 </td>
                 <td>
-                    <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI ? true : false" :disabled="!api.C5_XNOTIMP"><br>
+                    <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI === 'T'" :disabled="api.C5_XNOTIMP === 'F'"><br>
                     {{ api.C5_XNEXPED  }}<br>
                     {{ api.C5_XHEXPED }}
                 </td>
@@ -286,7 +285,6 @@ data(){
         mostraErro: false,
         textoPad: '',
         pedido: '',
-        limit: null,
         nome: '',
         setor: '',
         alertaPedido: false,
@@ -412,19 +410,14 @@ methods: {
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=${this.limit}&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&pcampo=${pCampo}&scampo=${sCampo}&pvalor=${pValor}&svalor=${sValor}&clientenome=${this.clienteFiltro}`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&pcampo=${pCampo}&scampo=${sCampo}&pvalor=${pValor}&svalor=${sValor}&clientenome=${this.clienteFiltro}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
             this.resultados = response.data.length;
             this.carregando = false;
         } catch (error) {
-            console.log(error)
-            if(error.response.status == 404){
-                this.mostraModal("Nenhum resultado encontrado.");
-            }else{
-                this.mostraModal("Falha ao buscar resultados.");
-            }
+            console.log(error);
         }
     },
     async marcaExpedi(filial, num, e){
@@ -673,7 +666,7 @@ methods: {
                 }
             }
             const decoded = jwtDecode(getCookie('jwt'));
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&clientenome=${this.clienteFiltro}`, config);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&clientenome=${this.clienteFiltro}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
@@ -715,7 +708,7 @@ async created(){
             }
         }
         const decoded = jwtDecode(getCookie('jwt'));
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?limit=100&pedido=&data_ent=&vendedor=&filial=&pcampo=&scampo=&pvalor=&svalor=&clientenome=`, config);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?pedido=&data_ent=&vendedor=&filial=&pcampo=&scampo=&pvalor=&svalor=&clientenome=`, config);
         const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
         this.apis = response.data;
         this.setor = logado.data[0].setor;
