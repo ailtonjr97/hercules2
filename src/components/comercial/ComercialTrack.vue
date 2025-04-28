@@ -622,7 +622,7 @@ methods: {
             }else{
                 if(marcado){
                     this.carregandoinfo = true;
-                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${false}`, config);
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${true}`, config);
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
                     this.refresh();
                     this.popup = true;
@@ -636,7 +636,7 @@ methods: {
                     event.preventDefault()
                 }else{
                     this.carregandoinfo = true;
-                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${true}`, config);
+                    await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${false}`, config);
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Marcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
                     this.refresh();
                     this.popup = true;
