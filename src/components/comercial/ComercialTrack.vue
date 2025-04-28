@@ -213,7 +213,7 @@
                         <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
                         <td>{{ iten.C6_DESCRI }}</td>
                         <td>{{ iten.C6_QTDVEN }}</td>
-                        <td><input type="checkbox" name="" id="" v-model="iten.C6_XSEPCD" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem, iten.C6_XSEPCD)"></td>
+                        <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD === 'T'" v-model="iten.C6_XSEPCD" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem, iten.C6_XSEPCD)"></td>
                         <td>{{ iten.C6_XNSEPCD }}</td>
                         <td>{{ iten.C6_XHSEPCD }}</td>
                     </tr>
