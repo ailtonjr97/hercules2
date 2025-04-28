@@ -447,7 +447,7 @@ methods: {
     },
     async marcaNotaImp(filial, num, expedi, e){
         try {
-            if(expedi){
+            if(expedi === 'T'){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Expedido' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Logística"){
@@ -475,7 +475,7 @@ methods: {
     },
     async marcaLibexp(filial, num, expedi, e){
         try {
-            if(expedi){
+            if(expedi === 'T'){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Nota Impressa' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Financeiro" && this.userId != 259){
@@ -503,7 +503,7 @@ methods: {
     },
     async marcaFaturd(filial, num, lebxp, e){
         try {
-            if(lebxp){
+            if(lebxp === 'T'){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Liberado Expedicao' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Financeiro" && this.userId != 259){
@@ -531,7 +531,7 @@ methods: {
     },
     async marcaRetFis(filial, num, faturd, e){
         try {
-            if(faturd){
+            if(faturd === 'T'){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Faturado' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Logística" && this.userId != 441 && this.userId != 849 && this.userId != 654 && this.userId != 294 && this.userId != 259){ //Bruna, João Prestes, Mayara e Alex Lemes
@@ -559,7 +559,7 @@ methods: {
     },
     async marcaLibFat(filial, num, xretfis, e){
         try {
-            if(xretfis){
+            if(xretfis === "T"){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Retorno Fiscal' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Financeiro"){
@@ -587,7 +587,7 @@ methods: {
     },
     async marcaLibCom(filial, num, libfat, e){
         try {
-            if(libfat){
+            if(libfat === 'T'){
                 this.mostraModal("Não é permitido editar esse campo enquanto o campo 'Liberado Faturamento' estiver preenchido.");
                 e.preventDefault();
             }else if(this.setor != "Comercial"){
@@ -615,12 +615,12 @@ methods: {
     },
     async marcaSepC6(filial, num, item, produto, event, vendedor, cliente, marcado){
         try {
-            if(this.libcom == true || (this.setor != "Logística" && this.userId != 132)){
+            if(this.libcom == 'T' || (this.setor != "Logística" && this.userId != 132)){
                 this.itensModal = false;
                 this.mostraModal("Não é permitido desmarcar itens se a opção 'Liberado Comercial' estiver marcada ou se o usuário não for da Logística.")
                 event.preventDefault();
             }else{
-                if(!marcado){
+                if(marcado === 'F'){
                     this.carregandoinfo = true;
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${false}`, config);
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
