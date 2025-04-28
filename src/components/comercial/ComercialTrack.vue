@@ -213,7 +213,7 @@
                         <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
                         <td>{{ iten.C6_DESCRI }}</td>
                         <td>{{ iten.C6_QTDVEN }}</td>
-                        <td><input type="checkbox" name="" id="" :checked="iten.C6_XSEPCD === 'T'" v-model="iten.C6_XSEPCD" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem, iten.C6_XSEPCD)"></td>
+                        <td><input type="checkbox" name="" id="" v-model="iten.C6_XSEPCD" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem, iten.C6_XSEPCD)"></td>
                         <td>{{ iten.C6_XNSEPCD }}</td>
                         <td>{{ iten.C6_XHSEPCD }}</td>
                     </tr>
@@ -620,7 +620,7 @@ methods: {
                 this.mostraModal("Não é permitido desmarcar itens se a opção 'Liberado Comercial' estiver marcada ou se o usuário não for da Logística.")
                 event.preventDefault();
             }else{
-                if(marcado === 'F'){
+                if(marcado){
                     this.carregandoinfo = true;
                     await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/update_c6xsepcd/${filial}/${num}/${item}/${produto}/${this.nome}?vendedor=${vendedor}&cliente=${cliente}&marcado=${false}`, config);
                     await axios.post(`${import.meta.env.VITE_BACKEND_IP}/comercial/log`, [this.nome, `Desmarcado item ${produto} (${item}), do pedido ${num}, filial ${filial} no track order.`], config);
