@@ -412,6 +412,7 @@ methods: {
             const decoded = jwtDecode(getCookie('jwt'));
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/comercial/track_order/get_all?pedido=${this.pedido}&data_ent=${this.dataEnt}&vendedor=${this.vendedor}&filial=${this.filialFiltro}&pcampo=${pCampo}&scampo=${sCampo}&pvalor=${pValor}&svalor=${sValor}&clientenome=${this.clienteFiltro}`, config);
             const logado = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/users/${decoded.id}`, config);
+            console.log(response.data);
             this.apis = response.data;
             this.setor = logado.data[0].setor;
             this.resultados = response.data.length;
