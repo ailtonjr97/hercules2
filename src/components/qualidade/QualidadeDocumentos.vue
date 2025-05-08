@@ -64,7 +64,7 @@
                     <button class="button-8" @click="openModalQualidade(documento.ID)" v-if="(documento.PRODUCAO_PREENCHIDO == 1 && documento.QUALIDADE_PREENCHIDO == 0 && userSetor == 'Qualidade') || intranetId == 391">Preencher Qualidade</button>
                     <button class="button-8" @click="openModalNc(documento.ID)" v-if="documento.MOTIVO_NC_PREENCHIDO == 0">Motivo NC</button>
                     <button class="button-8" @click="inactivateDocument(documento.ID)" v-if="documento.EDP_PREENCHIDO == 1 && documento.PCP_PREENCHIDO == 1 && documento.PRODUCAO_PREENCHIDO == 1 && documento.QUALIDADE_PREENCHIDO == 1 && documento.MOTIVO_NC_PREENCHIDO == 1">Arquivar</button>
-                    <button class="button-8" @click="inactivateDocument(documento.ID)" v-if="intranetId == 1 || intranetId == 326">Arquivar Agora</button>
+                    <button class="button-8" @click="inactivateDocument(documento.ID)" v-if="intranetId == 1 || intranetId == 326 || intranetId == 545">Arquivar Agora</button>
                     <button class="button-8" v-if="documento.ANEXO != 0" @click="openAnexoModal(documento.ID)">Anexos</button>
                 </td>
                 </tr>
