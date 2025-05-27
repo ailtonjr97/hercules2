@@ -616,9 +616,9 @@ methods: {
     },
     async marcaSepC6(filial, num, item, produto, event, vendedor, cliente, marcado){
         try {
-            if(this.libcom == 'T' || (this.setor != "Logística" && this.userId != 132)){
+            if(true){
                 this.itensModal = false;
-                this.mostraModal("Não é permitido desmarcar itens se a opção 'Liberado Comercial' estiver marcada ou se o usuário não for da Logística.")
+                this.mostraModal("Favor realizar apontamento no track order novo. Se caso esteja sem acesso, favor falar com Ailton no Spark.")
                 event.preventDefault();
             }else{
                 if(marcado){
