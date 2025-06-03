@@ -717,7 +717,8 @@ export default{
                             {'valor': this.infoDocumento.VALOR_PEDIDO_NUM},
                             {'respostaAnalise': this.infoDocumento.RESPOSTA_ANALISE},
                             {'obsResposta': this.infoDocumento.OBS_RESPOSTA},
-                            {'novo_limite': this.infoDocumento.NOVO_LIMITE}
+                            {'novo_limite': this.infoDocumento.NOVO_LIMITE},
+                            {'nomeCliente': this.infoDocumento.NOME_CLIENTE}
                         ], config);
                         const campo = await axios.get(`${import.meta.env.VITE_BACKEND_IP}/financeiro/documento?id=${this.infoDocumento.ID}`, config);
                         this.resultAnal = campo.data[0].RESULTADO_ANALISE;
