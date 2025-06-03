@@ -1,233 +1,234 @@
 <template>
-    <popup v-if="popup"></popup>
-    <div v-if="carregando" id="loading"></div>
-    <div style="overflow: hidden; padding: 0.5%;">
-    <table-top :resultados="resultados">
-        <template v-slot:tableButtons>
-            <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
-        </template>
-    </table-top>
-    <div class="row mb-2">
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="filialFiltro"  :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"        :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"      :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >
-        <form-floating  v-on:keyup.enter="pesquisa()" v-model="clienteFiltro" :id="'procuraBtn5'" :num="5" :placeholder="'Cliente:'"         :type="'text'"></form-floating >
-        <form-floating  @change="pesquisa()" v-model="dataEnt"       :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >
-    </div>
-    <div class="row mb-2">
-        <div class="col">
-            <input                      type="radio" name="filtro_radio" id="filtro_separado_cd"           @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')"><label for="filtro_separado_cd">Aguard. Separado CD</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_comercial"    @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'T', 'F')"><label for="filtro_liberado_comercial">Aguardando Liberado Comercial</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_faturamento"  @click="pesquisa('C5_XLIBCOM', 'C5_XLIBFAT', 'T', 'F')"><label for="filtro_liberado_faturamento">Aguardando Liberado Faturamento</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_retorno_fiscal"        @click="pesquisa('C5_XLIBFAT', 'C5_XRETFIS', 'T', 'F')"><label for="filtro_retorno_fiscal">Aguardando Retorno Fiscal</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_faturado"              @click="pesquisa('C5_XRETFIS', 'C5_XFATURD', 'T', 'F')"><label for="filtro_faturado">Aguardando Faturado</label>
-        </div>
-    </div>
-    <div class="row mb-2">
-        <div class="col">
-            <input type="radio" name="filtro_radio" id="filtro_liberado_expedicao"                 @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_nota_impressa" @click="pesquisa('C5_XLIBEXP', 'C5_XNOTIMP', 'T', 'F')"><label for="filtro_nota_impressa">Aguardando Nota Impressa</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_expedido"      @click="pesquisa('C5_XNOTIMP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>
-            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_todos"         @click="pesquisa()" checked><label for="filtro_todos">Todos</label>
-        </div>
-    </div>
-    <div class="table-wrapper table-responsive table-striped mb-5">
-        <table class="fl-table" id="myTable">
-        <thead>
-            <tr style="height: 25px">
-            <th>Itens</th>
-            <!-- <th>ID</th> -->
-            <th>Filial</th>
-            <th>Pedido</th>
-            <th>Retorno/Nota</th>
-            <th>Vendedor</th>            
-            <th>Cliente</th>
-            <th>Nome Cliente</th>
-            <th>Data de Entrega</th>
-            <th>Separado CD</th>
-            <th>Liberado Comercial</th>
-            <th>Liberado Faturamento</th>
-            <th>Retorno Fiscal</th>
-            <th>Faturado</th>
-            <th>Liberado Expedição</th>
-            <th>Nota Impressa</th>
-            <th>Expedido</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="api in apis" :style="{backgroundColor: api.C5_XRECLAM === '1' ? '#cb5f5f' : (!api.C5_XEXPEDI && isDataEntregaVencida(api.C5_FECENT) ? '#f5d774' : '')}">
-                <td>
-                    <button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8">Itens</button>
-                    <button v-if="userId == 441 || userId == 849 || userId == 431  || userId == 654 || userId == 294" @click="openValFreteModal(api.C5_FILIAL, api.C5_NUM)" title="Alterar valor frete" class="button-8"><i class="fa-solid fa-truck"></i></button>
-                </td>
-                <!-- <td>{{ api.R_E_C_N_O_ }}</td> -->
-                <td>{{ api.C5_FILIAL}}</td>
-                <td>{{ api.C5_NUM}}</td>
-                <td>{{ api.C5_XPEDTR}}</td>
-                <td>
-                    {{ api.A3_NREDUZ}}  <br>
-                    <button v-if="setor == 'Comercial'" @click="atualizaObsVend(api.C5_FILIAL, api.C5_NUM, api.C5_XOBSV)" title="Enviar" class="button-8" style="bottom: 10px;">Enviar</button>
-                    <textarea v-model="api.C5_XOBSV" cols="8" rows="1" style="resize: both; overflow: auto;" maxlength="200"></textarea>
-                </td>              
-                <td>
-                    <button title="Ver cliente" class="button-8" @click="openClienteModal(api.C5_CLIENTE, api.C5_LOJACLI)">{{ api.C5_CLIENTE }}</button>
-                </td>
-                <td>{{ api.A1_NOME}}</td>             
-                <td>{{ api.C5_FECENT}}</td>
-                <td>
-                    <input class="mt-4" @click="$event.preventDefault()" type="checkbox" name="separado_cd" id="separado_cd" :checked="api.C5_XSEPCD === 'T'"><br>
-                    {{ api.C5_XNSEPCD  }}<br>
-                    {{ api.C5_XHSEPCD }}
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaLibCom(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBFAT, $event)" type="checkbox" name="liberado_comercial" id="liberado_comercial" :checked="api.C5_XLIBCOM === 'T'" :disabled="api.C5_XSEPCD === 'F'"><br>
-                    {{ api.C5_XNLIBCO  }}<br>
-                    {{ api.C5_XHLIBCO }}
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XRETFIS, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT === 'T'" :disabled="api.C5_XLIBCOM === 'F'"><br>
-                    {{ api.C5_XNLIBFA  }}<br>
-                    {{ api.C5_XHLIBFA }}
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaRetFis(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="retorno_fiscal" id="retorno_fiscal" :checked="api.C5_XRETFIS === 'T'" :disabled="api.C5_XLIBFAT === 'F'"><br>
-                    {{ api.C5_XNRETFI }}<br>
-                    {{ api.C5_XHRETFI }}<br>
-                    <span v-if="api.C5_XRETFIS">Nota: {{ api.NOTA_RET }}</span>
-                    
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaFaturd(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBEXP, $event)" type="checkbox" name="faturado" id="faturado" :checked="api.C5_XFATURD === 'T'" :disabled="api.C5_XRETFIS === 'F'"><br>
-                    {{ api.C5_XNFATUR  }}<br>
-                    {{ api.C5_XHFATUR  }}
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaLibexp(api.C5_FILIAL, api.C5_NUM, api.C5_XNOTIMP, $event)" type="checkbox" name="liberado_expedicao" id="liberado_expedicao" :checked="api.C5_XLIBEXP === 'T'" :disabled="api.C5_XFATURD === 'F'"><br>
-                    {{ api.C5_XNLIBEX  }}<br>
-                    {{ api.C5_XHLIBEX }}<br>
-                    <span v-if="api.C5_XLIBEXP">Nota: {{ api.C5_NOTA }}</span><br>
-                    <a v-if="api.C5_XLIBEXP" :href="`http://aplicacao.fibracem.com:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaNotaImp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="nota_impressa" id="nota_impressa" :checked="api.C5_XNOTIMP === 'T'" :disabled="api.C5_XLIBEXP === 'F'"><br>
-                    {{ api.C5_XNNOTIM  }}<br>
-                    {{ api.C5_XHNOTIM }}<br>
-                </td>
-                <td>
-                    <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI === 'T'" :disabled="api.C5_XNOTIMP === 'F'"><br>
-                    {{ api.C5_XNEXPED  }}<br>
-                    {{ api.C5_XHEXPED }}
-                </td>
-            </tr>
-        </tbody>
-        </table>
-    </div>
-</div>
+<!--    <popup v-if="popup"></popup>-->
+<!--    <div v-if="carregando" id="loading"></div>-->
+<!--    <div style="overflow: hidden; padding: 0.5%;">-->
+<!--    <table-top :resultados="resultados">-->
+<!--        <template v-slot:tableButtons>-->
+<!--            <button class="button-8 mb-2" @click="refresh()">Atualizar</button>-->
+<!--        </template>-->
+<!--    </table-top>-->
+<!--    <div class="row mb-2">-->
+<!--        <form-floating  v-on:keyup.enter="pesquisa()" v-model="filialFiltro"  :id="'procuraBtn4'" :num="4" :placeholder="'Filial:'"          :type="'text'"></form-floating >-->
+<!--        <form-floating  v-on:keyup.enter="pesquisa()" v-model="pedido"        :id="'procuraBtn0'" :num="0" :placeholder="'Pedido:'"          :type="'text'"></form-floating >-->
+<!--        <form-floating  v-on:keyup.enter="pesquisa()" v-model="vendedor"      :id="'procuraBtn3'" :num="3" :placeholder="'Vendedor:'"        :type="'text'"></form-floating >-->
+<!--        <form-floating  v-on:keyup.enter="pesquisa()" v-model="clienteFiltro" :id="'procuraBtn5'" :num="5" :placeholder="'Cliente:'"         :type="'text'"></form-floating >-->
+<!--        <form-floating  @change="pesquisa()" v-model="dataEnt"       :id="'procuraBtn2'" :num="2" :placeholder="'Data de Entrega:'" :type="'date'"></form-floating >-->
+<!--    </div>-->
+<!--    <div class="row mb-2">-->
+<!--        <div class="col">-->
+<!--            <input                      type="radio" name="filtro_radio" id="filtro_separado_cd"           @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'F', 'F')"><label for="filtro_separado_cd">Aguard. Separado CD</label>-->
+<!--            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_comercial"    @click="pesquisa('C5_XSEPCD', 'C5_XLIBCOM', 'T', 'F')"><label for="filtro_liberado_comercial">Aguardando Liberado Comercial</label>-->
+<!--            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_liberado_faturamento"  @click="pesquisa('C5_XLIBCOM', 'C5_XLIBFAT', 'T', 'F')"><label for="filtro_liberado_faturamento">Aguardando Liberado Faturamento</label>-->
+<!--            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_retorno_fiscal"        @click="pesquisa('C5_XLIBFAT', 'C5_XRETFIS', 'T', 'F')"><label for="filtro_retorno_fiscal">Aguardando Retorno Fiscal</label>-->
+<!--            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_faturado"              @click="pesquisa('C5_XRETFIS', 'C5_XFATURD', 'T', 'F')"><label for="filtro_faturado">Aguardando Faturado</label>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="row mb-2">-->
+<!--        <div class="col">-->
+<!--            <input type="radio" name="filtro_radio" id="filtro_liberado_expedicao"                 @click="pesquisa('C5_XFATURD', 'C5_XLIBEXP', 'T', 'F')"><label for="filtro_liberado_expedicao">Aguardando Liberado Expedição</label>-->
+<!--            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_nota_impressa" @click="pesquisa('C5_XLIBEXP', 'C5_XNOTIMP', 'T', 'F')"><label for="filtro_nota_impressa">Aguardando Nota Impressa</label>-->
+<!--            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_expedido"      @click="pesquisa('C5_XNOTIMP', 'C5_XEXPEDI', 'T', 'F')"><label for="filtro_expedido">Aguardando Expedido</label>-->
+<!--            <input class="separa-radio" type="radio" name="filtro_radio" id="filtro_todos"         @click="pesquisa()" checked><label for="filtro_todos">Todos</label>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="table-wrapper table-responsive table-striped mb-5">-->
+<!--        <table class="fl-table" id="myTable">-->
+<!--        <thead>-->
+<!--            <tr style="height: 25px">-->
+<!--            <th>Itens</th>-->
+<!--            &lt;!&ndash; <th>ID</th> &ndash;&gt;-->
+<!--            <th>Filial</th>-->
+<!--            <th>Pedido</th>-->
+<!--            <th>Retorno/Nota</th>-->
+<!--            <th>Vendedor</th>            -->
+<!--            <th>Cliente</th>-->
+<!--            <th>Nome Cliente</th>-->
+<!--            <th>Data de Entrega</th>-->
+<!--            <th>Separado CD</th>-->
+<!--            <th>Liberado Comercial</th>-->
+<!--            <th>Liberado Faturamento</th>-->
+<!--            <th>Retorno Fiscal</th>-->
+<!--            <th>Faturado</th>-->
+<!--            <th>Liberado Expedição</th>-->
+<!--            <th>Nota Impressa</th>-->
+<!--            <th>Expedido</th>-->
+<!--            </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--            <tr v-for="api in apis" :style="{backgroundColor: api.C5_XRECLAM === '1' ? '#cb5f5f' : (!api.C5_XEXPEDI && isDataEntregaVencida(api.C5_FECENT) ? '#f5d774' : '')}">-->
+<!--                <td>-->
+<!--                    <button @click="openItensModal(api.C5_FILIAL, api.C5_NUM, api.C5_VEND1, api.C5_CLIENTE, api.C5_XLIBCOM)" title="Itens" class="button-8">Itens</button>-->
+<!--                    <button v-if="userId == 441 || userId == 849 || userId == 431  || userId == 654 || userId == 294" @click="openValFreteModal(api.C5_FILIAL, api.C5_NUM)" title="Alterar valor frete" class="button-8"><i class="fa-solid fa-truck"></i></button>-->
+<!--                </td>-->
+<!--                &lt;!&ndash; <td>{{ api.R_E_C_N_O_ }}</td> &ndash;&gt;-->
+<!--                <td>{{ api.C5_FILIAL}}</td>-->
+<!--                <td>{{ api.C5_NUM}}</td>-->
+<!--                <td>{{ api.C5_XPEDTR}}</td>-->
+<!--                <td>-->
+<!--                    {{ api.A3_NREDUZ}}  <br>-->
+<!--                    <button v-if="setor == 'Comercial'" @click="atualizaObsVend(api.C5_FILIAL, api.C5_NUM, api.C5_XOBSV)" title="Enviar" class="button-8" style="bottom: 10px;">Enviar</button>-->
+<!--                    <textarea v-model="api.C5_XOBSV" cols="8" rows="1" style="resize: both; overflow: auto;" maxlength="200"></textarea>-->
+<!--                </td>              -->
+<!--                <td>-->
+<!--                    <button title="Ver cliente" class="button-8" @click="openClienteModal(api.C5_CLIENTE, api.C5_LOJACLI)">{{ api.C5_CLIENTE }}</button>-->
+<!--                </td>-->
+<!--                <td>{{ api.A1_NOME}}</td>             -->
+<!--                <td>{{ api.C5_FECENT}}</td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="$event.preventDefault()" type="checkbox" name="separado_cd" id="separado_cd" :checked="api.C5_XSEPCD === 'T'"><br>-->
+<!--                    {{ api.C5_XNSEPCD  }}<br>-->
+<!--                    {{ api.C5_XHSEPCD }}-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="marcaLibCom(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBFAT, $event)" type="checkbox" name="liberado_comercial" id="liberado_comercial" :checked="api.C5_XLIBCOM === 'T'" :disabled="api.C5_XSEPCD === 'F'"><br>-->
+<!--                    {{ api.C5_XNLIBCO  }}<br>-->
+<!--                    {{ api.C5_XHLIBCO }}-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="marcaLibFat(api.C5_FILIAL, api.C5_NUM, api.C5_XRETFIS, $event)" type="checkbox" name="liberado_faturamento" id="liberado_faturamento" :checked="api.C5_XLIBFAT === 'T'" :disabled="api.C5_XLIBCOM === 'F'"><br>-->
+<!--                    {{ api.C5_XNLIBFA  }}<br>-->
+<!--                    {{ api.C5_XHLIBFA }}-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="marcaRetFis(api.C5_FILIAL, api.C5_NUM, api.C5_XFATURD, $event)" type="checkbox" name="retorno_fiscal" id="retorno_fiscal" :checked="api.C5_XRETFIS === 'T'" :disabled="api.C5_XLIBFAT === 'F'"><br>-->
+<!--                    {{ api.C5_XNRETFI }}<br>-->
+<!--                    {{ api.C5_XHRETFI }}<br>-->
+<!--                    <span v-if="api.C5_XRETFIS">Nota: {{ api.NOTA_RET }}</span>-->
+<!--                    -->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="marcaFaturd(api.C5_FILIAL, api.C5_NUM, api.C5_XLIBEXP, $event)" type="checkbox" name="faturado" id="faturado" :checked="api.C5_XFATURD === 'T'" :disabled="api.C5_XRETFIS === 'F'"><br>-->
+<!--                    {{ api.C5_XNFATUR  }}<br>-->
+<!--                    {{ api.C5_XHFATUR  }}-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="marcaLibexp(api.C5_FILIAL, api.C5_NUM, api.C5_XNOTIMP, $event)" type="checkbox" name="liberado_expedicao" id="liberado_expedicao" :checked="api.C5_XLIBEXP === 'T'" :disabled="api.C5_XFATURD === 'F'"><br>-->
+<!--                    {{ api.C5_XNLIBEX  }}<br>-->
+<!--                    {{ api.C5_XHLIBEX }}<br>-->
+<!--                    <span v-if="api.C5_XLIBEXP">Nota: {{ api.C5_NOTA }}</span><br>-->
+<!--                    <a v-if="api.C5_XLIBEXP" :href="`http://aplicacao.fibracem.com:8080/qualidade/certificado-garantia?filial=${api.C5_FILIAL}&cli=${api.C5_CLIENTE}&doc=${api.C5_NOTA}&loja=${api.C5_LOJACLI}`" class="button-8" target="_blank">Certificado</a>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="marcaNotaImp(api.C5_FILIAL, api.C5_NUM, api.C5_XEXPEDI, $event)" type="checkbox" name="nota_impressa" id="nota_impressa" :checked="api.C5_XNOTIMP === 'T'" :disabled="api.C5_XLIBEXP === 'F'"><br>-->
+<!--                    {{ api.C5_XNNOTIM  }}<br>-->
+<!--                    {{ api.C5_XHNOTIM }}<br>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input class="mt-4" @click="marcaExpedi(api.C5_FILIAL, api.C5_NUM, $event)" type="checkbox" name="expedido" id="expedido" :checked="api.C5_XEXPEDI === 'T'" :disabled="api.C5_XNOTIMP === 'F'"><br>-->
+<!--                    {{ api.C5_XNEXPED  }}<br>-->
+<!--                    {{ api.C5_XHEXPED }}-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--</div>-->
 
-<modal v-if="abreAltValorFrete" :title="`Alterar valor de frete do pedido ${freteNum} filial ${freteFilial}:`">
-    <template v-slot:body>
-    <loading v-if="carregandoinfo"></loading>
-    <div v-if="!carregandoinfo">
-        <div class="row">
-            <div class="col">
-                <form-floating :placeholder="'Valor:'" :id="'valFrete'" :type="'number'" v-model="freteVal"></form-floating><br>
-            </div>
-            <div class="col">
-                <select-floating :placeholder="'Tipo Frete:'" :id="'tiposFrete'" :options="tiposFrete" v-model="freteTipo"></select-floating>
-            </div>
-        </div>
-    </div>
-    </template>
-    <template v-slot:buttons v-if="!carregandoinfo">
-        <button class="button-8 mt-2" @click="closeValFreteModal()">Fechar</button>
-        <button class="button-8 mt-2" @click="alterarValFrete(freteFilial, freteNum)">Salvar</button>
-    </template>
-</modal>
+<!--<modal v-if="abreAltValorFrete" :title="`Alterar valor de frete do pedido ${freteNum} filial ${freteFilial}:`">-->
+<!--    <template v-slot:body>-->
+<!--    <loading v-if="carregandoinfo"></loading>-->
+<!--    <div v-if="!carregandoinfo">-->
+<!--        <div class="row">-->
+<!--            <div class="col">-->
+<!--                <form-floating :placeholder="'Valor:'" :id="'valFrete'" :type="'number'" v-model="freteVal"></form-floating><br>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <select-floating :placeholder="'Tipo Frete:'" :id="'tiposFrete'" :options="tiposFrete" v-model="freteTipo"></select-floating>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    </template>-->
+<!--    <template v-slot:buttons v-if="!carregandoinfo">-->
+<!--        <button class="button-8 mt-2" @click="closeValFreteModal()">Fechar</button>-->
+<!--        <button class="button-8 mt-2" @click="alterarValFrete(freteFilial, freteNum)">Salvar</button>-->
+<!--    </template>-->
+<!--</modal>-->
 
-<modal v-if="mostraErro" :title="`Erro:`" :textoPadrao="textoPad">
-    <template v-slot:body>
-    <loading v-if="carregandoinfo"></loading>
-    <div v-if="!carregandoinfo">
-    </div>
-    </template>
-    <template v-slot:buttons v-if="!carregandoinfo">
-        <button class="button-8 mt-2" @click="this.mostraErro = false">Fechar</button>
-    </template>
-</modal>
+<!--<modal v-if="mostraErro" :title="`Erro:`" :textoPadrao="textoPad">-->
+<!--    <template v-slot:body>-->
+<!--    <loading v-if="carregandoinfo"></loading>-->
+<!--    <div v-if="!carregandoinfo">-->
+<!--    </div>-->
+<!--    </template>-->
+<!--    <template v-slot:buttons v-if="!carregandoinfo">-->
+<!--        <button class="button-8 mt-2" @click="this.mostraErro = false">Fechar</button>-->
+<!--    </template>-->
+<!--</modal>-->
 
-<modal v-if="clienteModal" :title="`Cliente:`">
-    <template v-slot:body>
-    <loading v-if="carregandoinfo"></loading>
-    <div v-if="!carregandoinfo">
-        <div class="row">
-            <div class="col-sm-2">
-                <form-floating :placeholder="'Código:'" :id="'cod'" :type="'text'" v-model="cliente.A1_COD" readonly></form-floating><br>
-            </div>
-            <div class="col">
-                <form-floating :placeholder="'Nome:'" :id="'nome'" :type="'text'" v-model="cliente.A1_NOME" readonly></form-floating><br>
-            </div>
-            <div class="col-sm-2">
-                <form-floating :placeholder="'CNPJ:'" :id="'cnpj'" :type="'text'" v-model="cliente.A1_CGC" readonly></form-floating><br>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <form-floating :placeholder="'Endereço:'" :id="'end'" :type="'text'" v-model="cliente.A1_END" readonly></form-floating><br>
-            </div>
-            <div class="col-sm-2">
-                <form-floating :placeholder="'Código Município:'" :id="'cod_mun'" :type="'text'" v-model="cliente.A1_COD_MUN" readonly></form-floating><br>
-            </div>
-            <div class="col-md-3">
-                <form-floating :placeholder="'Município:'" :id="'mun'" :type="'text'" v-model="cliente.A1_MUN" readonly></form-floating><br>
-            </div>
-            <div class="col-sm-1">
-                <form-floating :placeholder="'Estado:'" :id="'est'" :type="'text'" v-model="cliente.A1_EST" readonly></form-floating><br>
-            </div>
-            <div class="col-sm-2">
-                <form-floating :placeholder="'CEP:'" :id="'cep'" :type="'text'" v-model="cliente.A1_CEP" readonly></form-floating><br>
-            </div>
-        </div>
-    </div>
-    </template>
-    <template v-slot:buttons v-if="!carregandoinfo">
-        <button class="button-8 mt-2" @click="fecharClienteModal()">Fechar</button>
-    </template>
-</modal>
+<!--<modal v-if="clienteModal" :title="`Cliente:`">-->
+<!--    <template v-slot:body>-->
+<!--    <loading v-if="carregandoinfo"></loading>-->
+<!--    <div v-if="!carregandoinfo">-->
+<!--        <div class="row">-->
+<!--            <div class="col-sm-2">-->
+<!--                <form-floating :placeholder="'Código:'" :id="'cod'" :type="'text'" v-model="cliente.A1_COD" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <form-floating :placeholder="'Nome:'" :id="'nome'" :type="'text'" v-model="cliente.A1_NOME" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--            <div class="col-sm-2">-->
+<!--                <form-floating :placeholder="'CNPJ:'" :id="'cnpj'" :type="'text'" v-model="cliente.A1_CGC" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-4">-->
+<!--                <form-floating :placeholder="'Endereço:'" :id="'end'" :type="'text'" v-model="cliente.A1_END" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--            <div class="col-sm-2">-->
+<!--                <form-floating :placeholder="'Código Município:'" :id="'cod_mun'" :type="'text'" v-model="cliente.A1_COD_MUN" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <form-floating :placeholder="'Município:'" :id="'mun'" :type="'text'" v-model="cliente.A1_MUN" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--            <div class="col-sm-1">-->
+<!--                <form-floating :placeholder="'Estado:'" :id="'est'" :type="'text'" v-model="cliente.A1_EST" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--            <div class="col-sm-2">-->
+<!--                <form-floating :placeholder="'CEP:'" :id="'cep'" :type="'text'" v-model="cliente.A1_CEP" readonly></form-floating><br>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    </template>-->
+<!--    <template v-slot:buttons v-if="!carregandoinfo">-->
+<!--        <button class="button-8 mt-2" @click="fecharClienteModal()">Fechar</button>-->
+<!--    </template>-->
+<!--</modal>-->
 
-<modal v-if="itensModal" :title="`Itens do Orçamento:`">
-    <template v-slot:body>
-    <loading v-if="carregandoinfo"></loading>
-    <div v-if="!carregandoinfo">
-        <div class="table-wrapper table-striped">
-            <table class="fl-table" id="myTable">
-                <thead>
-                    <th>Código</th>
-                    <th>Descrição</th>
-                    <th>Quantidade</th>
-                    <th>Separado CD</th>
-                    <th>Usuário</th>
-                    <th>Data</th>
-                </thead>
-                <tbody>
-                    <tr v-for="iten in itensLista" :key="iten.C6_ITEN">
-                        <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>
-                        <td>{{ iten.C6_DESCRI }}</td>
-                        <td>{{ iten.C6_QTDVEN }}</td>
-                        <td><input type="checkbox" name="" id="" v-model="iten.C6_XSEPCD" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem, iten.C6_XSEPCD)"></td>
-                        <td>{{ iten.C6_XNSEPCD }}</td>
-                        <td>{{ iten.C6_XHSEPCD }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    </template>
-    <template v-slot:buttons v-if="!carregandoinfo">
-        <button class="button-8 mt-2" @click="itensModal = false">Fechar</button>
-    </template>
-</modal>
+<!--<modal v-if="itensModal" :title="`Itens do Orçamento:`">-->
+<!--    <template v-slot:body>-->
+<!--    <loading v-if="carregandoinfo"></loading>-->
+<!--    <div v-if="!carregandoinfo">-->
+<!--        <div class="table-wrapper table-striped">-->
+<!--            <table class="fl-table" id="myTable">-->
+<!--                <thead>-->
+<!--                    <th>Código</th>-->
+<!--                    <th>Descrição</th>-->
+<!--                    <th>Quantidade</th>-->
+<!--                    <th>Separado CD</th>-->
+<!--                    <th>Usuário</th>-->
+<!--                    <th>Data</th>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                    <tr v-for="iten in itensLista" :key="iten.C6_ITEN">-->
+<!--                        <td style="word-wrap: break-word; width: 5px;">{{ iten.C6_PRODUTO }}</td>-->
+<!--                        <td>{{ iten.C6_DESCRI }}</td>-->
+<!--                        <td>{{ iten.C6_QTDVEN }}</td>-->
+<!--                        <td><input type="checkbox" name="" id="" v-model="iten.C6_XSEPCD" @click="marcaSepC6(iten.C6_FILIAL, iten.C6_NUM, iten.C6_ITEM, iten.C6_PRODUTO, $event, vendListaItem, clienteListaItem, iten.C6_XSEPCD)"></td>-->
+<!--                        <td>{{ iten.C6_XNSEPCD }}</td>-->
+<!--                        <td>{{ iten.C6_XHSEPCD }}</td>-->
+<!--                    </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    </template>-->
+<!--    <template v-slot:buttons v-if="!carregandoinfo">-->
+<!--        <button class="button-8 mt-2" @click="itensModal = false">Fechar</button>-->
+<!--    </template>-->
+<!--</modal>-->
 
 
+  <h1>Favor usar o novo módulo do track order</h1>
 </template>
 
 <script>
