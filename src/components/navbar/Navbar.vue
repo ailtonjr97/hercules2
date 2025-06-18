@@ -19,6 +19,7 @@
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Comercial</h6>
                     <router-link to="/comercial/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete</router-link>
+                    <a href="http://integrador.fibracem.com/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete (Novo)</a>
 <!--                    <router-link to="/comercial/track-order" class="nav-link" style="padding: 0 8px;">Track Order</router-link>-->
                     <a href="http://integrador.fibracem.com/track-order" class="nav-link" style="padding: 0 8px;">Track Order (Novo)</a>
                     <a href="http://integrador.fibracem.com/orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</a>
