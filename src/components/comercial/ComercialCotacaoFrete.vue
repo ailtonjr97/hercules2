@@ -4,7 +4,7 @@
     <div v-if="fullLoad" style="overflow: hidden; padding: 0.5%;">
     <table-top :resultados="resultados">
         <template v-slot:tableButtons>
-            <button class="button-8 mb-2" @click="novaCotacao()" v-if="setor == 'Comercial'">Nova Cotação</button>
+<!--            <button class="button-8 mb-2" @click="novaCotacao()" v-if="setor == 'Comercial'">Nova Cotação</button>-->
             <button class="button-8 mb-2" @click="refresh()">Atualizar</button>
             <button class="button-8 mb-2" @click="exportarModal = true">Exportar</button>
             <router-link class="button-8" to="/comercial/cotacao-de-frete-arquivadas">Arquivadas</router-link>
@@ -47,8 +47,8 @@
             <td>
                 <div class="row" style="width: 80%; margin-left: 15%;">
                     <div class="col d-flex justify-content-start">
-                        <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id, resposta.pedido)">Cotar</button></div>
-                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial' && resposta.aniversario_status != 'P' " @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)">Escolher</button></div>
+<!--                        <div><button title="Cotar" class="button-8" v-if="!resposta.cotador_id_2 && setor == 'Logística'" @click="openEditarModal(resposta.id, resposta.pedido)">Cotar</button></div>-->
+<!--                        <div><button title="Escolher" class="button-8" v-if="resposta.cotador_id_2 && setor == 'Comercial' && resposta.aniversario_status != 'P' " @click="updateFreteCot(resposta.pedido, resposta.id, resposta.valor, resposta.id_transportadora, resposta.revisao)">Escolher</button></div>-->
                         <div><button title="Arquivar" class="button-8" v-if="resposta.arquivar != 0" @click="arquivaFreteCot(resposta.id)">Arquivar</button></div>
                         <div><button title="Itens" class="button-8" @click="openItensModal(resposta.pedido, resposta.revisao)">Itens</button></div>
 
