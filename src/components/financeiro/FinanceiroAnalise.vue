@@ -596,6 +596,7 @@ export default{
                 {valor: "Kesley Machado", descri: 'Kesley Machado'},
                 {valor: "Natali Evelin Peres Pereira", descri: 'Natali Evelin Peres Pereira'},
                 {valor: "Alex Lemes da Silva", descri: 'Alex Lemes da Silva'},
+                {valor: "Rosangela Costa dos Anjos", descri: 'Rosangela Costa dos Anjos'}
             ];
         },
         optionsPercent(){
