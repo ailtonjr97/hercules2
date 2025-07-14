@@ -14,29 +14,29 @@
                 </div>
             </router-link>
 
-            <div class="dropdown" style="margin-left: 15%;">
-                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Comercial</p>
-                <div class="dropdown-menu">
-                    <h6 class="dropdown-header">Comercial</h6>
-                    <router-link to="/comercial/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete</router-link>
-                    <a href="http://integrador.fibracem.com/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete (Novo)</a>
-<!--                    <router-link to="/comercial/track-order" class="nav-link" style="padding: 0 8px;">Track Order</router-link>-->
-                    <a href="http://integrador.fibracem.com/track-order" class="nav-link" style="padding: 0 8px;">Track Order (Novo)</a>
-                    <a href="http://integrador.fibracem.com/orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</a>
-                    <a href="http://integrador.fibracem.com/pedidos" class="nav-link" style="padding: 0 8px;">Pedidos</a>
-                    <a href="http://integrador.fibracem.com/clientes" class="nav-link" style="padding: 0 8px;">Clientes</a>
-                </div>
-            </div>
+<!--            <div class="dropdown" style="margin-left: 15%;">-->
+<!--                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Comercial</p>-->
+<!--                <div class="dropdown-menu">-->
+<!--                    <h6 class="dropdown-header">Comercial</h6>-->
+<!--                    <router-link to="/comercial/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete</router-link>-->
+<!--                    <a href="http://integrador.fibracem.com/cotacao-de-frete" class="nav-link" style="padding: 0 8px;">Cotação de Frete (Novo)</a>-->
+<!--&lt;!&ndash;                    <router-link to="/comercial/track-order" class="nav-link" style="padding: 0 8px;">Track Order</router-link>&ndash;&gt;-->
+<!--                    <a href="http://integrador.fibracem.com/track-order" class="nav-link" style="padding: 0 8px;">Track Order (Novo)</a>-->
+<!--                    <a href="http://integrador.fibracem.com/orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</a>-->
+<!--                    <a href="http://integrador.fibracem.com/pedidos" class="nav-link" style="padding: 0 8px;">Pedidos</a>-->
+<!--                    <a href="http://integrador.fibracem.com/clientes" class="nav-link" style="padding: 0 8px;">Clientes</a>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <div class="dropdown" style="margin-left: 20%;">
                 <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Financeiro</p>
                 <div class="dropdown-menu">
                     <h6 class="dropdown-header">Financeiro</h6>
                     <router-link to="/financeiro/analise-de-credito" class="nav-link" style="padding: 0 8px;">Análise de Crédito</router-link>
-                    <router-link to="/financeiro/nf-cte" class="nav-link" style="padding: 0 8px;">Frete NF/Pedido</router-link>
-                    <router-link to="/financeiro/cte" class="nav-link" style="padding: 0 8px;">CTE</router-link>
-                    <a href="http://integrador.fibracem.com/notas-fiscais" class="nav-link" style="padding: 0 8px;">NF Saída PDF</a>
-                    <router-link to="/financeiro/guia-nf" class="nav-link" style="padding: 0 8px;">Guia NF</router-link>
+<!--                    <router-link to="/financeiro/nf-cte" class="nav-link" style="padding: 0 8px;">Frete NF/Pedido</router-link>-->
+<!--                    <router-link to="/financeiro/cte" class="nav-link" style="padding: 0 8px;">CTE</router-link>-->
+<!--                    <a href="http://integrador.fibracem.com/notas-fiscais" class="nav-link" style="padding: 0 8px;">NF Saída PDF</a>-->
+<!--                    <router-link to="/financeiro/guia-nf" class="nav-link" style="padding: 0 8px;">Guia NF</router-link>-->
                 </div>
             </div>
 
@@ -50,31 +50,31 @@
                 </div>
             </div>
 
-            <div class="dropdown" style="margin-left: 20%;">
-                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Logística</p>
-                <div class="dropdown-menu">
-                    <h6 class="dropdown-header">Logística</h6>
-                    <a href="http://integrador.fibracem.com/produtos" class="nav-link" style="padding: 0 8px;">Produtos</a>
-                </div>
-            </div>
+<!--            <div class="dropdown" style="margin-left: 20%;">-->
+<!--                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Logística</p>-->
+<!--                <div class="dropdown-menu">-->
+<!--                    <h6 class="dropdown-header">Logística</h6>-->
+<!--                    <a href="http://integrador.fibracem.com/produtos" class="nav-link" style="padding: 0 8px;">Produtos</a>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div class="dropdown" style="margin-left: 20%;">
-                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Tabelas</p>
-                <div class="dropdown-menu">
-                    <h6 class="dropdown-header">Banco de dados</h6>
-                    <router-link to="/tabelas" class="nav-link" style="padding: 0 8px;">Tabelas</router-link>
-                </div>
-            </div>
+<!--            <div class="dropdown" style="margin-left: 20%;">-->
+<!--                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Tabelas</p>-->
+<!--                <div class="dropdown-menu">-->
+<!--                    <h6 class="dropdown-header">Banco de dados</h6>-->
+<!--                    <router-link to="/tabelas" class="nav-link" style="padding: 0 8px;">Tabelas</router-link>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div class="dropdown" style="margin-left: 20%;">
-                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Gráficos</p>
-                <div class="dropdown-menu">
-                    <h6 class="dropdown-header">Gráficos</h6>
-                    <router-link to="/graficos-orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</router-link>
-                    <router-link to="/graficos-pedidos" class="nav-link" style="padding: 0 8px;">Pedidos</router-link>
-                    <a href="http://integrador.fibracem.com/ranking-vendedores" class="nav-link" style="padding: 0 8px;">Ranking Vendedores</a>
-                </div>
-            </div>
+<!--            <div class="dropdown" style="margin-left: 20%;">-->
+<!--                <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Gráficos</p>-->
+<!--                <div class="dropdown-menu">-->
+<!--                    <h6 class="dropdown-header">Gráficos</h6>-->
+<!--                    <router-link to="/graficos-orcamentos" class="nav-link" style="padding: 0 8px;">Orçamentos</router-link>-->
+<!--                    <router-link to="/graficos-pedidos" class="nav-link" style="padding: 0 8px;">Pedidos</router-link>-->
+<!--                    <a href="http://integrador.fibracem.com/ranking-vendedores" class="nav-link" style="padding: 0 8px;">Ranking Vendedores</a>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <div class="dropdown" style="margin-left: 20%;">
                 <p class="falta_icone" data-bs-toggle="dropdown" style="margin-top: 10%; color: white;">Usuários</p>
