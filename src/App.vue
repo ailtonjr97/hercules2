@@ -1,6 +1,5 @@
 <template>
-    <template v-slot:content><router-view></router-view></template>
-  <router-view v-if="$route.meta.hideNavbar"></router-view>
+  <router-view></router-view>
 </template>
 
 <script>
